@@ -398,15 +398,20 @@
         "AP-09",
         "AP-11"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "implemented",
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
-      "evidence": [],
-      "openChecks": [],
+      "evidence": [
+        "docs/verification/AP-15.md"
+      ],
+      "openChecks": [
+        "Controller/emulator movement-to-feedback and browser workflow verification follows AP-24",
+        "No physical motion/lighting test has been claimed"
+      ],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T14:44:51.697Z"
     },
     {
       "id": "AP-16",

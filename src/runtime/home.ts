@@ -6,6 +6,9 @@ import { Clock, systemClock } from './clock';
 import { Supervisor } from './supervisor';
 import { PresenceContext } from '../context/context';
 import { History } from '../diagnostics/history';
+import { commonDecision, noAction, PolicyDecision, PolicyMemory } from '../policies/policy';
+import { lightingDecision } from '../policies/lighting';
+import { arbitrate } from '../execution/arbiter';
 export interface HomePort {
     read(id: string): Promise<StateValue | null>;
     metadata(id: string): Promise<StateMetadata | null>;
@@ -20,6 +23,10 @@ export class HomeRuntime {
     private presence = new PresenceContext();
     readonly history = new History();
     private lastHistoryFlush = 0;
+    private memories:Record<string,PolicyMemory> = {};
+    private proposals:Intent[] = [];
+    private ticking = false;
+    private round = 0;
     constructor(private config: () => Configuration, private port: HomePort, readonly clock: Clock = systemClock) {
         this.startedAt = clock.now();
         this.executor = new Executor(config, {...port,persist: journal => port.persist('execution',journal),inputs: fn => this.inputs(fn)},clock);
@@ -27,7 +34,8 @@ export class HomeRuntime {
     async initialize(saved?: ExecutionJournal): Promise<void> { await this.executor.restore(saved);this.configure(); }
     configure(): void {
         this.supervisor.close();this.supervisor = new Supervisor();this.executor.invalidateAudit();
-        for (const fn of this.config().functions) this.supervisor.register(fn.id,async () => { await this.inputs(fn); });
+        this.memories = {};this.round++;
+        for (const fn of this.config().functions) this.supervisor.register(fn.id,async () => { await this.evaluate(fn,this.round); });
     }
     async inputs(fn: FunctionConfig): Promise<Record<string, Observation | null>> {
         const result: Record<string, Observation | null> = {};
@@ -46,10 +54,40 @@ export class HomeRuntime {
         return this.executor.execute(intent);
     }
     async tick(): Promise<void> {
-        await this.executor.expire();await this.supervisor.tick();
+        if(this.ticking)return;this.ticking = true;
+        try{
+        this.proposals = [];await this.executor.expire();await this.supervisor.tick();
+        const decisions = arbitrate(this.proposals,this.config());
+        for(const intent of decisions.accepted){
+            try{
+                const command = await this.executor.execute(intent);const trace = this.traces[intent.functionId];if(trace)trace.command = command;
+                if(intent.reasonCode === 'motion_on'){this.memories[intent.functionId].commandId = command.commandId;this.memories[intent.functionId].ownerManualAt = this.executor.journal.manual[command.physicalId]?.at ?? 0;}
+                if(intent.reasonCode === 'motion_quiet_expired')delete this.memories[intent.functionId].commandId;
+                this.history.event({at:this.clock.now(),type:'command',scope:intent.functionId,code:command.phase,revision:this.config().revision,commandId:command.commandId});
+            }catch(error){const trace = this.traces[intent.functionId];if(trace){trace.reasonCode = error instanceof Error ? error.message : 'execution_failed';trace.reasonText = trace.reasonCode;}}
+        }
         if(this.clock.now()-this.lastHistoryFlush >= 30000){this.history.rotate(this.clock.now());this.lastHistoryFlush = this.clock.now();
             try{await this.port.persist('history',this.history.record);this.history.storageError = false;}catch{this.history.storageError = true;}
         }
+        }finally{this.ticking = false;}
+    }
+    private async evaluate(fn:FunctionConfig,round:number):Promise<void>{
+        const config = this.config(), now = this.clock.now(),inputs = await this.inputs(fn),binding = config.bindings.find(b => b.id === fn.actuator.entityId)!;
+        const mapping = binding.capabilities.find(c => c.capability === fn.actuator.capability)!;
+        const actual = normalize(binding,mapping,await this.port.read(mapping.readId),now);
+        if(round !== this.round || config.revision !== this.config().revision)return;
+        const memory = this.memories[fn.id] ??= {}, wish = this.executor.journal.manual[binding.physicalId];
+        const ownCommand = this.executor.journal.commands.find(c => c.commandId === memory.commandId);
+        const owns = !!ownCommand?.feedbackMatched && ownCommand.generation === this.executor.generation && (!wish || wish.at <= (memory.ownerManualAt ?? 0));
+        if(wish && wish.at > (memory.ownerManualAt ?? 0))delete memory.commandId;
+        const context = {now,startedAt:this.startedAt,timezone:config.timezone,inputs,actual,owns,manual:!!wish && wish.until > now};
+        let decision:PolicyDecision = commonDecision(fn,context) ?? (fn.kind === 'lighting' ? lightingDecision(fn,context,memory) : noAction('no_matching_rule','No configured rule currently applies'));
+        const trace:DecisionTrace = {at:now,functionId:fn.id,configRevision:config.revision,reasonCode:decision.reason,reasonText:decision.text,inputs,nextStep:decision.nextAt ? new Date(decision.nextAt).toISOString() : undefined};
+        this.traces[fn.id] = trace;this.history.event({at:now,type:'decision',scope:fn.id,code:decision.reason,revision:config.revision});
+        if(decision.value === undefined)return;
+        if(actual.quality === 'valid' && actual.value === decision.value){trace.nextStep = 'Already matches the requested value';return;}
+        const intent:Intent = {...fn.actuator,intentId:randomUUID(),functionId:fn.id,typedValue:decision.value,origin:'configured_rule',actor:'policy',reasonCode:decision.reason,reasonText:decision.text,sourceSnapshotId:randomUUID(),configRevision:config.revision,priority:decision.priority,validFrom:now,expiresAt:Math.min(decision.expiresAt ?? now+10000,now+10000)};
+        trace.intent = intent;this.proposals.push(intent);
     }
     async feedback(id:string,state:StateValue):Promise<void>{
         await this.executor.feedback(id,state);
