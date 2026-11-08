@@ -1,0 +1,103 @@
+{
+  "common": {
+    "name": "adaptivehome",
+    "version": "0.0.1",
+    "news": {
+      "0.0.1": {
+        "en": "initial release",
+        "de": "Erstveröffentlichung",
+        "ru": "Начальная версия",
+        "pt": "lançamento inicial",
+        "nl": "Eerste uitgave",
+        "fr": "Première version",
+        "it": "Versione iniziale",
+        "es": "Versión inicial",
+        "pl": "Pierwsze wydanie",
+        "uk": "Початкова версія",
+        "zh-cn": "首次出版"
+      }
+    },
+    "titleLang": {
+      "en": "Adaptive Home",
+      "de": "Adaptives Zuhause",
+      "ru": "Адаптивный дом",
+      "pt": "Página inicial adaptativa",
+      "nl": "Adaptief huis",
+      "fr": "Maison adaptative",
+      "it": "Casa adattiva",
+      "es": "Hogar adaptable",
+      "pl": "Dom adaptacyjny",
+      "uk": "Адаптивний будинок",
+      "zh-cn": "自适应家居"
+    },
+    "desc": {
+      "en": "Configurable capability-based home automation with optional local learning",
+      "de": "Konfigurierbare, funktionsbasierte Hausautomation mit optionalem lokalem Lernen",
+      "ru": "Настраиваемая домашняя автоматизация на основе возможностей с дополнительным местным обучением",
+      "pt": "Automação residencial configurável baseada em capacidade com aprendizagem local opcional",
+      "nl": "Configureerbare, op capaciteiten gebaseerde huisautomatisering met optioneel lokaal leren",
+      "fr": "Domotique configurable basée sur les capacités avec apprentissage local en option",
+      "it": "Domotica basata su capacità configurabile con apprendimento locale opzionale",
+      "es": "Automatización del hogar configurable basada en capacidades con aprendizaje local opcional",
+      "pl": "Konfigurowalna automatyka domowa oparta na możliwościach z opcjonalnym uczeniem lokalnym",
+      "uk": "Домашня автоматизація з можливістю конфігурації та додатковим локальним навчанням",
+      "zh-cn": "可配置的基于功能的家庭自动化，具有可选的本地学习功能"
+    },
+    "authors": [
+      "Holly86 <86856001+Holly86@users.noreply.github.com>"
+    ],
+    "keywords": [
+      "home",
+      "automation",
+      "learning"
+    ],
+    "licenseInformation": {
+      "type": "free",
+      "license": "MIT"
+    },
+    "platform": "Javascript/Node.js",
+    "icon": "adaptivehome.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/Holly86/ioBroker.adaptivehome/codex/implementation/admin/adaptivehome.png",
+    "readme": "https://github.com/Holly86/ioBroker.adaptivehome/blob/codex/implementation/README.md",
+    "loglevel": "info",
+    "tier": 3,
+    "mode": "daemon",
+    "type": "logic",
+    "compact": true,
+    "adminUI": {
+      "config": "json",
+      "tab": "materialize"
+    },
+    "adminTab": {
+      "singleton": true,
+      "name": {
+        "en": "Adaptive Home",
+        "de": "Adaptives Zuhause",
+        "ru": "Адаптивный дом",
+        "pt": "Página inicial adaptativa",
+        "nl": "Adaptief huis",
+        "fr": "Maison adaptative",
+        "it": "Casa adattiva",
+        "es": "Hogar adaptable",
+        "pl": "Dom adaptacyjny",
+        "uk": "Адаптивний будинок",
+        "zh-cn": "自适应家居"
+      },
+      "link": ""
+    },
+    "dependencies": [
+      {
+        "js-controller": ">=6.0.11"
+      }
+    ],
+    "globalDependencies": [
+      {
+        "admin": ">=7.0.23"
+      }
+    ]
+  },
+  "native": {},
+  "objects": [],
+  "instanceObjects": []
+}

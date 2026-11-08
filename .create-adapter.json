@@ -1,0 +1,40 @@
+{
+  "authorGithub": "Holly86",
+  "defaultBranch": "codex/implementation",
+  "description": "Configurable capability-based home automation with optional local learning",
+  "type": "logic",
+  "nodeVersion": "22",
+  "gitCommit": "no",
+  "adminFeatures": [
+    "tab"
+  ],
+  "license": "MIT License",
+  "releaseScript": "no",
+  "features": [
+    "adapter"
+  ],
+  "authorName": "Holly86",
+  "devServer": "no",
+  "keywords": "home,automation,learning",
+  "tools": [
+    "ESLint",
+    "Prettier"
+  ],
+  "expert": "yes",
+  "adapterName": "adaptivehome",
+  "tabReact": "no",
+  "language": "TypeScript",
+  "title": "Adaptive Home",
+  "authorEmail": "86856001+Holly86@users.noreply.github.com",
+  "adminUi": "json",
+  "startMode": "daemon",
+  "connectionType": "",
+  "dataSource": "",
+  "connectionIndicator": "no",
+  "eslintConfig": "official",
+  "indentation": "Tab",
+  "quotes": "single",
+  "gitRemoteProtocol": "HTTPS",
+  "dependabot": "yes",
+  "creatorVersion": "3.1.5"
+}
