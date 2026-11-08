@@ -3,7 +3,7 @@ import type { ConfigRecord } from './config/configuration';
 import { ConfigurationStore } from './config/configuration';
 import { HomeRuntime } from './runtime/home';
 import type { ExecutionJournal } from './execution/executor';
-import type { StateMetadata, StateValue, IntegrationRegistry } from './integrations/registry';
+import type { DiscoveryContext, StateMetadata, StateValue, IntegrationRegistry } from './integrations/registry';
 import { builtInRegistry, discoverProfiles } from './integrations/profiles';
 import { registerDefinitions } from './integrations/sdk';
 import type { ControlClient } from './runtime/control';
@@ -286,8 +286,25 @@ class Adaptivehome extends utils.Adapter {
 					break;
 				case 'discover': {
 					const objects: Record<string, StateMetadata> = {};
+					const context: DiscoveryContext = { resources: {} };
 					for (const profile of this.registry.list()) {
 						for (const backend of profile.backends) {
+							for (const type of ['channel', 'device'] as const) {
+								const parents = await this.getObjectViewAsync('system', type, {
+									startkey: `${backend}.`,
+									endkey: `${backend}.\u9999`,
+								});
+								for (const row of parents.rows.slice(0, 10000)) {
+									const native = row.value?.native;
+									context.resources[row.id] = {
+										role: row.value?.common?.role,
+										type: typeof native?.type === 'string' ? native.type : undefined,
+										id: ['string', 'number'].includes(typeof native?.id)
+											? String(native.id)
+											: undefined,
+									};
+								}
+							}
 							const view = await this.getObjectViewAsync('system', 'state', {
 								startkey: `${backend}.`,
 								endkey: `${backend}.\u9999`,
@@ -299,7 +316,7 @@ class Adaptivehome extends utils.Adapter {
 							}
 						}
 					}
-					result = addTypeHints(discoverProfiles(objects, this.registry), objects);
+					result = addTypeHints(discoverProfiles(objects, this.registry, context), objects);
 					break;
 				}
 				case 'previewConfiguration':

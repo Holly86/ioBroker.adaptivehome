@@ -20,6 +20,7 @@ export const integrationDefinitionSchema = z.strictObject({
 				suffix: z.string().regex(/^[a-zA-Z0-9_.-]{1,96}$/),
 				type: z.enum(['boolean', 'number', 'string']),
 				unit: z.string().max(32).optional(),
+				sourceUnit: z.string().max(32).optional(),
 				readOnly: z.boolean().default(false),
 				scale: z.number().finite().positive().optional(),
 			}),

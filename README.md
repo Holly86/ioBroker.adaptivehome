@@ -91,6 +91,14 @@ household energy-saving claim is made.
 
 ## Changelog
 
+### Unreleased source corrections after 0.1.0-beta.2
+
+* Separate measured temperatures from thermostat targets; validate raw units before conversion.
+* Classify Hue resources from parent metadata, exclude sensor/group controls and quarantine duplicate light aliases.
+* Add Shelly Wh/Celsius/gain detection and read-only legacy Air power/percent telemetry.
+* Add anonymous discovery regressions and actual controller-view verification; repeat private read-only shadow checks.
+* These changes are in source only; the immutable beta-2 release package does not contain them.
+
 ### 0.1.0-beta.2
 
 * Reject overlapping function owners in configuration and at the executor boundary. Combine rules and limits in one function per physical output.

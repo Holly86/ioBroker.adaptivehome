@@ -1,13 +1,15 @@
 import { createHash } from 'node:crypto';
 import type { CapabilityMapping, DeviceBinding } from '../model/contracts';
 import { bindingSchema, mappingSchema } from '../model/contracts';
-import type { IntegrationManifest, StateMetadata } from './registry';
+import type { DiscoveryContext, IntegrationManifest, ResourceMetadata, StateMetadata } from './registry';
 import { IntegrationRegistry } from './registry';
 export interface DetectionRule {
 	capability: string;
 	suffix: RegExp;
 	type: 'boolean' | 'number' | 'string';
 	unit?: string;
+	sourceUnit?: string;
+	accept?: (metadata: StateMetadata) => boolean;
 	readOnly?: boolean;
 	scale?: number;
 	valueMap?: Record<string, boolean | number | string>;
@@ -15,32 +17,38 @@ export interface DetectionRule {
 	codec?: 'identity' | 'hueLightLevel';
 }
 export const standardRules: DetectionRule[] = [
-	{ capability: 'motion', suffix: /(?:motion|presence|PRESENCE_DETECTION_STATE)$/i, type: 'boolean', readOnly: true },
+	{
+		capability: 'motion',
+		suffix: /\.(?:motion|presence|PRESENCE_DETECTION_STATE)$/i,
+		type: 'boolean',
+		readOnly: true,
+	},
 	{
 		capability: 'illuminance',
-		suffix: /(?:illuminance|lux|ILLUMINATION)$/i,
+		suffix: /\.(?:illuminance|lux|ILLUMINATION)$/i,
 		type: 'number',
 		unit: 'lx',
 		readOnly: true,
 	},
 	{
 		capability: 'temperatureSensor',
-		suffix: /(?:temperature|actualTemperature|ACTUAL_TEMPERATURE)$/i,
+		suffix: /\.(?:temperature|actualTemperature|ACTUAL_TEMPERATURE)$/i,
 		type: 'number',
 		unit: '°C',
 		readOnly: true,
+		accept: meta => !meta.write || meta.role === 'value.temperature',
 	},
 	{
 		capability: 'thermostatSetpoint',
-		suffix: /(?:setPointTemperature|SET_POINT_TEMPERATURE|SET_TEMPERATURE)$/i,
+		suffix: /\.(?:setPointTemperature|SET_POINT_TEMPERATURE|SET_TEMPERATURE)$/i,
 		type: 'number',
 		unit: '°C',
 	},
-	{ capability: 'windowContact', suffix: /(?:windowOpen|WINDOW_OPEN|contact)$/i, type: 'boolean', readOnly: true },
-	{ capability: 'online', suffix: /(?:reachable|online|connected)$/i, type: 'boolean', readOnly: true },
-	{ capability: 'battery', suffix: /(?:lowBat|LOWBAT|LOW_BAT)$/i, type: 'boolean', readOnly: true },
-	{ capability: 'power', suffix: /(?:power|Power|act_power)$/i, type: 'number', unit: 'W', readOnly: true },
-	{ capability: 'energy', suffix: /(?:energy|Energy|total)$/i, type: 'number', unit: 'kWh', readOnly: true },
+	{ capability: 'windowContact', suffix: /\.(?:windowOpen|WINDOW_OPEN|contact)$/i, type: 'boolean', readOnly: true },
+	{ capability: 'online', suffix: /\.(?:reachable|online|connected)$/i, type: 'boolean', readOnly: true },
+	{ capability: 'battery', suffix: /\.(?:lowBat|LOWBAT|LOW_BAT)$/i, type: 'boolean', readOnly: true },
+	{ capability: 'power', suffix: /\.(?:power|act_power)$/i, type: 'number', unit: 'W', readOnly: true },
+	{ capability: 'energy', suffix: /\.(?:energy|total)$/i, type: 'number', unit: 'kWh', readOnly: true },
 ];
 export function createProfile(
 	id: string,
@@ -65,15 +73,17 @@ export function createProfile(
 				if (id === 'hue' && /\.(groups|scenes)\./i.test(path)) {
 					continue;
 				}
-				const rule = rules.find(r => r.suffix.test(path) && meta.type === r.type);
+				const rule = rules.find(
+					r =>
+						r.suffix.test(path) &&
+						meta.type === r.type &&
+						(!r.accept || r.accept(meta)) &&
+						(meta.unit ?? '') === (r.sourceUnit ?? r.unit ?? meta.unit ?? ''),
+				);
 				if (!rule) {
 					continue;
 				}
 				const unit = rule.unit ?? meta.unit ?? '';
-				// Unknown units are not guessed, except explicit identity-unit profiles.
-				if ((meta.unit ?? '') !== unit && !rule.scale && !rule.valueMap && !rule.codec) {
-					continue;
-				}
 				const valueMap =
 					rule.valueMap && meta.states
 						? Object.fromEntries(
@@ -125,11 +135,29 @@ export const shellyProfile = createProfile(
 	'Shelly via existing adapter',
 	['shelly'],
 	[
-		{ capability: 'switch', suffix: /(?:Switch|state|on|output)$/i, type: 'boolean' },
-		{ capability: 'dimmer', suffix: /(?:brightness|dim|Brightness)$/i, type: 'number', unit: '%' },
+		{ capability: 'switch', suffix: /\.(?:Switch|state|on|output)$/i, type: 'boolean' },
+		{ capability: 'dimmer', suffix: /\.(?:brightness|dim|gain)$/i, type: 'number', unit: '%' },
+		{
+			capability: 'energy',
+			suffix: /\.(?:energy|total)$/i,
+			type: 'number',
+			unit: 'kWh',
+			sourceUnit: 'Wh',
+			scale: 0.001,
+			readOnly: true,
+		},
+		{
+			capability: 'temperatureSensor',
+			suffix: /\.temperatureC\d*$/i,
+			type: 'number',
+			unit: '°C',
+			readOnly: true,
+			accept: meta => meta.role === 'value.temperature',
+		},
 		{ capability: 'color', suffix: /(?:rgb|color)$/i, type: 'string' },
 		...standardRules,
 	],
+	path => (/\.temperatureC\d+$/i.test(path) ? path : path.slice(0, path.lastIndexOf('.'))),
 );
 export const homematicCcuProfile = createProfile(
 	'homematic-ccu',
@@ -137,7 +165,8 @@ export const homematicCcuProfile = createProfile(
 	['hm-rpc'],
 	[
 		{ capability: 'switch', suffix: /\.STATE$/i, type: 'boolean' },
-		{ capability: 'dimmer', suffix: /\.LEVEL$/i, type: 'number', unit: '%', scale: 100 },
+		{ capability: 'dimmer', suffix: /\.LEVEL$/i, type: 'number', unit: '%', sourceUnit: '', scale: 100 },
+		{ capability: 'dimmer', suffix: /\.LEVEL$/i, type: 'number', unit: '%' },
 		{ capability: 'windowContact', suffix: /\.(?:STATE|WINDOW_STATE)$/i, type: 'boolean', readOnly: true },
 		...standardRules,
 	],
@@ -148,37 +177,119 @@ export const homematicCloudProfile = createProfile(
 	['hmip'],
 	[
 		{ capability: 'switch', suffix: /\.(?:on|state)$/i, type: 'boolean' },
-		{ capability: 'dimmer', suffix: /\.dimLevel$/i, type: 'number', unit: '%', scale: 100 },
+		{ capability: 'dimmer', suffix: /\.dimLevel$/i, type: 'number', unit: '%', sourceUnit: '', scale: 100 },
+		{ capability: 'dimmer', suffix: /\.dimLevel$/i, type: 'number', unit: '%' },
 		{ capability: 'nativeProfile', suffix: /\.activeProfile$/i, type: 'string' },
 		{ capability: 'windowContact', suffix: /\.windowOpen$/i, type: 'boolean', readOnly: true },
 		...standardRules,
 	],
 );
-export const hueProfile = createProfile(
+const hueBaseProfile = createProfile(
 	'hue',
 	'Philips Hue bridge',
 	['hue'],
 	[
 		{ capability: 'switch', suffix: /\.on$/i, type: 'boolean' },
 		{ capability: 'dimmer', suffix: /\.level$/i, type: 'number', unit: '%' },
-		{ capability: 'dimmer', suffix: /\.bri$/i, type: 'number', unit: '%', scale: 100 / 254 },
+		{
+			capability: 'dimmer',
+			suffix: /\.level$/i,
+			type: 'number',
+			unit: '%',
+			sourceUnit: '',
+			accept: meta => meta.role === 'level.dimmer' && meta.min === 0 && meta.max === 100,
+		},
+		{ capability: 'dimmer', suffix: /\.bri$/i, type: 'number', unit: '%', sourceUnit: '', scale: 100 / 254 },
 		{ capability: 'color', suffix: /\.(?:hex|rgb)$/i, type: 'string' },
 		{
 			capability: 'illuminance',
 			suffix: /\.lightlevel$/i,
 			type: 'number',
 			unit: 'lx',
+			sourceUnit: '',
 			codec: 'hueLightLevel',
 			readOnly: true,
 		},
 		...standardRules,
 	],
 );
+function hueKind(resource: ResourceMetadata | undefined): 'aggregate' | 'sensor' | 'light' | 'unknown' {
+	const type = `${resource?.type ?? ''} ${resource?.role ?? ''}`;
+	if (/LightGroup|Room|Zone|Entertainment|Scene|group|scene/i.test(type)) {
+		return 'aggregate';
+	}
+	if (/\blight\b|plug/i.test(type) && !/LightLevel/i.test(type)) {
+		return 'light';
+	}
+	if (/Presence|LightLevel|Temperature|sensor|ZLL|ZGP/i.test(type) || resource?.type === 'Switch') {
+		return 'sensor';
+	}
+	if (resource?.role === 'switch' && !resource.type) {
+		return 'light';
+	}
+	return 'unknown';
+}
+export const hueProfile: IntegrationManifest = {
+	...hueBaseProfile,
+	discover(objects, context) {
+		const resources = context?.resources ?? {};
+		const identity = (channel: string): string | undefined => {
+			const resource = resources[channel],
+				kind = hueKind(resource);
+			return resource?.id && ['light', 'sensor'].includes(kind)
+				? `${channel.split('.').slice(0, 2).join('.')}:${kind}:${resource.id}`
+				: undefined;
+		};
+		const aliases = new Map<string, Set<string>>();
+		for (const channel of Object.keys(resources)) {
+			const key = identity(channel);
+			if (key) {
+				aliases.set(key, (aliases.get(key) ?? new Set()).add(channel));
+			}
+		}
+		const safe = Object.fromEntries(
+			Object.entries(objects).filter(([path, meta]) => {
+				if (!path.startsWith('hue.')) {
+					return false;
+				}
+				const channel = path.slice(0, path.lastIndexOf('.')),
+					resource = resources[channel];
+				for (
+					let parent = channel;
+					parent.startsWith('hue.');
+					parent = parent.slice(0, parent.lastIndexOf('.'))
+				) {
+					if (hueKind(resources[parent]) === 'aggregate') {
+						return false;
+					}
+				}
+				if (!/\.(?:on|level|bri|hex|rgb)$/i.test(path)) {
+					return true;
+				}
+				const key = identity(channel);
+				if (key && (aliases.get(key)?.size ?? 0) > 1) {
+					return false;
+				}
+				return (
+					hueKind(resource) === 'light' || (!resource && meta.role === 'switch.light' && /\.on$/i.test(path))
+				);
+			}),
+		);
+		return hueBaseProfile.discover(safe).map(binding => {
+			const channel = binding.capabilities[0].readId.slice(0, binding.capabilities[0].readId.lastIndexOf('.'));
+			const key = identity(channel);
+			return key ? { ...binding, physicalId: `confirm:${key}` } : binding;
+		});
+	},
+};
 export const philipsAirProfile = createProfile(
 	'philips-air',
 	'Philips Air model-selected backend',
 	['philips-air'],
 	[
+		// Legacy cx paths have no verified model-specific command codec: telemetry only.
+		{ capability: 'switch', suffix: /\.control\.cxPower$/i, type: 'boolean', readOnly: true },
+		{ capability: 'fan', suffix: /\.status\.cxFanPercent$/i, type: 'number', unit: '%', readOnly: true },
 		{ capability: 'switch', suffix: /\.control\.power$/i, type: 'boolean' },
 		// Values are ordinal operating levels, not percentages or universal raw Philips codes.
 		{
@@ -296,6 +407,7 @@ export function builtInRegistry(): IntegrationRegistry {
 export function discoverProfiles(
 	objects: Record<string, StateMetadata>,
 	registry = builtInRegistry(),
+	context?: DiscoveryContext,
 ): DeviceBinding[] {
-	return registry.list().flatMap(profile => profile.discover(objects));
+	return registry.list().flatMap(profile => profile.discover(objects, context));
 }

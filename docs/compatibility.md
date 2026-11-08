@@ -16,6 +16,25 @@ Multi-channel outputs have independent proposed identities. A proposal is not ph
 | IKEA via Matter | matter 1.3.1 | Explicit present switch/percent brightness/sensors | Passed synthetic path fixture | Pending exact device/gateway; no Dirigera claim |
 | IKEA via Zigbee | zigbee 3.5.5 | Explicit present switch/percent brightness/sensors | Passed synthetic path fixture | Pending exact paired device |
 
+Discovery corrections after read-only evaluation:
+- Temperature names match complete state leaves. A setpoint is never a measured temperature;
+  writable temperature-level controls are excluded from measurement discovery.
+- Shelly Wh energy converts explicitly to kWh (0.001); kWh stays unchanged. Percent gain and
+  role-identified Celsius probes are supported, with numbered external probes kept separate.
+- Hue discovery reads channel/device role, native type and resource ID as well as state metadata.
+  Root-level rooms/zones/groups/scenes are excluded. Sensor enable controls are excluded. Numeric
+  IDs are scoped by backend instance and resource kind. Duplicate light aliases suppress automatic
+  actuator proposals until identity/path review; neither names nor stale cache values choose a winner.
+  Unitless level requires level.dimmer with 0–100 metadata; bri requires a unitless raw source.
+- Legacy Philips Air cxPower and percent cxFanPercent are telemetry only, even if the backend marks
+  them writable. cxFanMode and timer codes remain unmapped without a verified model-specific codec.
+  A disabled backend or conflicting configured/cached model still prevents live readiness.
+- Unit conversions require an exact declared source unit; percent Homematic values are not scaled twice.
+
+These are anonymized contract/controller checks, not physical model certification. Existing installations
+may require newer Admin/backend versions, fresh reports and explicit physical identity review. Discovery
+does not upgrade software, refresh a device, confirm identities or activate any configuration.
+
 Read and feedback timestamps use the backend's state update time, never only last-change.
 Discovery does not claim the update time proves physical sampling; configure freshness
 according to backend/device behavior. A shared ack point supplies backend evidence only.

@@ -141,6 +141,77 @@ async function setJournal(harness, key, value) {
 	await harness.states.setStateAsync(`adaptivehome.0.journal.${key}`, { val: JSON.stringify(value), ack: true });
 }
 function defineControllerTests({ suite }) {
+	suite('Resource-aware discovery through actual controller views', getHarness => {
+		it('separates thermostat measurements and blocks Hue aggregates, sensor enables and aliases without writes', async function () {
+			this.timeout(30000);
+			const harness = getHarness(),
+				rpc = await operator(harness);
+			const parents = {
+				'hue.77.lamp_a': { type: 'Color temperature light', id: '101' },
+				'hue.77.lamp_b': { type: 'Color temperature light', id: '101' },
+				'hue.77.sensor': { type: 'ZLLPresence', id: '101' },
+				'hue.77.arbitrary': { type: 'Room', id: '102' },
+				'hue.77.unique': { type: 'Dimmable light', id: '103' },
+			};
+			for (const [id, native] of Object.entries(parents)) {
+				await harness.objects.setObjectAsync(id, {
+					type: 'channel',
+					common: { name: 'Synthetic discovery resource' },
+					native,
+				});
+			}
+			const points = {
+				'hue.77.lamp_a.on': { type: 'boolean', write: true },
+				'hue.77.lamp_b.on': { type: 'boolean', write: true },
+				'hue.77.sensor.on': { type: 'boolean', write: true },
+				'hue.77.sensor.presence': { type: 'boolean', write: false },
+				'hue.77.arbitrary.on': { type: 'boolean', write: true },
+				'hue.77.unique.level': { type: 'number', role: 'level.dimmer', min: 0, max: 100, write: true },
+				'hmip.77.groups.sample.setPointTemperature': { type: 'number', unit: '°C', write: true },
+				'hmip.77.groups.sample.actualTemperature': { type: 'number', unit: '°C', write: false },
+			};
+			for (const [id, common] of Object.entries(points)) {
+				await harness.objects.setObjectAsync(id, {
+					type: 'state',
+					common: { name: 'Synthetic discovery point', read: true, role: 'state', ...common },
+					native: {},
+				});
+			}
+			const seenWrites = [];
+			const listener = (id, state) => {
+				if (Object.hasOwn(points, id) && state?.ack === false) {
+					seenWrites.push(id);
+				}
+			};
+			harness.on('stateChange', listener);
+			try {
+				await harness.startAdapterAndWait(true);
+				const response = await rpc('discover');
+				assert.equal(response.ok, true, JSON.stringify(response));
+				const bindings = response.result,
+					mappings = bindings.flatMap(b => b.capabilities);
+				assert.ok(bindings.every(b => b.confirmed === false));
+				assert.equal(
+					mappings.find(m => m.capability === 'temperatureSensor').readId,
+					'hmip.77.groups.sample.actualTemperature',
+				);
+				assert.equal(
+					mappings.find(m => m.capability === 'thermostatSetpoint').readId,
+					'hmip.77.groups.sample.setPointTemperature',
+				);
+				assert.deepEqual(
+					mappings
+						.filter(m => m.readId.startsWith('hue.77.'))
+						.map(m => m.readId)
+						.sort(),
+					['hue.77.sensor.presence', 'hue.77.unique.level'],
+				);
+				assert.deepEqual(seenWrites, []);
+			} finally {
+				harness.removeListener('stateChange', listener);
+			}
+		});
+	});
 	suite('Independent controller reference 1', getHarness => {
 		let harness, rpc;
 		before(async () => {
@@ -398,7 +469,8 @@ function defineControllerTests({ suite }) {
 					void harness.states.setStateAsync('test.0.purifier.airQuality', {
 						val: airQuality,
 						ack: true,
-						ts: Date.now(),
+						// Simulate a report measured before cache transport. This outcome test is not a future-clock test.
+						ts: Date.now() - 100,
 						from: 'system.adapter.synthetic.0',
 					}),
 				700,

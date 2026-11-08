@@ -20,6 +20,13 @@ receives selected metadata and returns binding proposals. Reading/subscription,
 normalization, dispatch, feedback, quotas and failure handling remain shared core
 services. An integration receives no arbitrary state-write port or model journal.
 
+API v1 also accepts an optional second discovery argument, `{ resources }`, keyed by parent object ID.
+Each resource contains only `role`, native `type` and native `id`; instance credentials and other native
+configuration are never included. Older one-argument profiles continue to work. Resource-aware profiles
+must scope resource IDs by backend instance and kind, and reject ambiguous aliases and aggregates.
+Declarative rules may add `sourceUnit` for exact raw-unit matching before `scale`; `unit` is the normalized
+unit. If omitted, the raw unit must equal `unit`. A scale does not authorize arbitrary source units.
+
 Physical identity must identify each actual output, including channel. Aggregates must
 declare all memberPhysicalIds and must not include excluded devices. Normalize into
 capabilities without assigning a user's semantic function. Preserve source type/unit

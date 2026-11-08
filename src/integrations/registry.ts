@@ -17,13 +17,22 @@ export interface StateMetadata {
 	role?: string;
 	states?: Record<string, string>;
 }
+/** Optional, non-secret parent metadata for resource-aware discovery (API v1 additive). */
+export interface ResourceMetadata {
+	role?: string;
+	type?: string;
+	id?: string;
+}
+export interface DiscoveryContext {
+	resources: Record<string, ResourceMetadata>;
+}
 export interface IntegrationManifest {
 	apiVersion: 1;
 	id: string;
 	name: string;
 	backends: string[];
 	capabilities: string[];
-	discover(objects: Record<string, StateMetadata>): DeviceBinding[];
+	discover(objects: Record<string, StateMetadata>, context?: DiscoveryContext): DeviceBinding[];
 }
 const units: Record<string, string[]> = {
 	switch: [''],
