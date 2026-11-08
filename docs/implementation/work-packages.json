@@ -603,20 +603,18 @@
         "AP-22",
         "AP-23"
       ],
-      "status": "implemented",
+      "status": "verified",
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "passed",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-24.md",
         "docs/verification/scenarios.md"
       ],
-      "openChecks": [
-        "Final clock-jitter regression, frozen artifact and five-minute soak rerun in progress."
-      ],
+      "openChecks": [],
       "commit": "551728d84d2827714258d2c6d01fa1f0e811af9d",
-      "updatedAt": "2026-11-08T16:27:06.049Z"
+      "updatedAt": "2026-11-08T16:38:18.064Z"
     },
     {
       "id": "AP-25",
@@ -630,20 +628,19 @@
         "AP-23",
         "AP-24"
       ],
-      "status": "implemented",
+      "status": "verified",
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "passed",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-25.md"
       ],
       "openChecks": [
-        "Public GitHub prerelease creation follows the final CI run.",
-        "npm publication requires maintainer authentication; latest/stable catalog acceptance is external."
+        "npm publication needs an authenticated maintainer; ioBroker package co-ownership and latest/stable acceptance remain external."
       ],
-      "commit": null,
-      "updatedAt": "2026-11-08T16:15:14.260Z"
+      "commit": "8ae6419410d5c4ccc47d02d83f435973675b5819",
+      "updatedAt": "2026-11-08T16:38:18.064Z"
     },
     {
       "id": "AP-26",
@@ -657,15 +654,19 @@
         "AP-24",
         "AP-25"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "verified",
+      "implementationStatus": "implemented",
+      "verificationStatus": "passed",
       "requiredForBeta": false,
       "hardwareChecksMayBePending": true,
-      "evidence": [],
-      "openChecks": [],
+      "evidence": [
+        "docs/verification/AP-26.md"
+      ],
+      "openChecks": [
+        "Optional physical/private pilot requires exact model/backend/firmware, exclusive ownership, native fallback, valid backup and specifically authorized transfer."
+      ],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T16:38:18.064Z"
     },
     {
       "id": "AP-27",
