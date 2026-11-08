@@ -14,6 +14,7 @@ export type Observation = z.infer<typeof observationSchema>;
 export const mappingSchema = z.strictObject({
     capability: id, readId: stateId, writeId: stateId.optional(), confirmId: stateId.optional(),
     valueType: z.enum(['boolean', 'number', 'string']), unit: z.string().max(32).default(''),
+    sourceType: z.enum(['boolean', 'number', 'string']).optional(), valueMap: z.record(z.string(), scalar).optional(),
     sourceUnit: z.string().max(32).optional(), scale: z.number().finite().positive().default(1), offset: z.number().finite().default(0),
     min: z.number().finite().optional(), max: z.number().finite().optional(), values: z.array(scalar).max(64).optional(),
     maxAgeMs: z.number().int().min(1000).max(86400000).default(300000),
@@ -25,6 +26,7 @@ export const bindingSchema = z.strictObject({
     family: z.string().max(64), backendVersion: z.string().min(1).max(64), model: z.string().max(128).default('unverified'),
     confirmed: z.boolean().default(false), capabilities: z.array(mappingSchema).min(1).max(32),
     verification: z.enum(['implemented', 'contract', 'backend', 'hardware']).default('implemented'),
+    memberPhysicalIds: z.array(z.string().min(1).max(256)).max(128).default([]),
 });
 export type DeviceBinding = z.infer<typeof bindingSchema>;
 export const refSchema = z.strictObject({entityId: id, capability: id});

@@ -252,15 +252,20 @@
         "AP-06",
         "AP-08"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "implemented",
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": true,
-      "evidence": [],
-      "openChecks": [],
+      "evidence": [
+        "docs/verification/AP-09.md"
+      ],
+      "openChecks": [
+        "Real Shelly backend and exact model/generation hardware checks pending; see compatibility matrix",
+        "End-to-end emulator command tests follow AP-24"
+      ],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T14:37:08.035Z"
     },
     {
       "id": "AP-10",

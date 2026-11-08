@@ -98,7 +98,8 @@ export class Executor {
             if (this.configuration().revision !== intent.configRevision) throw new Error('revision_changed_before_dispatch');
             command.phase = 'accepted';
             try {
-                const value = typeof intent.typedValue === 'number' ? (intent.typedValue - mapping.offset) / mapping.scale : intent.typedValue;
+                let value: Scalar = typeof intent.typedValue === 'number' ? (intent.typedValue - mapping.offset) / mapping.scale : intent.typedValue;
+                if(mapping.valueMap){const encoded = Object.entries(mapping.valueMap).find(([,v]) => v === value)?.[0];if(encoded === undefined)throw new Error('unknown_device_code');value = mapping.sourceType === 'number' ? Number(encoded) : mapping.sourceType === 'boolean' ? encoded === 'true' : encoded;}
                 await this.port.write(mapping.writeId!, value);
                 command.dispatchAccepted = true;
             } catch {

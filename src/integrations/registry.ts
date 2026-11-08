@@ -1,6 +1,6 @@
 import { CapabilityMapping, DeviceBinding, Observation, Scalar } from '../model/contracts';
 export interface StateValue { val: unknown; ts: number; lc?: number; ack?: boolean; q?: number; from?: string }
-export interface StateMetadata { type: string; unit?: string; read?: boolean; write?: boolean; min?: number; max?: number; role?: string }
+export interface StateMetadata { type: string; unit?: string; read?: boolean; write?: boolean; min?: number; max?: number; role?: string; states?: Record<string,string> }
 export interface IntegrationManifest {
     apiVersion: 1; id: string; name: string; backends: string[]; capabilities: string[];
     discover(objects: Record<string, StateMetadata>): DeviceBinding[];
@@ -21,6 +21,10 @@ export class IntegrationRegistry {
         if (!manifest) throw new Error('unknown_integration');
         const seen = new Set<string>();
         for (const mapping of binding.capabilities) {
+            for(const path of [mapping.readId,mapping.writeId,mapping.confirmId].filter((v):v is string => !!v)) {
+                if(binding.integrationId !== 'generic' && !manifest.backends.some(backend => path.startsWith(backend + '.')))throw new Error('backend_scope');
+                if(mapping.writeId === path && /^(system\.|adaptivehome\.)/.test(path))throw new Error('protected_state');
+            }
             if (seen.has(mapping.capability) || !manifest.capabilities.includes(mapping.capability)) throw new Error('unsupported_capability');
             seen.add(mapping.capability);
             if (units[mapping.capability] && !units[mapping.capability].includes(mapping.unit)) throw new Error('unit_mismatch');
@@ -35,8 +39,10 @@ export function normalize(binding: DeviceBinding, mapping: CapabilityMapping, ra
     if (!raw) return result;
     if (raw.q && raw.q !== 0) { result.quality = 'invalid'; return result; }
     if (raw.val === null || raw.val === undefined) { result.quality = 'unknown'; return result; }
-    if (typeof raw.val !== mapping.valueType || (typeof raw.val === 'number' && !Number.isFinite(raw.val))) { result.quality = 'invalid'; return result; }
-    const value = typeof raw.val === 'number' ? raw.val * mapping.scale + mapping.offset : raw.val as Scalar;
+    if (typeof raw.val !== (mapping.sourceType ?? mapping.valueType) || (typeof raw.val === 'number' && !Number.isFinite(raw.val))) { result.quality = 'invalid'; return result; }
+    const decoded = mapping.valueMap ? mapping.valueMap[String(raw.val)] : raw.val;
+    if(decoded === undefined || typeof decoded !== mapping.valueType){result.quality = 'invalid';return result;}
+    const value = typeof decoded === 'number' ? decoded * mapping.scale + mapping.offset : decoded as Scalar;
     if (typeof value === 'number' && ((mapping.min !== undefined && value < mapping.min) || (mapping.max !== undefined && value > mapping.max))) {
         result.quality = 'invalid'; return result;
     }
@@ -48,7 +54,7 @@ export function normalize(binding: DeviceBinding, mapping: CapabilityMapping, ra
 export function auditMapping(mapping: CapabilityMapping, metadata: Record<string, StateMetadata>): void {
     for (const point of [mapping.readId, mapping.writeId, mapping.confirmId].filter((v): v is string => !!v)) {
         const meta = metadata[point];
-        if (!meta || meta.type !== mapping.valueType) throw new Error('state_type_or_missing');
+        if (!meta || meta.type !== (mapping.sourceType ?? mapping.valueType)) throw new Error('state_type_or_missing');
         if (point === mapping.writeId && !meta.write) throw new Error('state_readonly');
         if (point !== mapping.writeId && meta.read === false) throw new Error('state_unreadable');
         if ((meta.unit ?? '') !== (mapping.sourceUnit ?? mapping.unit)) throw new Error('source_unit_mismatch');

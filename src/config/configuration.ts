@@ -11,8 +11,9 @@ export function validateConfiguration(input: unknown, registry?: IntegrationRegi
     for (const binding of config.bindings) {
         registry?.validate(binding);
         if (binding.confirmed && binding.capabilities.some(item => item.writeId)) {
-            if (physical.has(binding.physicalId)) throw new Error('duplicate_physical_writer');
-            physical.add(binding.physicalId);
+            for(const identity of [binding.physicalId,...binding.memberPhysicalIds]) {
+                if (physical.has(identity)) throw new Error('duplicate_physical_writer');physical.add(identity);
+            }
             for (const mapping of binding.capabilities) if (mapping.writeId) {
                 if (outputs.has(mapping.writeId)) throw new Error('duplicate_state_writer');
                 outputs.add(mapping.writeId);

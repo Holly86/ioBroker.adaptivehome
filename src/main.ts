@@ -3,6 +3,7 @@ import { ConfigurationStore, ConfigRecord } from './config/configuration';
 import { HomeRuntime } from './runtime/home';
 import { ExecutionJournal } from './execution/executor';
 import { StateMetadata, StateValue } from './integrations/registry';
+import { builtInRegistry, discoverProfiles } from './integrations/profiles';
 class Adaptivehome extends utils.Adapter {
     private runtime!: HomeRuntime;
     private timer?: ReturnType<typeof setInterval>;
@@ -12,7 +13,7 @@ class Adaptivehome extends utils.Adapter {
             return typeof value?.val === 'string' ? JSON.parse(value.val) as ConfigRecord : null;
         },
         write: async record => { await this.setStateAsync('configuration.record', JSON.stringify(record), true); },
-    });
+    },builtInRegistry());
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
         super({ ...options, name: 'adaptivehome' });
         this.on('ready', () => void this.ready());
@@ -67,6 +68,14 @@ class Adaptivehome extends utils.Adapter {
                 case 'health': result = {ready: !!this.runtime, revision: this.configuration.record.active.revision}; break;
                 case 'status': result = this.runtime.status(); break;
                 case 'getConfiguration': result = this.configuration.record; break;
+                case 'discover': {
+                    const objects:Record<string,StateMetadata> = {};
+                    for(const profile of builtInRegistry().list())for(const backend of profile.backends){
+                        const view = await this.getObjectViewAsync('system','state',{startkey:backend + '.',endkey:backend + '.\u9999'});
+                        for(const row of view.rows.slice(0,10000))if(row.value?.common)objects[row.id] = row.value.common as StateMetadata;
+                    }
+                    result = discoverProfiles(objects);break;
+                }
                 case 'previewConfiguration': result = this.configuration.preview(obj.message); break;
                 case 'exportConfiguration': result = this.configuration.export(); break;
                 case 'applyConfiguration':
