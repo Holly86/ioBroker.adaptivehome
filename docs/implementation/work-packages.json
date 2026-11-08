@@ -103,15 +103,17 @@
         "AP-00",
         "AP-01"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "verified",
+      "implementationStatus": "implemented",
+      "verificationStatus": "passed",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
-      "evidence": [],
+      "evidence": [
+        "docs/verification/AP-02.md"
+      ],
       "openChecks": [],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T14:20:36.483Z"
     },
     {
       "id": "AP-03",
