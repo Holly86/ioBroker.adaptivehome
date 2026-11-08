@@ -16,7 +16,7 @@ class Adaptivehome extends utils.Adapter {
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
         super({ ...options, name: 'adaptivehome' });
         this.on('ready', () => void this.ready());
-        this.on('stateChange', (id,state) => { if (state && this.runtime) void this.runtime.executor.feedback(id,state as StateValue).catch(() => this.log.warn('Feedback could not be persisted')); });
+        this.on('stateChange', (id,state) => { if (state && this.runtime) void this.runtime.feedback(id,state as StateValue).catch(() => this.log.warn('Feedback could not be persisted')); });
         this.on('objectChange', () => this.runtime?.executor.invalidateAudit());
         this.on('message', obj => void this.message(obj));
         this.on('unload', callback => {
@@ -41,6 +41,8 @@ class Adaptivehome extends utils.Adapter {
         });
         const journal = await this.getStateAsync('journal.execution');
         await this.runtime.initialize(typeof journal?.val === 'string' ? JSON.parse(journal.val) as ExecutionJournal : undefined);
+        const history = await this.getStateAsync('journal.history');
+        if(typeof history?.val === 'string')try{this.runtime.history.restore(JSON.parse(history.val));}catch{this.runtime.history.dropped++;}
         await this.subscriptions();
         await this.setObjectNotExistsAsync('info.connection', {
             type: 'state', common: {name: 'Runtime ready', type: 'boolean', role: 'indicator.connected', read: true, write: false}, native: {},
@@ -80,6 +82,8 @@ class Adaptivehome extends utils.Adapter {
                 case 'manual': result = await this.runtime.manual(obj.message.functionId,obj.message.value,obj.message.requestId,obj.from);break;
                 case 'resume': result = await this.runtime.executor.resume(obj.message.functionId);break;
                 case 'reconcile': result = await this.runtime.executor.reconcile(obj.message.functionId);break;
+                case 'supportExport': result = this.runtime.history.supportExport();break;
+                case 'clearHistory': this.runtime.history.clear();await this.setStateAsync('journal.history',JSON.stringify(this.runtime.history.record),true);result = true;break;
                 default: throw new Error('unknown_command');
             }
             this.sendTo(obj.from, obj.command, {ok: true, result}, obj.callback);
