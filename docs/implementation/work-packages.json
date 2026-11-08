@@ -425,15 +425,20 @@
         "AP-10",
         "AP-12"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "implemented",
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
-      "evidence": [],
-      "openChecks": [],
+      "evidence": [
+        "docs/verification/AP-16.md"
+      ],
+      "openChecks": [
+        "Physical thermal response, native-profile expiry and exact purifier feedback remain model-specific external checks",
+        "Controller reference-case execution follows AP-24"
+      ],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T14:45:43.599Z"
     },
     {
       "id": "AP-17",

@@ -8,6 +8,7 @@ import { PresenceContext } from '../context/context';
 import { History } from '../diagnostics/history';
 import { commonDecision, noAction, PolicyDecision, PolicyMemory } from '../policies/policy';
 import { lightingDecision } from '../policies/lighting';
+import { airDecision, climateDecision } from '../policies/climate';
 import { arbitrate } from '../execution/arbiter';
 export interface HomePort {
     read(id: string): Promise<StateValue | null>;
@@ -81,7 +82,7 @@ export class HomeRuntime {
         const owns = !!ownCommand?.feedbackMatched && ownCommand.generation === this.executor.generation && (!wish || wish.at <= (memory.ownerManualAt ?? 0));
         if(wish && wish.at > (memory.ownerManualAt ?? 0))delete memory.commandId;
         const context = {now,startedAt:this.startedAt,timezone:config.timezone,inputs,actual,owns,manual:!!wish && wish.until > now};
-        let decision:PolicyDecision = commonDecision(fn,context) ?? (fn.kind === 'lighting' ? lightingDecision(fn,context,memory) : noAction('no_matching_rule','No configured rule currently applies'));
+        const decision:PolicyDecision = commonDecision(fn,context) ?? (fn.kind === 'lighting' ? lightingDecision(fn,context,memory) : fn.kind === 'climate' ? climateDecision(fn,context,memory) : fn.kind === 'air' ? airDecision(fn,context,memory) : noAction('no_matching_rule','No configured rule currently applies'));
         const trace:DecisionTrace = {at:now,functionId:fn.id,configRevision:config.revision,reasonCode:decision.reason,reasonText:decision.text,inputs,nextStep:decision.nextAt ? new Date(decision.nextAt).toISOString() : undefined};
         this.traces[fn.id] = trace;this.history.event({at:now,type:'decision',scope:fn.id,code:decision.reason,revision:config.revision});
         if(decision.value === undefined)return;

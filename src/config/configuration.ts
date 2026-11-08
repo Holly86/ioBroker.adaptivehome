@@ -28,6 +28,10 @@ export function validateConfiguration(input: unknown, registry?: IntegrationRegi
         if (fn.limits.essential && fn.limits.minimumValue === undefined) throw new Error('minimum_service_required');
         if (fn.limits.min !== undefined && fn.limits.max !== undefined && fn.limits.min > fn.limits.max) throw new Error('contradictory_limits');
         for (const value of [fn.limits.minimumValue, ...fn.rules.map(r => r.value)].filter((v): v is Scalar => v !== undefined)) validateValue(fn, value, mapping.valueType, mapping.min, mapping.max, mapping.values);
+        for(const parameter of fn.kind === 'climate' ? ['target','setback'] : fn.kind === 'air' ? ['high','low'] : fn.kind === 'lighting' ? ['onValue','offValue'] : []) {
+            if(fn.parameters[parameter] !== undefined)validateValue(fn,fn.parameters[parameter],mapping.valueType,mapping.min,mapping.max,mapping.values);
+        }
+        for(const parameter of ['holdMs','luxThreshold','hysteresis','absenceConfirmMs','presenceConfirmations'])if(fn.parameters[parameter] !== undefined && fn.parameters[parameter] < 0)throw new Error('parameter_range');
         for (const ref of Object.values(fn.inputs)) {
             if (!config.bindings.some(item => item.id === ref.entityId && item.capabilities.some(m => m.capability === ref.capability))) throw new Error('missing_input');
         }
