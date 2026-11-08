@@ -40,6 +40,7 @@ class Adaptivehome extends utils.Adapter {
         try {
             switch (obj.command) {
                 case 'health': result = {ready: true, functions: Object.fromEntries(this.runtime.status), revision: this.configuration.record.active.revision}; break;
+                case 'status': result = {functions: Object.fromEntries(this.runtime.status), revision: this.configuration.record.active.revision}; break;
                 case 'getConfiguration': result = this.configuration.record; break;
                 case 'previewConfiguration': result = this.configuration.preview(obj.message); break;
                 case 'exportConfiguration': result = this.configuration.export(); break;

@@ -166,15 +166,20 @@
         "AP-03",
         "AP-04"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "implemented",
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
-      "evidence": [],
-      "openChecks": [],
+      "evidence": [
+        "docs/verification/AP-05.md"
+      ],
+      "openChecks": [
+        "Browser/controller workflow verification remains pending AP-24",
+        "Live execution, discovery and learning endpoints are integrated in the dependent APs"
+      ],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T14:29:29.234Z"
     },
     {
       "id": "AP-06",
