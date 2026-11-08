@@ -10,12 +10,14 @@ import { commonDecision, noAction, PolicyDecision, PolicyMemory } from '../polic
 import { lightingDecision } from '../policies/lighting';
 import { airDecision, climateDecision } from '../policies/climate';
 import { equipmentDecision } from '../policies/equipment';
+import { IncidentService } from '../diagnostics/incidents';
 import { arbitrate } from '../execution/arbiter';
 export interface HomePort {
     read(id: string): Promise<StateValue | null>;
     metadata(id: string): Promise<StateMetadata | null>;
     write(id: string, value: Scalar): Promise<void>;
     persist(key: string, data: unknown): Promise<void>;
+    send?(adapter:string,command:string,payload:Record<string,unknown>):Promise<unknown>;
 }
 export class HomeRuntime {
     supervisor = new Supervisor();
@@ -24,6 +26,7 @@ export class HomeRuntime {
     readonly startedAt: number;
     private presence = new PresenceContext();
     readonly history = new History();
+    readonly incidents:IncidentService;
     private lastHistoryFlush = 0;
     private memories:Record<string,PolicyMemory> = {};
     private proposals:Intent[] = [];
@@ -31,6 +34,7 @@ export class HomeRuntime {
     private round = 0;
     constructor(private config: () => Configuration, private port: HomePort, readonly clock: Clock = systemClock) {
         this.startedAt = clock.now();
+        this.incidents = new IncidentService(record => port.persist('incidents',record),async (...args) => port.send ? port.send(...args) : undefined);
         this.executor = new Executor(config, {...port,persist: journal => port.persist('execution',journal),inputs: fn => this.inputs(fn)},clock);
     }
     async initialize(saved?: ExecutionJournal): Promise<void> { await this.executor.restore(saved);this.configure(); }
@@ -68,6 +72,11 @@ export class HomeRuntime {
                 this.history.event({at:this.clock.now(),type:'command',scope:intent.functionId,code:command.phase,revision:this.config().revision,commandId:command.commandId});
             }catch(error){const trace = this.traces[intent.functionId];if(trace){trace.reasonCode = error instanceof Error ? error.message : 'execution_failed';trace.reasonText = trace.reasonCode;}}
         }
+        for(const trace of Object.values(this.traces)){
+            if(/unknown|unavailable|unverified|failed|uncertain|budget|audit/.test(trace.reasonCode))this.incidents.upsert(trace.functionId,trace.reasonCode,'warning',this.clock.now());
+            else this.incidents.resolveScope(trace.functionId,this.clock.now());
+        }
+        void this.incidents.tick(this.config(),this.clock.now()).catch(() => undefined);
         if(this.clock.now()-this.lastHistoryFlush >= 30000){this.history.rotate(this.clock.now());this.lastHistoryFlush = this.clock.now();
             try{await this.port.persist('history',this.history.record);this.history.storageError = false;}catch{this.history.storageError = true;}
         }
@@ -96,6 +105,6 @@ export class HomeRuntime {
         const command = this.executor.journal.commands.findLast(c => c.targetPath === id);
         if(command)this.history.event({at:this.clock.now(),type:'feedback',scope:command.intent.functionId,code:command.phase,revision:this.config().revision,commandId:command.commandId});
     }
-    status(): unknown { return {functions:Object.fromEntries(this.supervisor.status),traces:this.traces,commands:this.executor.journal.commands.slice(-50),history:this.history.record.events.slice(-100),historyStorageError:this.history.storageError}; }
+    status(): unknown { return {functions:Object.fromEntries(this.supervisor.status),traces:this.traces,commands:this.executor.journal.commands.slice(-50),history:this.history.record.events.slice(-100),historyStorageError:this.history.storageError,incidents:this.incidents.record.incidents}; }
     close(): void { this.supervisor.close(); }
 }

@@ -39,6 +39,7 @@ class Adaptivehome extends utils.Adapter {
             read: async id => await this.getForeignStateAsync(id) as StateValue | null,
             metadata: async id => { const obj = await this.getForeignObjectAsync(id);return obj?.type === 'state' ? obj.common as StateMetadata : null; },
             write: async (id,value) => { await this.setForeignStateAsync(id,value,false); },
+            send: (adapter,command,payload) => new Promise(resolve => this.sendTo(adapter,command,payload,resolve)),
             persist: async (key,value) => {
                 await this.setObjectNotExistsAsync(`journal.${key}`,{type:'state',common:{name:`Private ${key} journal`,type:'string',role:'json',read:true,write:false},native:{}});
                 await this.setStateAsync(`journal.${key}`,JSON.stringify(value),true);
@@ -48,6 +49,8 @@ class Adaptivehome extends utils.Adapter {
         await this.runtime.initialize(typeof journal?.val === 'string' ? JSON.parse(journal.val) as ExecutionJournal : undefined);
         const history = await this.getStateAsync('journal.history');
         if(typeof history?.val === 'string')try{this.runtime.history.restore(JSON.parse(history.val));}catch{this.runtime.history.dropped++;}
+        const incidents = await this.getStateAsync('journal.incidents');
+        if(typeof incidents?.val === 'string')try{this.runtime.incidents.restore(JSON.parse(incidents.val));}catch{this.log.warn('Incident journal could not be read');}
         await this.subscriptions();
         await this.setObjectNotExistsAsync('info.connection', {
             type: 'state', common: {name: 'Runtime ready', type: 'boolean', role: 'indicator.connected', read: true, write: false}, native: {},

@@ -82,6 +82,8 @@ export const routeSchema = z.strictObject({
     id, adapter: z.string().regex(/^(telegram|pushover|email)\.\d+$/), recipient: z.string().min(1).max(256),
     minimumSeverity: z.enum(['info', 'warning', 'error']).default('warning'),
     topics: z.array(id).max(32).default([]), quiet: z.array(windowSchema).max(16).default([]),
+    scopes:z.array(id).max(256).default([]), recovery:z.boolean().default(true),
+    repeatMs:z.number().int().min(60000).max(604800000).default(3600000), maxAttempts:z.number().int().min(1).max(10).default(3),
 });
 export type NotificationRoute = z.infer<typeof routeSchema>;
 export const configSchema = z.strictObject({
