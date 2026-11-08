@@ -211,15 +211,17 @@
         "AP-03",
         "AP-06"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "verified",
+      "implementationStatus": "implemented",
+      "verificationStatus": "passed",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
-      "evidence": [],
+      "evidence": [
+        "docs/verification/AP-07.md"
+      ],
       "openChecks": [],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T14:33:11.927Z"
     },
     {
       "id": "AP-08",

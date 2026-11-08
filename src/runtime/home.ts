@@ -4,6 +4,7 @@ import { normalize, StateMetadata, StateValue } from '../integrations/registry';
 import { ExecutionJournal, Executor } from '../execution/executor';
 import { Clock, systemClock } from './clock';
 import { Supervisor } from './supervisor';
+import { PresenceContext } from '../context/context';
 export interface HomePort {
     read(id: string): Promise<StateValue | null>;
     metadata(id: string): Promise<StateMetadata | null>;
@@ -15,6 +16,7 @@ export class HomeRuntime {
     readonly executor: Executor;
     readonly traces: Record<string, DecisionTrace> = {};
     readonly startedAt: number;
+    private presence = new PresenceContext();
     constructor(private config: () => Configuration, private port: HomePort, readonly clock: Clock = systemClock) {
         this.startedAt = clock.now();
         this.executor = new Executor(config, {...port,persist: journal => port.persist('execution',journal),inputs: fn => this.inputs(fn)},clock);
@@ -28,7 +30,9 @@ export class HomeRuntime {
         const result: Record<string, Observation | null> = {};
         await Promise.all(Object.entries(fn.inputs).map(async ([name,ref]) => {
             const binding = this.config().bindings.find(b => b.id === ref.entityId), mapping = binding?.capabilities.find(m => m.capability === ref.capability);
-            result[name] = binding && mapping ? normalize(binding,mapping,await this.port.read(mapping.readId),this.clock.now()) : null;
+            let observation = binding && mapping ? normalize(binding,mapping,await this.port.read(mapping.readId),this.clock.now()) : null;
+            if (observation && name === 'presence') observation = this.presence.evaluate(fn.id,observation,this.clock.now(),fn.parameters.absenceConfirmMs ?? 300000,fn.parameters.presenceConfirmations ?? 1);
+            result[name] = observation;
         }));return result;
     }
     async manual(functionId: string, value: Scalar, requestId: string, actor: string): Promise<unknown> {

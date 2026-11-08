@@ -86,7 +86,9 @@ export const configSchema = z.strictObject({
     timezone: z.string().refine(value => { try { new Intl.DateTimeFormat('en', {timeZone: value}); return true; } catch { return false; } }),
     groups: z.array(z.strictObject({id, name: z.string().min(1).max(128), kind: z.enum(['room', 'installation'])})).max(256),
     bindings: z.array(bindingSchema).max(512), functions: z.array(functionSchema).max(256),
-    sources: z.array(z.strictObject({id, kind: z.enum(['weather', 'calendar', 'presence', 'energy', 'generic']), ref: refSchema})).max(128).default([]),
+    sources: z.array(z.strictObject({id, kind: z.enum(['weather', 'calendar', 'presence', 'usage', 'energy', 'generic']), ref: refSchema,
+        absenceConfirmMs: z.number().int().nonnegative().max(86400000).default(300000), presenceConfirmations: z.number().int().min(1).max(100).default(1),
+    })).max(128).default([]),
     notificationRoutes: z.array(routeSchema).max(32).default([]),
 });
 export type Configuration = z.infer<typeof configSchema>;
