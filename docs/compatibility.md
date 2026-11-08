@@ -12,6 +12,9 @@ Multi-channel outputs have independent proposed identities. A proposal is not ph
 | Homematic IP Cloud | hmip 4.1.0 | Group setpoint/temperature/window, activeProfile selection, optional switch/dim states | Passed, synthetic group fixture | Pending |
 | Philips Hue | hue 3.17.4 | on, percent level or 0–254 bri, color string, motion, logarithmic lightlevel → lx | Passed, synthetic sensor fixture | Pending bridge and device |
 | Philips Air | philips-air 2.4.0 | Exposed power, named fanSpeed/mode, pm25 with explicit units, filter hours | Passed, synthetic named-level fixture | Pending exact model and HTTP/CoAP path |
+| IKEA Tradfri | tradfri 3.1.3 | Explicit present switch/percent brightness/sensors | Passed synthetic path fixture | Pending older gateway/device |
+| IKEA via Matter | matter 1.3.1 | Explicit present switch/percent brightness/sensors | Passed synthetic path fixture | Pending exact device/gateway; no Dirigera claim |
+| IKEA via Zigbee | zigbee 3.5.5 | Explicit present switch/percent brightness/sensors | Passed synthetic path fixture | Pending exact paired device |
 
 Read and feedback timestamps use the backend's state update time, never only last-change.
 Discovery does not claim the update time proves physical sampling; configure freshness
@@ -51,6 +54,15 @@ medium=8, auto=9. Configure air-rule low/high to actual available values; these 
 Unknown names remain invalid. No timer or raw-code control is exposed, including the
 CX3550 timer limitation. An unrecognized model can remain read-only. A purifier is not
 assumed to provide a thermostat. PM thresholds are operator choices, not health claims.
+Named write values are restricted to backend common.states; absent enum metadata means
+read-only discovery until an explicit model-verified mapping is provided.
+
+IKEA is fully optional. [Tradfri](https://github.com/AlCalzone/ioBroker.tradfri),
+[Matter](https://github.com/ioBroker/ioBroker.matter) and
+[Zigbee](https://github.com/ioBroker/ioBroker.zigbee) have separate profiles. Matter/Zigbee
+discovery is a protocol candidate, not manufacturer identification: confirm the actual
+IKEA model yourself. There is no implicit Dirigera support promise. Reuse the same confirmed
+physical output identity if a device also appears under Hue; overlapping writers are rejected.
 
 Hardware check: record model, firmware, transport, backend version, exclusive output,
 read/command/feedback paths; observe manual input, successful report, timeout, disconnect,

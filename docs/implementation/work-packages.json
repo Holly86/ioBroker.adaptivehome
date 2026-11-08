@@ -347,15 +347,19 @@
         "AP-06",
         "AP-08"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "implemented",
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": true,
-      "evidence": [],
-      "openChecks": [],
+      "evidence": [
+        "docs/verification/AP-13.md"
+      ],
+      "openChecks": [
+        "Exact IKEA model, older Tradfri gateway, Matter or Zigbee backend/device verification pending separately"
+      ],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T14:41:04.284Z"
     },
     {
       "id": "AP-14",

@@ -1,5 +1,5 @@
 import { strict as assert } from 'node:assert';
-import { builtInRegistry, shellyProfile, homematicCcuProfile, homematicCloudProfile, hueProfile, philipsAirProfile } from './profiles';
+import { builtInRegistry, shellyProfile, homematicCcuProfile, homematicCloudProfile, hueProfile, philipsAirProfile, ikeaTradfriProfile, ikeaMatterProfile, ikeaZigbeeProfile } from './profiles';
 import { normalize } from './registry';
 describe('AP-09 Shelly contract fixtures', () => {
     it('keeps channels distinct, requires confirmation and preserves false feedback', () => {
@@ -9,6 +9,15 @@ describe('AP-09 Shelly contract fixtures', () => {
     });
     it('does not invent controls or units for unknown raw values', () => {
         assert.deepEqual(shellyProfile.discover({'shelly.0.device.brightness':{type:'number',unit:'unknown',write:true}}),[]);
+    });
+});
+describe('AP-13 optional IKEA backend paths', () => {
+    it('keeps Tradfri, Matter and Zigbee profiles distinct and does not require any backend', () => {
+        assert.deepEqual(ikeaTradfriProfile.discover({}),[]);
+        for(const [profile,prefix] of [[ikeaTradfriProfile,'tradfri'],[ikeaMatterProfile,'matter'],[ikeaZigbeeProfile,'zigbee']] as const){
+            const binding = profile.discover({[prefix + '.0.synthetic.state']:{type:'boolean',write:true}})[0];
+            assert.equal(binding.integrationId,profile.id);assert.equal(binding.confirmed,false);builtInRegistry().validate(binding);
+        }
     });
 });
 describe('AP-12 model-selected Philips Air backend', () => {
