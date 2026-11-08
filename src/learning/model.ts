@@ -11,6 +11,7 @@ export interface ModelVersion {
     coverage:number;validSamples:number;rejectedSamples:number;gaps:number;comparableDays:number;
     baselineMAE:number|null;candidateMAE:number|null;admitted:boolean;reason:string;
     startMinute:number|null;endMinute:number|null;responseCPerHour:number|null;uncertainty:string;dataHash:string;
+    typicalGapMs:number|null;medianValue:number|null;
 }
 const median = (values:number[]):number => {const sorted = [...values].sort((a,b) => a-b);return sorted[Math.floor(sorted.length/2)];};
 export function trainLocal(request:TrainingRequest):ModelVersion {
@@ -25,7 +26,7 @@ export function trainLocal(request:TrainingRequest):ModelVersion {
     const model:ModelVersion = {version:dataHash.slice(0,16),modelType:request.kind,featureSchema:1,datasetSchema:1,trainedAt:request.now,
         trainFrom:training[0]?.measuredAt ?? 0,trainUntil:training.at(-1)?.measuredAt ?? 0,evaluationFrom:evaluation[0]?.measuredAt ?? 0,evaluationUntil:evaluation.at(-1)?.measuredAt ?? 0,
         coverage:duration ? covered/duration : 0,validSamples:unique.length,rejectedSamples:request.observations.length-unique.length,gaps,comparableDays:days.size,
-        baselineMAE:null,candidateMAE:null,admitted:false,reason:'insufficient_data',startMinute:null,endMinute:null,responseCPerHour:null,uncertainty:'No probability estimate; quality and chronological holdout errors are reported.',dataHash};
+        baselineMAE:null,candidateMAE:null,admitted:false,reason:'insufficient_data',startMinute:null,endMinute:null,responseCPerHour:null,typicalGapMs:null,medianValue:null,uncertainty:'No probability estimate; quality and chronological holdout errors are reported.',dataHash};
     if(unique.length < request.profile.minSamples || days.size < 4 || training.length < 3 || !evaluation.length)return model;
     if(model.coverage < request.profile.minCoverage){model.reason = 'insufficient_coverage';return model;}
     if(request.kind === 'thermal'){
@@ -39,6 +40,9 @@ export function trainLocal(request:TrainingRequest):ModelVersion {
         model.reason = model.admitted ? 'chronological_thermal_fit' : 'thermal_response_unreliable';return model;
     }
     const positive = (o:Observation):boolean => request.kind === 'air-demand' ? typeof o.value === 'number' && o.value >= (request.threshold ?? Infinity) : o.value === true;
+    const positiveTimes = training.filter(positive).map(o => o.measuredAt),positiveGaps = positiveTimes.slice(1).map((at,i) => at-positiveTimes[i]).filter(ms => ms<=request.profile.maxGapMs);
+    model.typicalGapMs = positiveGaps.length ? median(positiveGaps) : null;
+    const numeric = training.filter(o => typeof o.value === 'number').map(o => Number(o.value));model.medianValue = numeric.length ? median(numeric) : null;
     const windows = ordered.map(rows => {const points = rows.filter(positive);return points.length ? {start:localTime(points[0].measuredAt,request.timezone).minute,end:localTime(points.at(-1)!.measuredAt,request.timezone).minute} : null;});
     const trainWindows = windows.slice(0,-holdoutDays).filter((w):w is {start:number;end:number} => !!w),testWindows = windows.slice(-holdoutDays).filter((w):w is {start:number;end:number} => !!w);
     if(trainWindows.length < 3 || !testWindows.length){model.reason = 'insufficient_positive_days';return model;}

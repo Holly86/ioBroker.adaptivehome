@@ -575,15 +575,19 @@
         "AP-16",
         "AP-17"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "implemented",
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
-      "evidence": [],
-      "openChecks": [],
+      "evidence": [
+        "docs/verification/AP-22.md"
+      ],
+      "openChecks": [
+        "Closed-loop activation and actual feedback/effect proof follows AP-23"
+      ],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T14:58:44.368Z"
     },
     {
       "id": "AP-23",

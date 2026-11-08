@@ -4,6 +4,7 @@ import { validateValue } from '../config/configuration';
 import { auditMapping, normalize, StateMetadata, StateValue } from '../integrations/registry';
 import { Clock, systemClock } from '../runtime/clock';
 import { conditionMatches } from './conditions';
+import { windowMatches } from '../config/schedule';
 
 export interface ManualWish { at: number; until: number; actor: string; value: Scalar }
 export interface ExecutionJournal {
@@ -83,6 +84,7 @@ export class Executor {
             if (new Set(protections.map(p => JSON.stringify(p.value))).size > 1) throw new Error('conflicting_protection');
             if (protections.length && intent.typedValue !== protections[0].value) throw new Error('technical_protection');
             if (fn.limits.essential && !protections.length && intent.typedValue !== fn.limits.minimumValue) throw new Error('minimum_service');
+            if(fn.limits.allowedWindows.length && !protections.length && !fn.limits.essential && !fn.limits.allowedWindows.some(window => windowMatches(window,this.clock.now(),config.timezone)))throw new Error('outside_operating_window');
             const manual = this.journal.manual[physicalId];
             if (manual && manual.until > this.clock.now() && intent.origin !== 'manual' && !protections.length) throw new Error('manual_priority');
             const recent = (this.journal.budgets[physicalId] || []).filter(at => now - at < 3600000 || at > now);

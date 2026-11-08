@@ -74,7 +74,8 @@ export const functionSchema = z.strictObject({
         essential: z.boolean().default(false), minOnMs: z.number().int().nonnegative().default(0), minOffMs: z.number().int().nonnegative().default(0),
         commandsPerHour: z.number().int().min(1).max(360).default(30), manualHoldMs: z.number().int().min(1000).max(604800000).default(1800000),
         protection: z.array(z.strictObject({when: conditionSchema, value: scalar})).max(16).default([]),
-    }).default({essential: false, minOnMs: 0, minOffMs: 0, commandsPerHour: 30, manualHoldMs: 1800000, protection: []}),
+        allowedWindows:z.array(windowSchema).max(64).default([]),
+    }).default({essential: false, minOnMs: 0, minOffMs: 0, commandsPerHour: 30, manualHoldMs: 1800000, protection: [],allowedWindows:[]}),
     autonomy: autonomySchema,
 });
 export type FunctionConfig = z.infer<typeof functionSchema>;
