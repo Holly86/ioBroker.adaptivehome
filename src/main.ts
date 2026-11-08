@@ -7,11 +7,13 @@ import { builtInRegistry, discoverProfiles } from './integrations/profiles';
 import { registerDefinitions } from './integrations/sdk';
 import { IntegrationRegistry } from './integrations/registry';
 import { clientSchema, ControlClient, MUTATIONS, OperationGuard, RequestRecord, verifyControl } from './runtime/control';
+import { OptionalProvider, providerSchema } from './learning/provider';
 class Adaptivehome extends utils.Adapter {
     private registry:IntegrationRegistry = builtInRegistry();
     private runtime!: HomeRuntime;
     private clients:ControlClient[] = [];
     private guard = new OperationGuard(records => this.persistJournal('operations',records));
+    private provider = new OptionalProvider(budgets => this.persistJournal('providerBudgets',budgets));
     private timer?: ReturnType<typeof setInterval>;
     private configuration = new ConfigurationStore({
         read: async () => {
@@ -56,6 +58,8 @@ class Adaptivehome extends utils.Adapter {
         if(typeof operations?.val === 'string')this.guard.records = JSON.parse(operations.val) as RequestRecord[];
         const learning = await this.getStateAsync('journal.learning');
         if(typeof learning?.val === 'string')try{this.runtime.learning.restore(JSON.parse(learning.val));}catch{this.log.warn('Learning journal unavailable; classical control continues');}
+        const budgets = await this.getStateAsync('journal.providerBudgets');
+        if(typeof budgets?.val === 'string')this.provider.budgets = JSON.parse(budgets.val);
         await this.subscriptions();
         await this.setObjectNotExistsAsync('info.connection', {
             type: 'state', common: {name: 'Runtime ready', type: 'boolean', role: 'indicator.connected', read: true, write: false}, native: {},
@@ -128,6 +132,11 @@ class Adaptivehome extends utils.Adapter {
                 case 'reconcile': result = await this.runtime.executor.reconcile(data.functionId);break;
                 case 'supportExport': result = this.runtime.history.supportExport();break;
                 case 'clearHistory': this.runtime.history.clear();await this.setStateAsync('journal.history',JSON.stringify(this.runtime.history.record),true);result = true;break;
+                case 'modelCandidate': {
+                    const fn = this.configuration.record.active.functions.find(f => f.id === data.functionId);if(!fn)throw new Error('unknown_function');
+                    const model = this.runtime.learning.record.models[fn.id]?.at(-1);
+                    result = await this.provider.propose(providerSchema.parse(this.config.modelProvider),this.config.modelToken ?? '',fn,this.configuration.record.active.revision,Date.now(),model ? {type:model.modelType,coverage:model.coverage,baselineMAE:model.baselineMAE,candidateMAE:model.candidateMAE} : {});break;
+                }
                 default: throw new Error('unknown_command');
             }
             const response = {ok:true,result};if(operationKey)await this.guard.complete(operationKey,response);

@@ -550,15 +550,20 @@
         "AP-08",
         "AP-20"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "implemented",
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
-      "evidence": [],
-      "openChecks": [],
+      "evidence": [
+        "docs/verification/AP-21.md"
+      ],
+      "openChecks": [
+        "No authorized external model account, token or paid call was supplied or used",
+        "A real Ollama/cloud model invocation remains an optional account/server check"
+      ],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T14:55:52.668Z"
     },
     {
       "id": "AP-22",

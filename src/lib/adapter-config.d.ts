@@ -7,6 +7,8 @@ declare global {
 			integrationProfiles?: unknown[];
 			controlClients?: unknown[];
 			controlSecret?: string;
+			modelProvider?: unknown;
+			modelToken?: string;
 		}
 	}
 }

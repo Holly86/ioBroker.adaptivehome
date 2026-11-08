@@ -101,14 +101,18 @@
   "native": {
     "integrationProfiles": [],
     "controlClients": [],
-    "controlSecret": ""
+    "controlSecret": "",
+    "modelProvider": null,
+    "modelToken": ""
   },
   "objects": [],
   "instanceObjects": [],
   "encryptedNative": [
-    "controlSecret"
+    "controlSecret",
+    "modelToken"
   ],
   "protectedNative": [
-    "controlSecret"
+    "controlSecret",
+    "modelToken"
   ]
 }

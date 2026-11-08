@@ -37,6 +37,25 @@
       },
       "type": "password",
       "newLine": true
+    },
+    "modelProvider": {
+      "newLine": true,
+      "type": "jsonEditor",
+      "xs": 12,
+      "allowEmpty": true,
+      "label": {
+        "en": "Optional model provider (explicit scope and budgets)",
+        "de": "Optionaler Modellanbieter (Umfang und Budgets ausdrücklich einrichten)"
+      }
+    },
+    "modelToken": {
+      "newLine": true,
+      "type": "password",
+      "xs": 12,
+      "label": {
+        "en": "Optional model-provider token",
+        "de": "Optionales Zugangstoken des Modellanbieters"
+      }
     }
   }
 }
