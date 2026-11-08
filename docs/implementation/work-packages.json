@@ -129,11 +129,12 @@
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
-        "docs/verification/AP-03.md"
+        "docs/verification/AP-03.md",
+        "docs/verification/discovery-corrections.md"
       ],
       "openChecks": [],
-      "commit": "f282030e4cb8a5b7a22ca7c13c18aad2de7f1875",
-      "updatedAt": "2026-11-08T16:05:32.713Z"
+      "commit": "4b2fde448bbe458a6688c4a52fe0dcc5b6e0c42d",
+      "updatedAt": "2026-11-08T18:32:09.147Z"
     },
     {
       "id": "AP-04",
@@ -249,13 +250,14 @@
       "requiredForBeta": true,
       "hardwareChecksMayBePending": true,
       "evidence": [
-        "docs/verification/AP-09.md"
+        "docs/verification/AP-09.md",
+        "docs/verification/discovery-corrections.md"
       ],
       "openChecks": [
         "Real exact Shelly model/generation, firmware and installed backend verification pending."
       ],
-      "commit": "270ce038c8a316daccaec0ae47e6d730dcaadafb",
-      "updatedAt": "2026-11-08T16:05:32.716Z"
+      "commit": "4b2fde448bbe458a6688c4a52fe0dcc5b6e0c42d",
+      "updatedAt": "2026-11-08T18:32:09.147Z"
     },
     {
       "id": "AP-10",
@@ -272,13 +274,14 @@
       "requiredForBeta": true,
       "hardwareChecksMayBePending": true,
       "evidence": [
-        "docs/verification/AP-10.md"
+        "docs/verification/AP-10.md",
+        "docs/verification/discovery-corrections.md"
       ],
       "openChecks": [
         "Exact CCU and HmIP Cloud backend/thermostat/group feedback pending. Native schedule-content and certified native expiry are not advertised."
       ],
-      "commit": "c00e7b936abc6b47a5a6a526724a2027ab97c116",
-      "updatedAt": "2026-11-08T16:05:32.716Z"
+      "commit": "4b2fde448bbe458a6688c4a52fe0dcc5b6e0c42d",
+      "updatedAt": "2026-11-08T18:32:09.147Z"
     },
     {
       "id": "AP-11",
@@ -295,13 +298,14 @@
       "requiredForBeta": true,
       "hardwareChecksMayBePending": true,
       "evidence": [
-        "docs/verification/AP-11.md"
+        "docs/verification/AP-11.md",
+        "docs/verification/discovery-corrections.md"
       ],
       "openChecks": [
         "Physical Hue bridge/model, dimming and sensor/manual feedback verification pending."
       ],
-      "commit": "9f86359b36b88abbf4a4348a0f8fb0c20ef800c6",
-      "updatedAt": "2026-11-08T16:05:32.717Z"
+      "commit": "4b2fde448bbe458a6688c4a52fe0dcc5b6e0c42d",
+      "updatedAt": "2026-11-08T18:32:09.147Z"
     },
     {
       "id": "AP-12",
@@ -318,13 +322,14 @@
       "requiredForBeta": true,
       "hardwareChecksMayBePending": true,
       "evidence": [
-        "docs/verification/AP-12.md"
+        "docs/verification/AP-12.md",
+        "docs/verification/discovery-corrections.md"
       ],
       "openChecks": [
         "Exact Philips Air model, backend transport, named modes and units require physical verification."
       ],
-      "commit": "d5c035f7f97514240581b8a82f6b5ab75b23dc53",
-      "updatedAt": "2026-11-08T16:05:32.717Z"
+      "commit": "4b2fde448bbe458a6688c4a52fe0dcc5b6e0c42d",
+      "updatedAt": "2026-11-08T18:32:09.147Z"
     },
     {
       "id": "AP-13",
@@ -366,11 +371,12 @@
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
-        "docs/verification/AP-14.md"
+        "docs/verification/AP-14.md",
+        "docs/verification/discovery-corrections.md"
       ],
       "openChecks": [],
-      "commit": "e354a965be8e7e8970e1eb1c9ae70398a6af11a1",
-      "updatedAt": "2026-11-08T16:05:32.718Z"
+      "commit": "4b2fde448bbe458a6688c4a52fe0dcc5b6e0c42d",
+      "updatedAt": "2026-11-08T18:32:09.147Z"
     },
     {
       "id": "AP-15",
@@ -610,11 +616,12 @@
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-24.md",
-        "docs/verification/scenarios.md"
+        "docs/verification/scenarios.md",
+        "docs/verification/discovery-corrections.md"
       ],
       "openChecks": [],
-      "commit": "551728d84d2827714258d2c6d01fa1f0e811af9d",
-      "updatedAt": "2026-11-08T16:57:04.192Z"
+      "commit": "4b2fde448bbe458a6688c4a52fe0dcc5b6e0c42d",
+      "updatedAt": "2026-11-08T18:32:09.147Z"
     },
     {
       "id": "AP-25",
@@ -660,13 +667,14 @@
       "requiredForBeta": false,
       "hardwareChecksMayBePending": true,
       "evidence": [
-        "docs/verification/AP-26.md"
+        "docs/verification/AP-26.md",
+        "docs/verification/discovery-corrections.md"
       ],
       "openChecks": [
-        "Optional physical/private pilot needs exact model/backend/firmware, exclusive owner, native minimum function, valid backup and specifically authorized actuator scope."
+        "Read-only/shadow repeat completed privately without device/configuration writes. Exact physical identity, freshness, supported platform, exclusive ownership, native minimum behavior, backup and specifically authorized actuator scope remain required before control takeover."
       ],
-      "commit": "7b09dc21b5a0e73024ba4a58129a25b04a6431b5",
-      "updatedAt": "2026-11-08T16:57:04.193Z"
+      "commit": "4b2fde448bbe458a6688c4a52fe0dcc5b6e0c42d",
+      "updatedAt": "2026-11-08T18:32:09.147Z"
     },
     {
       "id": "AP-27",
@@ -737,5 +745,46 @@
     "sha256": "4c11e9980631b5b30d567cdab2881a78ae7b14daf4cb0a35cd4f8f00336ef9dd",
     "runtimeSourceCommit": "5a91d88ed7380a5ca955b76444ee9dfc8eb26e85",
     "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42501670754"
-  }
+  },
+  "corrections": [
+    {
+      "id": "discovery-2026-11-08",
+      "sourceCommit": "4b2fde448bbe458a6688c4a52fe0dcc5b6e0c42d",
+      "affectedPackages": [
+        "AP-03",
+        "AP-09",
+        "AP-10",
+        "AP-11",
+        "AP-12",
+        "AP-14",
+        "AP-24",
+        "AP-26"
+      ],
+      "implementationStatus": "implemented",
+      "verificationStatus": "passed",
+      "evidence": "docs/verification/discovery-corrections.md",
+      "checks": {
+        "typecheck": true,
+        "build": true,
+        "lint": true,
+        "unitContractTests": 60,
+        "packageChecks": 61,
+        "controllerIntegrationTests": 9,
+        "anonymizedFixtures": true,
+        "publicContentReview": true
+      },
+      "privatePilot": {
+        "mode": "read-only-shadow",
+        "completed": true,
+        "deviceWrites": 0,
+        "configurationWrites": 0,
+        "installationOrRestart": false,
+        "checkedFingerprintsAndInstanceFlagsUnchanged": true,
+        "rawEvidence": "ignored local storage only",
+        "controlTakeover": false
+      },
+      "distribution": "source correction; published beta-2 artifact unchanged",
+      "updatedAt": "2026-11-08T18:32:09.147Z"
+    }
+  ]
 }
