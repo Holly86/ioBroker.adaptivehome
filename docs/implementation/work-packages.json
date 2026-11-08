@@ -73,8 +73,8 @@
         "docs/verification/AP-00.md"
       ],
       "openChecks": [],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:17:44.768Z"
+      "commit": "fc6983f165f7c363edfff875286fa1677fffff49",
+      "updatedAt": "2026-11-08T16:05:32.710Z"
     },
     {
       "id": "AP-01",
@@ -92,8 +92,8 @@
         "docs/verification/AP-01.md"
       ],
       "openChecks": [],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:17:44.845Z"
+      "commit": "bf89862bc53ffd178d17f2450f9c6f2a38029271",
+      "updatedAt": "2026-11-08T16:05:32.712Z"
     },
     {
       "id": "AP-02",
@@ -112,8 +112,8 @@
         "docs/verification/AP-02.md"
       ],
       "openChecks": [],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:20:36.483Z"
+      "commit": "8c704c1d9f72ce1e64b9eebb34d75a3e8979fc8a",
+      "updatedAt": "2026-11-08T16:05:32.712Z"
     },
     {
       "id": "AP-03",
@@ -123,19 +123,17 @@
         "AP-01",
         "AP-02"
       ],
-      "status": "implemented",
+      "status": "verified",
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "passed",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-03.md"
       ],
-      "openChecks": [
-        "Cross-binding physical identity uniqueness and example plugin integration are completed in AP-04/AP-14"
-      ],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:20:36.901Z"
+      "openChecks": [],
+      "commit": "f282030e4cb8a5b7a22ca7c13c18aad2de7f1875",
+      "updatedAt": "2026-11-08T16:05:32.713Z"
     },
     {
       "id": "AP-04",
@@ -144,19 +142,17 @@
       "dependencies": [
         "AP-03"
       ],
-      "status": "implemented",
+      "status": "verified",
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "passed",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-04.md"
       ],
-      "openChecks": [
-        "Controller and browser hot-configuration end-to-end checks follow AP-05/AP-24"
-      ],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:22:52.686Z"
+      "openChecks": [],
+      "commit": "640f5ffec6152ee0cf57c6152baa094e70f8ee3b",
+      "updatedAt": "2026-11-08T16:05:32.713Z"
     },
     {
       "id": "AP-05",
@@ -166,20 +162,17 @@
         "AP-03",
         "AP-04"
       ],
-      "status": "implemented",
+      "status": "verified",
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "passed",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-05.md"
       ],
-      "openChecks": [
-        "Browser/controller workflow verification remains pending AP-24",
-        "Live execution, discovery and learning endpoints are integrated in the dependent APs"
-      ],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:29:29.234Z"
+      "openChecks": [],
+      "commit": "b74df969f28c122898f990319f0acb4cdcb21a8b",
+      "updatedAt": "2026-11-08T16:05:32.714Z"
     },
     {
       "id": "AP-06",
@@ -189,19 +182,17 @@
         "AP-03",
         "AP-04"
       ],
-      "status": "implemented",
+      "status": "verified",
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "passed",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-06.md"
       ],
-      "openChecks": [
-        "Controller integration of the command path and delayed-feedback fault matrix follows AP-24"
-      ],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:32:20.668Z"
+      "openChecks": [],
+      "commit": "21a15f6dedbb636270dd9be501bdb6e410e32f50",
+      "updatedAt": "2026-11-08T16:05:32.714Z"
     },
     {
       "id": "AP-07",
@@ -220,8 +211,8 @@
         "docs/verification/AP-07.md"
       ],
       "openChecks": [],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:33:11.927Z"
+      "commit": "167b2f8faeae931e868a615aa00a240ab5b7d36e",
+      "updatedAt": "2026-11-08T16:05:32.715Z"
     },
     {
       "id": "AP-08",
@@ -240,8 +231,8 @@
         "docs/verification/AP-08.md"
       ],
       "openChecks": [],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:34:28.260Z"
+      "commit": "beacb7d767f7fe1f3a6006f680053b10d8eae1ed",
+      "updatedAt": "2026-11-08T16:05:32.715Z"
     },
     {
       "id": "AP-09",
@@ -254,18 +245,17 @@
       ],
       "status": "implemented",
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "pending_external",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": true,
       "evidence": [
         "docs/verification/AP-09.md"
       ],
       "openChecks": [
-        "Real Shelly backend and exact model/generation hardware checks pending; see compatibility matrix",
-        "End-to-end emulator command tests follow AP-24"
+        "Real exact Shelly model/generation, firmware and installed backend verification pending."
       ],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:37:08.035Z"
+      "commit": "270ce038c8a316daccaec0ae47e6d730dcaadafb",
+      "updatedAt": "2026-11-08T16:05:32.716Z"
     },
     {
       "id": "AP-10",
@@ -278,18 +268,17 @@
       ],
       "status": "implemented",
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "pending_external",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": true,
       "evidence": [
         "docs/verification/AP-10.md"
       ],
       "openChecks": [
-        "Real CCU and Cloud backend integration and exact thermostat/group devices pending",
-        "Native device expiry is not certified; unsupported native-deadline capability is deliberately absent"
+        "Exact CCU and HmIP Cloud backend/thermostat/group feedback pending. Native schedule-content and certified native expiry are not advertised."
       ],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:37:51.553Z"
+      "commit": "c00e7b936abc6b47a5a6a526724a2027ab97c116",
+      "updatedAt": "2026-11-08T16:05:32.716Z"
     },
     {
       "id": "AP-11",
@@ -302,17 +291,17 @@
       ],
       "status": "implemented",
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "pending_external",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": true,
       "evidence": [
         "docs/verification/AP-11.md"
       ],
       "openChecks": [
-        "Real Hue bridge, exact sensor identity and physical dimming/manual-control checks pending"
+        "Physical Hue bridge/model, dimming and sensor/manual feedback verification pending."
       ],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:38:58.648Z"
+      "commit": "9f86359b36b88abbf4a4348a0f8fb0c20ef800c6",
+      "updatedAt": "2026-11-08T16:05:32.717Z"
     },
     {
       "id": "AP-12",
@@ -325,18 +314,17 @@
       ],
       "status": "implemented",
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "pending_external",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": true,
       "evidence": [
         "docs/verification/AP-12.md"
       ],
       "openChecks": [
-        "Real exact-model HTTP/CoAP backend and purifier/fan checks pending; no portfolio-wide claim",
-        "Classic backends without explicit pm25 units require a manually verified unit mapping"
+        "Exact Philips Air model, backend transport, named modes and units require physical verification."
       ],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:40:03.425Z"
+      "commit": "d5c035f7f97514240581b8a82f6b5ab75b23dc53",
+      "updatedAt": "2026-11-08T16:05:32.717Z"
     },
     {
       "id": "AP-13",
@@ -349,17 +337,17 @@
       ],
       "status": "implemented",
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "pending_external",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": true,
       "evidence": [
         "docs/verification/AP-13.md"
       ],
       "openChecks": [
-        "Exact IKEA model, older Tradfri gateway, Matter or Zigbee backend/device verification pending separately"
+        "Exact IKEA model and each selected Tradfri/Matter/Zigbee transport require separate physical verification."
       ],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:41:04.284Z"
+      "commit": "c143cb8c4923ea874ec017772bc9e9c1c4f0b252",
+      "updatedAt": "2026-11-08T16:05:32.717Z"
     },
     {
       "id": "AP-14",
@@ -372,19 +360,17 @@
         "AP-09",
         "AP-11"
       ],
-      "status": "implemented",
+      "status": "verified",
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "passed",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-14.md"
       ],
-      "openChecks": [
-        "Policy end-to-end demonstration of the extra integration follows AP-15/AP-24"
-      ],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:42:36.242Z"
+      "openChecks": [],
+      "commit": "e354a965be8e7e8970e1eb1c9ae70398a6af11a1",
+      "updatedAt": "2026-11-08T16:05:32.718Z"
     },
     {
       "id": "AP-15",
@@ -398,20 +384,17 @@
         "AP-09",
         "AP-11"
       ],
-      "status": "implemented",
+      "status": "verified",
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "passed",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-15.md"
       ],
-      "openChecks": [
-        "Controller/emulator movement-to-feedback and browser workflow verification follows AP-24",
-        "No physical motion/lighting test has been claimed"
-      ],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:44:51.697Z"
+      "openChecks": [],
+      "commit": "745612ae38e4e7f592aaf9aca08a42bb7b6337f5",
+      "updatedAt": "2026-11-08T16:05:32.718Z"
     },
     {
       "id": "AP-16",
@@ -425,20 +408,17 @@
         "AP-10",
         "AP-12"
       ],
-      "status": "implemented",
+      "status": "verified",
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "passed",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-16.md"
       ],
-      "openChecks": [
-        "Physical thermal response, native-profile expiry and exact purifier feedback remain model-specific external checks",
-        "Controller reference-case execution follows AP-24"
-      ],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:45:43.599Z"
+      "openChecks": [],
+      "commit": "5f7fa170c777c21554263f217adc977e2040dfa8",
+      "updatedAt": "2026-11-08T16:05:32.718Z"
     },
     {
       "id": "AP-17",
@@ -451,20 +431,17 @@
         "AP-08",
         "AP-09"
       ],
-      "status": "implemented",
+      "status": "verified",
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "passed",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-17.md"
       ],
-      "openChecks": [
-        "Physical flow, dry-run, water and animal-related protection checks remain unavailable and are not authorized by simulation",
-        "Reference installation controller run follows AP-24"
-      ],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:46:36.433Z"
+      "openChecks": [],
+      "commit": "709551e06467d1f4beb6f545ff70dd5a23c69fc8",
+      "updatedAt": "2026-11-08T16:05:32.719Z"
     },
     {
       "id": "AP-18",
@@ -477,17 +454,17 @@
       ],
       "status": "implemented",
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "pending_external",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-18.md"
       ],
       "openChecks": [
-        "Actual channel-account delivery tests require explicitly designated own recipients; no channels are required for control"
+        "Real delivery requires an explicitly designated own recipient and configured channel account. No messages were sent."
       ],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:48:41.087Z"
+      "commit": "27d122efa80a0b43bd68f59ced57c05cc0407c4e",
+      "updatedAt": "2026-11-08T16:05:32.719Z"
     },
     {
       "id": "AP-19",
@@ -500,18 +477,17 @@
       ],
       "status": "implemented",
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "pending_external",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-19.md"
       ],
       "openChecks": [
-        "Optional Telegram requires an explicitly configured trusted gateway with original update metadata and designated account; no live bot commands were sent",
-        "Admin transport/browser integration checked in AP-24"
+        "Live Telegram controls need a configured trusted original-update gateway/account. Admin transport and scoped protocol are software-verified."
       ],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:51:37.101Z"
+      "commit": "5bc950ab14bbe862bd244a6953587d7d8565cb96",
+      "updatedAt": "2026-11-08T16:05:32.719Z"
     },
     {
       "id": "AP-20",
@@ -525,20 +501,17 @@
         "AP-16",
         "AP-17"
       ],
-      "status": "implemented",
+      "status": "verified",
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "passed",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-20.md"
       ],
-      "openChecks": [
-        "Synthetic known-pattern tests passed; no private real-world training or savings validation was performed",
-        "Closed-loop model activation and rollback are completed in AP-22/AP-23"
-      ],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:54:26.652Z"
+      "openChecks": [],
+      "commit": "d3b9cbe92eb3c5230606e0bc524c9e66391228a0",
+      "updatedAt": "2026-11-08T16:05:32.719Z"
     },
     {
       "id": "AP-21",
@@ -552,18 +525,17 @@
       ],
       "status": "implemented",
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "pending_external",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-21.md"
       ],
       "openChecks": [
-        "No authorized external model account, token or paid call was supplied or used",
-        "A real Ollama/cloud model invocation remains an optional account/server check"
+        "Optional real Ollama/cloud server/account call pending. Real local HTTP protocol/budget validation passed without paid calls."
       ],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:55:52.668Z"
+      "commit": "88169abbdc51b28728fe2a37be8d51aa723198c1",
+      "updatedAt": "2026-11-08T16:05:32.720Z"
     },
     {
       "id": "AP-22",
@@ -575,19 +547,17 @@
         "AP-16",
         "AP-17"
       ],
-      "status": "implemented",
+      "status": "verified",
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "passed",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-22.md"
       ],
-      "openChecks": [
-        "Closed-loop activation and actual feedback/effect proof follows AP-23"
-      ],
-      "commit": null,
-      "updatedAt": "2026-11-08T14:58:44.368Z"
+      "openChecks": [],
+      "commit": "e7e7bb67b86f1aa523e6278181166613c01f5bf1",
+      "updatedAt": "2026-11-08T16:05:32.720Z"
     },
     {
       "id": "AP-23",
@@ -600,20 +570,17 @@
         "AP-19",
         "AP-22"
       ],
-      "status": "implemented",
+      "status": "verified",
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "passed",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-23.md"
       ],
-      "openChecks": [
-        "Real js-controller closed-loop and browser acceptance follows AP-24",
-        "No physical device efficacy or measured energy-saving claim is made"
-      ],
-      "commit": null,
-      "updatedAt": "2026-11-08T15:04:44.733Z"
+      "openChecks": [],
+      "commit": "e77f73d2d74023d221aecda846461d38b7b49433",
+      "updatedAt": "2026-11-08T16:05:32.720Z"
     },
     {
       "id": "AP-24",
@@ -636,15 +603,18 @@
         "AP-22",
         "AP-23"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "verified",
+      "implementationStatus": "implemented",
+      "verificationStatus": "passed",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
-      "evidence": [],
+      "evidence": [
+        "docs/verification/AP-24.md",
+        "docs/verification/scenarios.md"
+      ],
       "openChecks": [],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T16:09:46.352Z"
     },
     {
       "id": "AP-25",
@@ -658,15 +628,20 @@
         "AP-23",
         "AP-24"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "in_progress",
+      "implementationStatus": "in_progress",
+      "verificationStatus": "partial",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
-      "evidence": [],
-      "openChecks": [],
+      "evidence": [
+        "docs/verification/AP-25.md"
+      ],
+      "openChecks": [
+        "Frozen artifact installation, public push and GitHub prerelease are being completed.",
+        "No authenticated npm publishing account; catalog acceptance remains external."
+      ],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T16:05:32.721Z"
     },
     {
       "id": "AP-26",

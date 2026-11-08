@@ -15,7 +15,7 @@ Voraussetzungen: AP-03, AP-04, AP-06, AP-09, AP-11.
 ## Konkreter Ausführungsprompt
 
 ```text
-Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-14 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten. 
+Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-14 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten.
 
 Vervollständige die Herstellererweiterung zu einem benutzbaren SDK mit Manifest, Typen, Validierung, Beispielen und gemeinsamem Testaufruf. Erzeuge eine kleine Beitragsschablone oder ein Entwicklungswerkzeug für neue Integrationen. Erkläre jede Pflichtfunktion einschließlich Identität, Einheiten, Rückmeldung, Limits und unterstützter Backend-Versionen.
 Implementiere die generische manuelle Zuordnung vorhandener ioBroker-Datenpunkte für weitere Hersteller. Sie hat dieselben Prüfungen und denselben Executor wie eingebaute Profile. Installiere nur ausdrücklich konfigurierte vertrauenswürdige Erweiterungen; keine Plugins aus Modelltexten oder beliebigen URLs ausführen. Beweise die Erweiterbarkeit mit einem zusätzlichen erfundenen Hersteller, dessen Schalter, Dimmer und Sensoren durch die vorhandenen Licht-/Anlagenregeln genutzt werden. Bestehende Fachmodule bleiben unverändert. Dokumentiere Versionierung und Migrationsregeln und prüfe inkompatible Schnittstellen, doppelte Geräteidentitäten und fehlende Bestätigungsfähigkeiten.

@@ -15,7 +15,7 @@ Voraussetzungen: AP-03, AP-04.
 ## Konkreter Ausführungsprompt
 
 ```text
-Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-08 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten. 
+Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-08 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten.
 
 Implementiere eine begrenzte, versionierte Beobachtungs- und Ereignishistorie für Diagnose und Lernen. Nutze vorhandene ioBroker-Historien über eine definierte Leseschnittstelle oder einen begründeten lokalen Speicher, ohne ein weiteres zwingendes Datenbanksystem einzuführen.
 Speichere Messzeit, Empfang, Qualität, Konfigurations- und Modellbezug sowie Aufträge und Rückmeldungen. Vermeide unnötige Wiederholungen, erhalte aber relevante Übergänge. Lege Retention, Rotation, Datenlöschung und einen bereinigten Supportexport fest. Bewegungsdaten und Empfängerinformationen sind nicht automatisch öffentliche Diagnosedaten. Zeige Unterversorgung, unbestätigten Befehl und fehlende Wärmebereitstellung als unterschiedliche Sachverhalte. Energie ist nur bei geeigneter Messgrundlage gemessen; Leistungsintegration und Schätzungen tragen ihre Abdeckung. Stelle den späteren Lernverfahren einen stabilen anonymisierbaren Datenvertrag zur Verfügung und teste defekte Zeilen, Lücken, Zeitsprünge und Speicherausfall ohne Schaltstopp unabhängiger Funktionen.

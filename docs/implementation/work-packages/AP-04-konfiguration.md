@@ -15,7 +15,7 @@ Voraussetzungen: AP-03.
 ## Konkreter Ausführungsprompt
 
 ```text
-Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-04 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten. 
+Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-04 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten.
 
 Implementiere den maßgeblichen Konfigurationsspeicher in ioBroker und die zugehörige Validierung. Erlaube mehrere Räume, Anlagen und Funktionsinstanzen mit auswählbaren Quellen, Betriebsarten, Grenzen und Zeitplänen. Entwurf, aktive Revision und tatsächlich angewandte Revision müssen unterscheidbar bleiben.
 Implementiere tägliche, wöchentliche und befristete Pläne, Ausnahmen, lokale Zeitzone, Sommerzeit sowie eindeutige Ablaufzeitpunkte. Änderungen werden zusammenhängend geprüft und aktiviert; widersprüchliche harte Regeln benötigen eine verständliche Fehlermeldung. Stelle Schema-Migration, bereinigten Export, Import-Vorschau und Rücknahme bereit. Zwischenzeitliche Nutzeränderungen dürfen beim Zurücknehmen nicht verloren gehen. Gewöhnliche Sollwerte und Nachlaufzeiten sollen live anwendbar sein. Baue Tests für über Mitternacht reichende Pläne, doppelte Nachrichten, ungültige Bereiche, alte Revisionsstände und unterbrochene Aktivierung. Der Export ist ein portables Produktschema, kein Abbild privater Adapterzugänge oder historischer Bewegungsdaten.

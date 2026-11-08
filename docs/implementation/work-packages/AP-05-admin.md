@@ -15,7 +15,7 @@ Voraussetzungen: AP-03, AP-04.
 ## Konkreter Ausführungsprompt
 
 ```text
-Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-05 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten. 
+Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-05 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten.
 
 Baue die gemeinsame Admin-Oberfläche mit passenden ioBroker-Komponenten und einem verständlichen Einrichtungsassistenten. Führe durch Anbindungen, Geräteerkennung, Bestätigung der Funktion, Zuordnung zu Räumen/Anlagen, Regeln, Betriebsgrenzen und optionale Kanäle. Zeige nur Einstellungen tatsächlich ausgewählter Fähigkeiten; kein fester Pool-Tab.
 Implementiere bearbeitbare Sollwerte, Zeitpläne, Lichtschwellen, Nachläufe, Dauerbetrieb und Ausschlüsse. Trenne technische Verbindungen von Alltagseinstellungen. Die Übersicht zeigt gewünschtes Ziel, tatsächlichen Gerätezustand, Messwert, Begründung, Datenalter, nächste Aktion und gegebenenfalls eine lokale Einschränkung. Die Lernansicht enthält alle fünf Modi und die eingerichtete Freigabe. Implementiere Vorschau/Validierung, fehlgeschlagene Speicherung und konkurrierende Änderung verständlich. Prüfe echte Browserbedienung, schmale Darstellung, Tastaturbedienung, übersetzte Texte und die Konfiguration ohne vollständige Herstellerinstallation. Die Oberfläche bleibt im Admin; eine zusätzliche Pflicht-Webanwendung wird nicht eingeführt.

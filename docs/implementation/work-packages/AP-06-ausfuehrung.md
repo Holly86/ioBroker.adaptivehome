@@ -15,7 +15,7 @@ Voraussetzungen: AP-03, AP-04.
 ## Konkreter Ausführungsprompt
 
 ```text
-Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-06 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten. 
+Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-06 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten.
 
 Implementiere Arbiter, Executor und das persistente Auftragsjournal. Eingänge aus Regeln, Admin, berechtigter Fernbedienung und späterem Lernen nutzen denselben validierten Weg. Prüfe unmittelbar vor Ausführung Konfiguration, aktuellen menschlichen Vorrang, Geräteidentität, Frist und Zuständigkeit.
 Unterscheide Versandannahme, bestätigten Gerätewert und beobachtete Wirkung. Behandle Duplikate, verspätete Antworten, Quellenwechsel, lokale Limits und unsichere Übernahme ohne blinde Wiederholung. Halte Sperren und Budgets über Neustarts, aber begrenze ihren Umfang. Ein vorübergehend fehlgeschlagener lesender Autoritätscheck darf nicht als endgültig gescheiterter Geräte-Audit hängen bleiben. Eigene Zwischenwerte während einer Profilübertragung werden nur anhand positiver Zuordnung als solche behandelt. Baue Regressionen für konkurrierende Handbedienung, mehrere verzögerte Aktoren einer Gruppe, Zustandswechsel während der Warteschlange und abgeschaltete optionalen Quellen. Beschreibe die erlaubte automatische Erholung mit konkreten Nachweisen; keine pauschale Entsperrung oder globale AUS-Aktion.

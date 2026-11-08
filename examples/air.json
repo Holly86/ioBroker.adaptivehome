@@ -30,6 +30,7 @@
           "confirmId": "test.0.purifier.fan",
           "valueType": "number",
           "unit": "%",
+          "codec": "identity",
           "scale": 1,
           "offset": 0,
           "min": 0,
@@ -43,6 +44,7 @@
           "readId": "test.0.purifier.airQuality",
           "valueType": "number",
           "unit": "µg/m³",
+          "codec": "identity",
           "scale": 1,
           "offset": 0,
           "maxAgeMs": 300000,
@@ -50,7 +52,9 @@
           "confirmation": "backend"
         }
       ],
-      "verification": "implemented"
+      "verification": "implemented",
+      "memberPhysicalIds": [],
+      "detectedTypes": []
     }
   ],
   "functions": [
@@ -78,6 +82,7 @@
         "low": 25,
         "hysteresis": 5
       },
+      "dependencies": [],
       "limits": {
         "min": 0,
         "max": 100,
@@ -86,7 +91,8 @@
         "minOffMs": 0,
         "commandsPerHour": 30,
         "manualHoldMs": 1800000,
-        "protection": []
+        "protection": [],
+        "allowedWindows": []
       },
       "autonomy": {
         "mode": "classic",
@@ -110,6 +116,7 @@
       }
     }
   ],
+  "scenes": [],
   "sources": [],
   "notificationRoutes": []
 }

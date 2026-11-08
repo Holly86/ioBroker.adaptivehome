@@ -15,7 +15,7 @@ Voraussetzungen: AP-05, AP-06, AP-18.
 ## Konkreter Ausführungsprompt
 
 ```text
-Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-19 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten. 
+Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-19 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten.
 
 Implementiere ein gemeinsames Bedienprotokoll mit Identität, Funktionsumfang, Auftrags-ID, Frist, erwarteter Revision und verständlicher Antwort. Die Admin-Oberfläche und optionale Clients wie Sprachassistenten nutzen denselben Arbiter. Es gibt keinen privilegierten zweiten Geräteschreiber für KI oder Bots.
 Ergänze optional Telegram für Status, befristete Vorgaben, Pause und kontrollierte Wiederaufnahme. Empfänger-/Benutzerzuordnung und Rollen werden ausdrücklich eingerichtet. Neue oder weitergeleitete Nachrichten, Gruppen, alte Buttons und Replay dürfen keine fremde Geräteaktion auslösen. Eine Freigabe erfordert die tatsächlichen fachlichen Nachweise und hebt keine Cloud-Sperre durch Wunschdenken auf. E-Mail und Pushover bleiben zunächst Meldungskanäle, kein ungeprüfter Fernsteuerweg. Implementiere Client-Verträge für spätere optionale Assistenten ohne Pflicht zu einem bestimmten Produkt. Prüfe Handbedienung während automatisch erzeugter Pläne und den sofortigen Abbruch widerrufener Aufträge.

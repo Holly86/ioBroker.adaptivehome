@@ -15,7 +15,7 @@ Voraussetzungen: AP-20, AP-15, AP-16, AP-17.
 ## Konkreter Ausführungsprompt
 
 ```text
-Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-22 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten. 
+Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-22 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten.
 
 Implementiere die adaptive Planung über den lokalen Modellen. Erzeuge Kandidaten aus den tatsächlich freigegebenen Parametern und endlichen Regelbausteinen. Unterstütze Ziele wie Komfort, Luftqualität, Betriebskontinuität, Schalthäufigkeit und geeignete gemessene Energie. Harte Bedingungen werden vor jeder weichen Optimierung geprüft.
 Plane zeitlich zusammenhängende Abläufe statt einzelner widersprüchlicher Schaltimpulse. Berücksichtige Gerätefähigkeit, Prognoseunsicherheit, Vorlauf, technische Grenzen, Konfigurationswechsel und das Fehlen optionaler Daten. Vergleiche Kandidaten mit einer klaren Baseline und gib Gründe sowie erwartete Wirkung aus. Implementiere eine konservative Behandlung dünner Daten und keine unfreigegebenen Probeschaltungen zur Erkundung. Teste Wohnung, Dauerpumpe mit Tagesbeleuchtung und Luftqualitätsbereich. Ein externer KI-Anbieter darf zusätzliche Kandidaten liefern, ist aber keine zwingende Abhängigkeit. Der resultierende Plan muss bereits durch den realen Arbiter/Executor-Vertrag validiert werden können.

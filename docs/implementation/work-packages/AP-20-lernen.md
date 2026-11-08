@@ -15,7 +15,7 @@ Voraussetzungen: AP-04, AP-07, AP-08, AP-15, AP-16, AP-17.
 ## Konkreter Ausführungsprompt
 
 ```text
-Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-20 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten. 
+Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-20 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten.
 
 Implementiere eine lokale Lernbasis für Nutzungsmuster, thermische Reaktion und geeignete allgemeine Betriebsbedarfe. Definiere Merkmale und Modellfamilien passend zum jeweiligen Problem; ein universelles Textmodell ist keine Voraussetzung. Verwende echte Qualitätsmerkmale und beobachtete menschliche Korrekturen, ohne jedes manuelle Ereignis sofort als dauerhafte Präferenz zu übernehmen.
 Trenne Training und Bewertung zeitlich und dokumentiere Datenabdeckung, vergleichbare Tage, Gaps, Baseline und Unsicherheit. Fehlende Bewegung beweist keine Nichtnutzung und Bewegung identifiziert keine Person. Modelle und Daten besitzen Versionen, Herkunft und begrenzte Aufbewahrung. Rechenarbeit läuft getrennt von zeitkritischer Steuerung. Baue Drift- und Datenbrucherkennung sowie einen kontrollierten Modellwechsel. Implementiere brauchbare Beobachtungs- und Vorschlagsansichten mit begründeten Ergebnissen. Prüfe auf synthetisch bekannten Mustern und realen freigegebenen Daten jeweils gesondert. Keine frei erfundenen Konfidenzen oder Einsparungszahlen in der Oberfläche anzeigen.

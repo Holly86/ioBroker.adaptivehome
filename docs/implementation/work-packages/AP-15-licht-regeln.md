@@ -15,7 +15,7 @@ Voraussetzungen: AP-05, AP-06, AP-07, AP-08, AP-09, AP-11.
 ## Konkreter Ausführungsprompt
 
 ```text
-Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-15 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten. 
+Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-15 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten.
 
 Implementiere allgemeine Licht- und einfache Schaltfunktionen über Fähigkeiten. Der Nutzer wählt Auslöser, Helligkeitsschwellen, Hysterese, Zeitfenster, Nachlauf, manuelle Sperre und Ausnahmen. Mehrere Geräte und unterschiedliche Hersteller können gemeinsam genutzt werden, ohne pauschal eine Herstellergruppe mit unbekannten Mitgliedern zu schalten.
 Die Automatik beendet nur ihre tatsächlich bestätigte eigene Einschaltung. Neue Bewegung verlängert den gültigen Nachlauf; ein alter Timer darf nach einem manuellen Aus/Ein keinen neuen Zustand ausschalten. Unterstütze konfigurierbare Hausszenen, ohne unverzichtbare Anlagen in ein allgemeines Away-Off aufzunehmen. Protokolliere einmalig pro neuem Ereignis konkrete Ablehnungsgründe und relevante geprüfte Bedingungen. Prüfe fünfminütigen Referenznachlauf, manuelle Vorränge, Sensorverlust, Zeitstempelgrenzen, Wiederverbindung und Neustart. Die reale End-to-End-Probe unterscheidet Bewegungsentscheidung, Gerätebestätigung und tatsächlichen Ablauf; ein direkter Schaltversuch allein ist keine Bewegungsabnahme.

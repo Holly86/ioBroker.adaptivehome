@@ -15,7 +15,7 @@ Voraussetzungen: AP-01, AP-02.
 ## Konkreter Ausführungsprompt
 
 ```text
-Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-03 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten. 
+Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-03 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten.
 
 Implementiere die fachlichen Verträge aus DATA-CONTRACTS.md. Trenne rohe Herstellerwerte, normalisierte Fähigkeiten und die vom Nutzer zugewiesene Funktion. Nutze passende vorhandene ioBroker-Typerkennung, aber bestätige Identität, Einheiten und Schreibbarkeit gesondert; ein Rollenname allein ist keine Schaltfreigabe.
 Baue ein versioniertes Integrationsregister mit Erkennung, Abonnement, Normalisierung, Befehl, Rückmeldung, Qualität, Grenzen und beschriebener Gerätefähigkeit. Definiere Erweiterungspunkte für weitere Fähigkeiten und Integrationen. Ein Datenpunkt kann nur in einem koordinierten physischen Befehlspfad aktiv sein. Erlaube explizite manuelle Zuordnung, ohne falsche automatische Erkennung fortzuschreiben. Erstelle ein gemeinsames Vertragstestpaket mit Simulation fehlender Werte, identischer Rückmeldungen, Wiederverbindung, fehlerhafter Einheit und eingeschränkter Gerätefunktionen. Prüfe die Grenzen zwischen Plugin und Kern durch einen minimalen fremden Beispielhersteller. Die Regeln kennen weder dessen Namen noch seine Datenpunktstruktur.

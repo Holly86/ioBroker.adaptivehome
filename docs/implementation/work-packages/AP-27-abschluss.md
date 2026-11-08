@@ -15,7 +15,7 @@ Voraussetzungen: AP-24, AP-25, AP-26.
 ## Konkreter Ausführungsprompt
 
 ```text
-Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-27 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten. 
+Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-27 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten.
 
 Führe die Gesamtprüfung der Produktziele, aller APs und der verbindlichen Szenarien zusammen. Lies die Ergebnisse kritisch gegen tatsächlichen Quellstand, veröffentlichtes Artefakt, Controller-Installation und UI-Bedienung. Prüfe insbesondere, dass vollständige Automatisierung einen echten geschlossenen Ablauf besitzt, Herstellererweiterung ohne Fachregeländerung funktioniert und alle Kanäle optional bleiben.
 Korrigiere noch offene implementierbare Mängel und führe die dazu passenden Prüfungen erneut aus. Kennzeichne fehlende reale Geräte, Konto- oder Katalogfreigaben konkret und behaupte keine erfolgreiche Liveprüfung. Erstelle eine Betriebsübergabe mit der tatsächlichen Repository-URL, Version, Einrichtung, Normalbetrieb, Diagnose, Lernfreigaben, Stopp/Rücknahme, Update und Datenaufbewahrung. Dokumentiere die Grenzen gemessener Energieeffekte. Bringe das Manifest auf den echten Endstand, sichere bereinigte öffentliche Belege und veröffentliche den abschließend geprüften Stand im neuen Repository. Kein leeres Gerüst oder bloßer Plan erfüllt diesen Abschluss.

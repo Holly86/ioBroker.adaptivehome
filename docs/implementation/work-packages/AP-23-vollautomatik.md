@@ -15,7 +15,7 @@ Voraussetzungen: AP-05, AP-06, AP-08, AP-19, AP-22.
 ## Konkreter Ausführungsprompt
 
 ```text
-Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-23 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten. 
+Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-23 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten.
 
 Implementiere AUTONOMY.md vollständig bis zur vollen Automatisierung. Der Nutzer richtet einmal Funktionsumfang, erlaubte Regelbausteine, harte Grenzen, Ziele und Budgets ein. Danach soll der geschlossene Ablauf selbst beobachten, lernen, planen, validieren, aktivieren, bestätigen, Wirkung bewerten und gegebenenfalls zurücknehmen. Reduziere diesen Modus nicht auf eine Liste manueller Freigabevorschläge.
 Unterscheide begrenzte Parameteranpassung von zulässiger selbstständiger Plan-/Regelkomposition. Implementiere kontrollierte Modellzulassung, Änderungsgrenzen, schrittweise Ausweitung und einen eindeutig sichtbaren aktiven Plan. Pause, Geräte-Ausschluss und manuelle Vorgabe müssen sofort wirken. Modell-, Nachrichten- oder UI-Ausfall beendet nicht die letzte gültige Mindestfunktion. Eine Rücknahme überschreibt keine inzwischen erfolgte Nutzeränderung. Beweise den vollständigen Ablauf einschließlich negativer Wirkung und Rücknahme an einem nachvollziehbaren Testsystem mit echten Executor-Rückmeldungen aus dem Emulator. Vorhandene ausdrücklich freigegebene reale Versuche ergänzen die Abnahme und werden als solche getrennt dokumentiert.

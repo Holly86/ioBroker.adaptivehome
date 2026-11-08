@@ -30,6 +30,7 @@
           "confirmId": "test.0.light.switch",
           "valueType": "boolean",
           "unit": "",
+          "codec": "identity",
           "scale": 1,
           "offset": 0,
           "maxAgeMs": 300000,
@@ -37,7 +38,9 @@
           "confirmation": "backend"
         }
       ],
-      "verification": "implemented"
+      "verification": "implemented",
+      "memberPhysicalIds": [],
+      "detectedTypes": []
     },
     {
       "id": "motion",
@@ -53,9 +56,10 @@
           "readId": "test.0.motion.motion",
           "valueType": "boolean",
           "unit": "",
+          "codec": "identity",
           "scale": 1,
           "offset": 0,
-          "maxAgeMs": 300000,
+          "maxAgeMs": 900000,
           "tolerance": 0,
           "confirmation": "backend"
         },
@@ -64,6 +68,7 @@
           "readId": "test.0.motion.illuminance",
           "valueType": "number",
           "unit": "lx",
+          "codec": "identity",
           "scale": 1,
           "offset": 0,
           "maxAgeMs": 300000,
@@ -71,7 +76,9 @@
           "confirmation": "backend"
         }
       ],
-      "verification": "implemented"
+      "verification": "implemented",
+      "memberPhysicalIds": [],
+      "detectedTypes": []
     },
     {
       "id": "circulation",
@@ -89,6 +96,7 @@
           "confirmId": "test.0.circulation.switch",
           "valueType": "boolean",
           "unit": "",
+          "codec": "identity",
           "scale": 1,
           "offset": 0,
           "maxAgeMs": 300000,
@@ -96,7 +104,9 @@
           "confirmation": "backend"
         }
       ],
-      "verification": "implemented"
+      "verification": "implemented",
+      "memberPhysicalIds": [],
+      "detectedTypes": []
     }
   ],
   "functions": [
@@ -161,13 +171,15 @@
         "holdMs": 300000,
         "luxThreshold": 100
       },
+      "dependencies": [],
       "limits": {
         "essential": false,
         "minOnMs": 0,
         "minOffMs": 0,
         "commandsPerHour": 30,
         "manualHoldMs": 1800000,
-        "protection": []
+        "protection": [],
+        "allowedWindows": []
       },
       "autonomy": {
         "mode": "classic",
@@ -204,6 +216,7 @@
       "inputs": {},
       "rules": [],
       "parameters": {},
+      "dependencies": [],
       "limits": {
         "minimumValue": true,
         "essential": true,
@@ -211,7 +224,8 @@
         "minOffMs": 0,
         "commandsPerHour": 30,
         "manualHoldMs": 1800000,
-        "protection": []
+        "protection": [],
+        "allowedWindows": []
       },
       "autonomy": {
         "mode": "classic",
@@ -235,6 +249,7 @@
       }
     }
   ],
+  "scenes": [],
   "sources": [],
   "notificationRoutes": []
 }

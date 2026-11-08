@@ -15,7 +15,7 @@ Voraussetzungen: AP-05, AP-06, AP-07, AP-08, AP-10, AP-12.
 ## Konkreter Ausführungsprompt
 
 ```text
-Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-16 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten. 
+Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-16 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten.
 
 Implementiere Klima-/Heizfunktionen und Luftqualitätsfunktionen als getrennte auswählbare Module über dieselben Kernverträge. Für Heizung konfiguriert der Nutzer Basis, Komfort, Zeiten, Quellen, manuellen Vorrang und native Ablauf-/Ausfallmöglichkeiten. Vorhersage, Nutzungszeit und Kalender bleiben optional. Ein Thermostat regelt seine Ventile selbst; der Adapter steuert den freigegebenen Sollwert und überwacht die Wirkung.
 Behandle eine kurze Abwesenheitsbestätigung, fehlende Wetterdaten, mehrere Thermostate und verzögerte Profilübernahme ohne pauschale Hausabsenkung. Stelle Wärmebedarf und vorhandene oder nur angenommene Wärmebereitstellung getrennt dar. Verändere Sensoroffsets nicht als verdeckte Leistungsnachregelung. Für Luftfunktionen werden Messgröße, Zielbereich, Lüfterstufen, Ruhezeiten, Hysterese und maximale Schalthäufigkeit eingerichtet. Schalte nur unterstützte Modi. Prüfe Fremdhandbedienung, Fenster, unsichere Sensoren, native Fristen, fehlende Anlageleistung und die korrekte Wiederaufnahme nach Störungen. Dokumentiere physische Grenzen, statt erreichte Raumtemperaturen aus Sollwertbestätigungen abzuleiten.

@@ -15,7 +15,7 @@ Voraussetzungen: AP-03, AP-06, AP-08.
 ## Konkreter Ausführungsprompt
 
 ```text
-Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-10 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten. 
+Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-10 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten.
 
 Implementiere Homematic mit getrennten Integrationsprofilen für Cloud Access Point und CCU-Anbindung. Ermittle die dokumentierten Schnittstellen der gewählten stabilen Geräteadapter. Fehlende Funktionen werden als Fähigkeitslücke ausgewiesen oder über eine ordentliche versionierte Erweiterung ergänzt; keine private Änderung von node_modules übernehmen.
 Unterstütze passende Thermostat-, Gruppen-, Fenster-, Batterie- und Erreichbarkeitswerte. Die Thermostate regeln ihre Ventile selbst, soweit dies ihr Gerätebetrieb ist. Prüfe native Zeitprofile, Ablauf, tatsächliche Übernahme, eigene Zwischenwerte und Handwünsche getrennt. Eine Cloudannahme ist keine Bestätigung aller Gruppenmitglieder. Behalte laufende native Mindestfunktionen bei Quellen- oder Controllerausfall. Lokale Quoten sind nicht als Herstellerquoten zu behaupten. Baue Tests für mehrere verzögert bestätigende Thermostate, kurz fehlende Autorität, Profilidentitätswechsel, Sperrzeiten und Fenster. Führe nur die real möglichen, freigegebenen Geräteprüfungen durch und dokumentiere nicht verfügbare Fähigkeiten offen.

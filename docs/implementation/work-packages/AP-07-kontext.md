@@ -15,7 +15,7 @@ Voraussetzungen: AP-03, AP-06.
 ## Konkreter Ausführungsprompt
 
 ```text
-Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-07 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten. 
+Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-07 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten.
 
 Implementiere optionale Kontextanbieter über bestehende ioBroker-Daten oder klar abgegrenzte öffentliche Schnittstellen. Unterstütze Wetter, Kalender, Anwesenheit, Nutzungshinweise und Energie als unabhängige Quellen. Der Nutzer wählt Quelle und Bedeutung, nicht fest eingebaute Personennamen oder Kalendertitel.
 Normalisiere Beobachtungszeit, Qualität, Vollständigkeit und Einheiten. Ein vollständiger letzter gültiger Datenstand kann nur innerhalb seiner dokumentierten Gültigkeit weiterverwendet werden. Behandle kurze Abwesenheitsbestätigungen ohne sofortige Unterversorgung; unbekannt bleibt unbekannt. Bewegungs- und Lichtsignale liefern positive Nutzungshinweise. Erlaube konfigurierbare Bestätigung gegen Haustierauslösung. Ein Feiertags- oder Schulkalender ist optional und installationsabhängig. Datenlücken wirken ausschließlich auf die zugehörige Entscheidung und deren definierte Mindestfunktion. Prüfe Quellenwechsel, Sommerzeit, unveränderte Werte, verspätete Daten und widersprüchliche Signale. Externe Texte werden nicht als Befehle interpretiert.

@@ -15,7 +15,7 @@ Voraussetzungen: AP-04, AP-06, AP-08, AP-20.
 ## Konkreter Ausführungsprompt
 
 ```text
-Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-21 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten. 
+Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-21 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten.
 
 Implementiere die optionale Anbieter-Schnittstelle für lokale Modelle, Cloudmodelle und gegebenenfalls einen externen Assistenten. Fähigkeiten, Datenweitergabe, Kosten, Zeitgrenzen, Verfügbarkeit und aktivierter Nutzerumfang werden ausdrücklich konfiguriert. Setze kein bestimmtes Abo, Konto, Modell oder einen lokalen Modellserver voraus.
 Modellantworten liefern ausschließlich validierte Absichten, Erklärungen oder Kandidaten in der zugelassenen Grammatik. Keine freien Skripte oder frei gewählten ioBroker-Schreibziele. Externe Texte und Antworten können die Nutzerfreigabe nicht erweitern. Implementiere Abbruch, Wiederholungsgrenzen, Kostenreservierung und eine sichere Fortsetzung mit der letzten gültigen klassischen Regel bei Anbieterausfall. Ein deterministischer Testanbieter prüft die Verträge; mindestens ein realer Anbieterpfad wird soweit mit autorisierten Zugangsdaten möglich geprüft. Fehlende Zugangsdaten und nicht durchgeführte bezahlte Aufrufe werden exakt ausgewiesen. Normale Nutzerbefehle und körperliche Grundfunktionen warten nicht auf dieses Modul.

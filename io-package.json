@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "adaptivehome",
-    "version": "0.0.1",
+    "version": "0.1.0-beta.1",
     "news": {
+      "0.1.0-beta.1": {
+        "en": "First beta: dynamic configuration, capability SDK and scoped local full automation with effect checks and rollback.",
+        "de": "Erste Beta: dynamische Konfiguration, Hersteller-SDK und freigegebene lokale Vollautomatik mit Wirkungsprüfung und Rücknahme."
+      },
       "0.0.1": {
         "en": "initial release",
         "de": "Erstveröffentlichung",
@@ -56,9 +60,9 @@
       "license": "MIT"
     },
     "platform": "Javascript/Node.js",
-    "icon": "adaptivehome.png",
+    "icon": "adaptivehome.svg",
     "enabled": true,
-    "extIcon": "https://raw.githubusercontent.com/Holly86/ioBroker.adaptivehome/codex/implementation/admin/adaptivehome.png",
+    "extIcon": "https://raw.githubusercontent.com/Holly86/ioBroker.adaptivehome/codex/implementation/admin/adaptivehome.svg",
     "readme": "https://github.com/Holly86/ioBroker.adaptivehome/blob/codex/implementation/README.md",
     "loglevel": "info",
     "tier": 3,
@@ -88,15 +92,17 @@
     },
     "dependencies": [
       {
-        "js-controller": ">=6.0.11"
+        "js-controller": ">=7.2.5"
       }
     ],
     "globalDependencies": [
       {
-        "admin": ">=7.0.23"
+        "admin": ">=8.3.11"
       }
     ],
-    "messagebox": true
+    "messagebox": true,
+    "connectionType": "local",
+    "dataSource": "push"
   },
   "native": {
     "integrationProfiles": [],

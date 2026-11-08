@@ -15,7 +15,7 @@ Voraussetzungen: AP-03, AP-06, AP-08.
 ## Konkreter Ausführungsprompt
 
 ```text
-Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-13 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten. 
+Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-13 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten.
 
 Ergänze die optionale IKEA-Unterstützung anhand konkret verfügbarer öffentlicher Anbindungen. Prüfe getrennt den älteren Tradfri-Gatewayweg, passende Matter-Geräte oder Gateways und gegebenenfalls eine bereits eingerichtete ZigBee-Anbindung. Versprich keine Dirigera-Unterstützung ohne einen tatsächlich geprüften Weg.
 Ordne nur die nachgewiesenen Schalt-, Dimm-, Kontakt-, Bewegungs- oder weiteren Fähigkeiten zu. Ein über Hue oder ZigBee bereits gebundenes Gerät darf nicht durch erneute Erkennung doppelt gesteuert werden. Ergänze Konfigurationsassistenz und Kompatibilitätsmatrix. Die bereits implementierten Licht- und Betriebsregeln müssen unverändert mit diesen Fähigkeiten arbeiten. Führe Vertragstests und die verfügbare reale Prüfung aus. Markiere fehlende Geräteprüfungen einzeln; halte die Integration vollständig optional und verhindere jede globale Bereitschaftssperre bei nicht installiertem IKEA-Backend.

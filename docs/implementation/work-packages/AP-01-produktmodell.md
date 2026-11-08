@@ -15,7 +15,7 @@ Voraussetzungen: AP-00.
 ## Konkreter Ausführungsprompt
 
 ```text
-Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-01 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten. 
+Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-01 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten.
 
 Überführe PROJECT.md in ein implementierbares Produktmodell. Definiere Geräte, Fähigkeiten, Räume, frei benannte Anlagen, Funktionsinstanzen, Kontexte, Ziele, Betriebsgrenzen, Konflikte und Bedienvorrang. Der Nutzer muss sowohl einfache Zeitsteuerung als auch mehrere verknüpfte Anforderungen konfigurieren können. Ein Begriff wie Pumpe darf nur eine nutzerzugeordnete semantische Funktion sein.
 Beschreibe drei vollständige Beispiele: Wohnung mit Klima und Bewegungslight, Anlage mit unverzichtbarer Umwälzung und Tagesbeleuchtung sowie Luftqualitätsbereich mit einem unterstützten Luftreiniger. Lege klassische Betriebsarten, Dauerbetrieb, bedarfsgeregelten Betrieb, Wartung und alle fünf Lernmodi fest. Übersetze jedes Ziel in Akzeptanzfälle und identifiziere fehlende Gerätefähigkeiten ausdrücklich. Plane den ersten nutzbaren Durchstich so, dass er im Admin eingerichtet, über echte ioBroker-Schnittstellen ausgeführt und erklärt werden kann. Dokumentiere, welche Funktionen Beta-Kern und welche gerätespezifische Erweiterungen sind; die volle Automatisierung darf dabei nicht aus dem Kernziel verschwinden.

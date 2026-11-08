@@ -15,7 +15,7 @@ Voraussetzungen: AP-00, AP-01.
 ## Konkreter Ausführungsprompt
 
 ```text
-Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-02 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten. 
+Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-02 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten.
 
 Implementiere das Laufzeitgerüst als richtiges ioBroker-Adapterpaket. Entscheide anhand eines kleinen nachweisbaren Versuchs, wie unabhängige Funktionsinstanzen und Lernarbeit getrennt laufen, während der Nutzer eine gemeinsame Admin-Ansicht erhält. Eine UI- oder Koordinatorunterbrechung darf nicht zum Pflichtstopp aller Schaltpfade führen.
 Implementiere ready, stateChange, objectChange, message und unload mit gezielten Subscriptions, sauberem Abmelden und begrenzten Hintergrundarbeiten. Registriere unterstützte Fähigkeiten, Zustand, Bereitschaft und Fehler pro Instanz. Rehydration stellt gültige Konfiguration und bestätigte Zuständigkeit wieder her, spielt aber keine alten Gerätebefehle oder Timer ungeprüft ab. Begrenze CPU-, Speicher- und Warteschlangenarbeit. Verwende eine nachvollziehbare Uhrabstraktion für Zeitzonen-, Sprung- und Neustarttests. Prüfe Installation und Lebenszyklus an einem echten Test-js-controller. Halte Verbindungskonfiguration, Oberfläche und späteren Fachkern so getrennt, dass ein weiterer Hersteller keine Änderung dieses Lebenszyklus benötigt.

@@ -16,7 +16,7 @@ Voraussetzungen: keine.
 ## Konkreter Ausführungsprompt
 
 ```text
-Lies die private Übergabe und die öffentlichen gemeinsamen Produktdokumente im Übergabepaket. Bearbeite AP-00 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten. 
+Lies die private Übergabe und die öffentlichen gemeinsamen Produktdokumente im Übergabepaket. Bearbeite AP-00 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten.
 
 Lege das separate öffentliche Repository für Adaptive Home an und bereite eine eigenständige lokale Arbeitskopie vor. Lies zuerst die private Übergabe; übertrage danach ausschließlich die im Exportverzeichnis freigegebenen öffentlichen Plan-Dateien. Ermittle den autorisierten GitHub-Eigentümer aus der vorhandenen Anmeldung. Prüfe den vorgeschlagenen Repository- und npm-Namen; übernimm kein fremdes existierendes Projekt. Dokumentiere eine nötige eindeutige Namensalternative durchgängig.
 Verwende das offizielle ioBroker-Gerüst mit kompatiblen festgehaltenen Versionen. Richte TypeScript, Formatierung, Paket-/Controller-Integrationstests, minimale GitHub-Rechte und einen bereinigten Veröffentlichungsablauf ein. Ignoriere .local vor dem ersten Commit. Prüfe Herkunft und Lizenz jedes übernommenen Moduls; keine vollständige Übernahme des privaten Ausgangsprojekts. Erstelle generische Beispiele und Beitragsregeln. Veröffentliche nur den überprüften initialen Produktstand. Wenn eine Anmeldung fehlt, bereite lokal trotzdem das vollständige prüfbare Ergebnis vor, kennzeichne ausschließlich die Remote-Aktion als ausstehend und arbeite an unabhängigen APs weiter.

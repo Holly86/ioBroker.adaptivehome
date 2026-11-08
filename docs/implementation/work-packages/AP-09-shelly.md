@@ -15,7 +15,7 @@ Voraussetzungen: AP-03, AP-06, AP-08.
 ## Konkreter Ausführungsprompt
 
 ```text
-Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-09 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten. 
+Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-09 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten.
 
 Implementiere Shelly als erste vollständige Herstellerintegration. Verwende bevorzugt die vorhandene Shelly-Adapteranbindung. Unterscheide Gerätegenerationen und tatsächlich angebotene Datenpunkte; keine einzelne private REST-Adresse als Herstellerunterstützung ausgeben.
 Normalisiere Schalten, Dimmen, Farbe, Energie und Sensoren nur soweit vorhanden. Trenne Soll- und Rückmeldepunkt, Handbedienung, Onlinezustand und echte Messzeit. Mehrkanalgeräte dürfen nicht versehentlich den falschen Ausgang bedienen. Dokumentiere unterstützte Adapter-/Geräteversionen und Einschränkungen. Direkte Protokollzugriffe sind nur als klar begründeter, separater und modellgeprüfter Pfad zulässig, nicht als unbemerkter zweiter Schreiber. Führe gemeinsame Vertragstests und Controller-Integration aus, prüfe Ablehnung, Zeitüberschreitung, Neuverbindung und unveränderte Rückmeldungen. Reale Geräteprüfungen gemäß vorhandener Freigabe dokumentieren; fehlende Hardware wird nicht durch eine fingierte ON-Bestätigung ersetzt.

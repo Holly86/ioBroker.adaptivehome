@@ -15,7 +15,7 @@ Voraussetzungen: AP-03, AP-06, AP-08.
 ## Konkreter Ausführungsprompt
 
 ```text
-Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-11 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten. 
+Lies zuerst docs/implementation/COMMON.md und die dort genannten gemeinsamen Produktdokumente. Bearbeite AP-11 vollständig. Prüfe den tatsächlichen Ausgangsstand und die implementierten Abhängigkeiten.
 
 Implementiere Philips Hue über die gewählte bestehende ioBroker-Anbindung. Trenne physisches Gerät, Gruppe, Szene, Bewegung, Helligkeit und Bedienereignis. Normalisiere die dokumentierte Einheit der Helligkeit und die Zeitstempel; unterschiedliche Bridge-/Anbindungsvarianten benötigen eigene geprüfte Merkmale.
 Gruppen dürfen keine vom Nutzer ausgeschlossenen zusätzlichen Leuchten mitschalten. Verknüpfe Bewegung und Helligkeit anhand belastbarer Identität, nicht bloß ähnlich benannter Datenpunkte. Erhalte manuellen Vorrang auch bei Dimmen ohne Wechsel des Ein-Zustands. Prüfe erreichbare unveränderte Sensorwerte, leicht vorausliegende Ereigniszeiten, schnelle Folgen und Wiederanlauf. Alte Bewegung darf keinen Neustart-Schaltbefehl erzeugen; ein zunächst noch nicht zulässiger neuer Zeitstempel darf nicht vorzeitig verbraucht werden. Implementiere den gemeinsamen Herstellervertrag und führe gezielte Hardwarechecks durch, soweit vorhanden. Halte Modell-/Adapterstatus und reale Prüftiefe in der Kompatibilitätsmatrix fest.
