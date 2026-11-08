@@ -99,8 +99,16 @@
     "messagebox": true
   },
   "native": {
-    "integrationProfiles": []
+    "integrationProfiles": [],
+    "controlClients": [],
+    "controlSecret": ""
   },
   "objects": [],
-  "instanceObjects": []
+  "instanceObjects": [],
+  "encryptedNative": [
+    "controlSecret"
+  ],
+  "protectedNative": [
+    "controlSecret"
+  ]
 }

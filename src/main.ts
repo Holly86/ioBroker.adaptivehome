@@ -6,9 +6,12 @@ import { StateMetadata, StateValue } from './integrations/registry';
 import { builtInRegistry, discoverProfiles } from './integrations/profiles';
 import { registerDefinitions } from './integrations/sdk';
 import { IntegrationRegistry } from './integrations/registry';
+import { clientSchema, ControlClient, MUTATIONS, OperationGuard, RequestRecord, verifyControl } from './runtime/control';
 class Adaptivehome extends utils.Adapter {
     private registry:IntegrationRegistry = builtInRegistry();
     private runtime!: HomeRuntime;
+    private clients:ControlClient[] = [];
+    private guard = new OperationGuard(records => this.persistJournal('operations',records));
     private timer?: ReturnType<typeof setInterval>;
     private configuration = new ConfigurationStore({
         read: async () => {
@@ -31,6 +34,7 @@ class Adaptivehome extends utils.Adapter {
     }
     private async ready(): Promise<void> {
         registerDefinitions(this.registry,this.config.integrationProfiles ?? []);
+        this.clients = (this.config.controlClients ?? []).map(client => clientSchema.parse(client));
         await this.setObjectNotExistsAsync('configuration.record', {
             type: 'state', common: {name: 'Authoritative configuration record', type: 'string', role: 'json', read: true, write: false}, native: {},
         });
@@ -40,10 +44,7 @@ class Adaptivehome extends utils.Adapter {
             metadata: async id => { const obj = await this.getForeignObjectAsync(id);return obj?.type === 'state' ? obj.common as StateMetadata : null; },
             write: async (id,value) => { await this.setForeignStateAsync(id,value,false); },
             send: (adapter,command,payload) => new Promise(resolve => this.sendTo(adapter,command,payload,resolve)),
-            persist: async (key,value) => {
-                await this.setObjectNotExistsAsync(`journal.${key}`,{type:'state',common:{name:`Private ${key} journal`,type:'string',role:'json',read:true,write:false},native:{}});
-                await this.setStateAsync(`journal.${key}`,JSON.stringify(value),true);
-            },
+            persist: (key,value) => this.persistJournal(key,value),
         });
         const journal = await this.getStateAsync('journal.execution');
         await this.runtime.initialize(typeof journal?.val === 'string' ? JSON.parse(journal.val) as ExecutionJournal : undefined);
@@ -51,12 +52,18 @@ class Adaptivehome extends utils.Adapter {
         if(typeof history?.val === 'string')try{this.runtime.history.restore(JSON.parse(history.val));}catch{this.runtime.history.dropped++;}
         const incidents = await this.getStateAsync('journal.incidents');
         if(typeof incidents?.val === 'string')try{this.runtime.incidents.restore(JSON.parse(incidents.val));}catch{this.log.warn('Incident journal could not be read');}
+        const operations = await this.getStateAsync('journal.operations');
+        if(typeof operations?.val === 'string')this.guard.records = JSON.parse(operations.val) as RequestRecord[];
         await this.subscriptions();
         await this.setObjectNotExistsAsync('info.connection', {
             type: 'state', common: {name: 'Runtime ready', type: 'boolean', role: 'indicator.connected', read: true, write: false}, native: {},
         });
         await this.setStateAsync('info.connection', true, true);
         this.timer = setInterval(() => void this.runtime.tick().catch(() => this.log.warn('A runtime round failed; no global device action was issued')), 1000);
+    }
+    private async persistJournal(key:string,value:unknown):Promise<void>{
+        await this.setObjectNotExistsAsync(`journal.${key}`,{type:'state',common:{name:`Private ${key} journal`,type:'string',role:'json',read:true,write:false},native:{}});
+        await this.setStateAsync(`journal.${key}`,JSON.stringify(value),true);
     }
     private async subscriptions(): Promise<void> {
         await this.unsubscribeForeignStatesAsync('*');await this.unsubscribeForeignObjectsAsync('*');
@@ -70,10 +77,29 @@ class Adaptivehome extends utils.Adapter {
     private async message(obj: ioBroker.Message): Promise<void> {
         if (!obj.callback) return;
         let result: unknown;
+        let operationKey:string|undefined;
+        const originalCommand = obj.command;
+        let command = obj.command, data = obj.message,remoteScope:string|undefined;
         try {
-            switch (obj.command) {
+            if(command === 'control'){
+                const envelope = verifyControl(obj.from,data,this.clients,this.config.controlSecret ?? '');
+                if(envelope.expiresAt <= Date.now() || envelope.expiresAt > Date.now()+300000)throw new Error('request_expired');
+                if(envelope.expectedRevision !== this.configuration.record.active.revision)throw new Error('revision_conflict');
+                remoteScope = envelope.functionId;data = envelope;
+                command = ['pause','cancel','revert'].includes(envelope.action) ? 'adaptation' : envelope.action;
+            }else if(!this.guard.isAdmin(obj.from) && command !== 'health')throw new Error('admin_transport_required');
+            if(MUTATIONS.has(command)){
+                const reservation = await this.guard.reserve(obj.from,data,this.configuration.record.active.revision,Date.now());
+                if(reservation.duplicate){this.sendTo(obj.from,originalCommand,reservation.result,obj.callback);return;}
+                operationKey = reservation.key;
+            }
+            switch (command) {
                 case 'health': result = {ready: !!this.runtime, revision: this.configuration.record.active.revision}; break;
-                case 'status': result = this.runtime.status(); break;
+                case 'status': {
+                    result = this.runtime.status();
+                    if(remoteScope){const status = result as {functions:Record<string,unknown>;traces:Record<string,unknown>};result = {functions:{[remoteScope]:status.functions[remoteScope]},traces:{[remoteScope]:status.traces[remoteScope]}};}
+                    break;
+                }
                 case 'getConfiguration': result = this.configuration.record; break;
                 case 'discover': {
                     const objects:Record<string,StateMetadata> = {};
@@ -83,28 +109,31 @@ class Adaptivehome extends utils.Adapter {
                     }
                     result = discoverProfiles(objects,this.registry);break;
                 }
-                case 'previewConfiguration': result = this.configuration.preview(obj.message); break;
+                case 'previewConfiguration': result = this.configuration.preview(data); break;
                 case 'exportConfiguration': result = this.configuration.export(); break;
                 case 'applyConfiguration':
-                    result = await this.configuration.activate(obj.message.configuration, obj.message.expectedRevision);
+                    result = await this.configuration.activate(data.configuration, data.expectedRevision);
                     await this.subscriptions();
                     await this.configuration.applied(this.configuration.record.active.revision);
                     break;
                 case 'rollbackConfiguration':
-                    result = await this.configuration.rollback(obj.message.expectedRevision);
+                    result = await this.configuration.rollback(data.expectedRevision);
                     await this.subscriptions();
                     await this.configuration.applied(this.configuration.record.active.revision);
                     break;
-                case 'manual': result = await this.runtime.manual(obj.message.functionId,obj.message.value,obj.message.requestId,obj.from);break;
-                case 'resume': result = await this.runtime.executor.resume(obj.message.functionId);break;
-                case 'reconcile': result = await this.runtime.executor.reconcile(obj.message.functionId);break;
+                case 'manual': result = await this.runtime.manual(data.functionId,data.value,data.requestId,obj.from);break;
+                case 'resume': result = await this.runtime.executor.resume(data.functionId);break;
+                case 'reconcile': result = await this.runtime.executor.reconcile(data.functionId);break;
                 case 'supportExport': result = this.runtime.history.supportExport();break;
                 case 'clearHistory': this.runtime.history.clear();await this.setStateAsync('journal.history',JSON.stringify(this.runtime.history.record),true);result = true;break;
                 default: throw new Error('unknown_command');
             }
-            this.sendTo(obj.from, obj.command, {ok: true, result}, obj.callback);
+            const response = {ok:true,result};if(operationKey)await this.guard.complete(operationKey,response);
+            this.sendTo(obj.from, originalCommand, response, obj.callback);
         } catch (error) {
-            this.sendTo(obj.from, obj.command, {ok: false, error: error instanceof Error ? error.message : 'request_failed'}, obj.callback);
+            const response = {ok:false,error:error instanceof Error ? error.message : 'request_failed'};
+            if(operationKey)try{await this.guard.complete(operationKey,response);}catch{this.log.warn('Operation result could not be persisted');}
+            this.sendTo(obj.from, originalCommand, response, obj.callback);
         }
     }
 }

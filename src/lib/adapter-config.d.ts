@@ -5,6 +5,8 @@ declare global {
 	namespace ioBroker {
 		interface AdapterConfig {
 			integrationProfiles?: unknown[];
+			controlClients?: unknown[];
+			controlSecret?: string;
 		}
 	}
 }

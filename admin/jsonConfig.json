@@ -19,6 +19,24 @@
         "de": "Vertrauenswürdige Herstellerprofile (SDK v1, optional)",
         "en": "Trusted integration profiles (SDK v1, optional)"
       }
+    },
+    "controlClients": {
+      "xs": 12,
+      "label": {
+        "en": "Optional trusted control clients",
+        "de": "Optionale vertrauenswürdige Bedienclients"
+      },
+      "type": "jsonEditor",
+      "newLine": true
+    },
+    "controlSecret": {
+      "xs": 12,
+      "label": {
+        "en": "Optional gateway signing secret",
+        "de": "Optionaler Signaturschlüssel für ein Gateway"
+      },
+      "type": "password",
+      "newLine": true
     }
   }
 }

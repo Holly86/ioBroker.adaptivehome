@@ -498,15 +498,20 @@
         "AP-06",
         "AP-18"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "implemented",
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
-      "evidence": [],
-      "openChecks": [],
+      "evidence": [
+        "docs/verification/AP-19.md"
+      ],
+      "openChecks": [
+        "Optional Telegram requires an explicitly configured trusted gateway with original update metadata and designated account; no live bot commands were sent",
+        "Admin transport/browser integration checked in AP-24"
+      ],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T14:51:37.101Z"
     },
     {
       "id": "AP-20",

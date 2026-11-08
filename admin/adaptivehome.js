@@ -14,7 +14,9 @@
     function request(command,data = {}) {return new Promise((resolve,reject) => {
         if(!socket || !$('instance').value)return reject(new Error(t('unavailable')));
         const timer = setTimeout(() => reject(new Error(t('unavailable'))),10000);
-        socket.emit('sendTo',$('instance').value,command,data,response => {clearTimeout(timer);response?.ok ? resolve(response.result) : reject(new Error(response?.error === 'revision_conflict' ? t('conflict') : response?.error || t('unavailable')));});
+        const mutations = ['applyConfiguration','rollbackConfiguration','manual','resume','reconcile','clearHistory','adaptation'];
+        const payload = mutations.includes(command) ? {...data,requestId:data.requestId || uid('request'),expectedRevision:data.expectedRevision ?? revision,expiresAt:Date.now()+30000} : data;
+        socket.emit('sendTo',$('instance').value,command,payload,response => {clearTimeout(timer);response?.ok ? resolve(response.result) : reject(new Error(response?.error === 'revision_conflict' ? t('conflict') : response?.error || t('unavailable')));});
     });}
     function button(parent,label,action) {const b = node('button',t(label));b.type = 'button';b.addEventListener('click',() => run(action));parent.append(b);return b;}
     function field(parent,label,value,change,kind = 'text',choices) {
