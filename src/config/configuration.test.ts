@@ -3,6 +3,15 @@ import { ConfigurationStore, validateConfiguration } from './configuration';
 import { referenceConfiguration } from './examples';
 import { intersectWindows, windowMatches } from './schedule';
 describe('AP-04 configuration transactions', () => {
+	it('rejects a second function alias that could bypass an essential output or its hard limits', () => {
+		const config = referenceConfiguration('aquarium');
+		const alias = structuredClone(config.functions[1]);
+		alias.id = 'alias';
+		alias.limits.essential = false;
+		delete alias.limits.minimumValue;
+		config.functions.push(alias);
+		assert.throws(() => validateConfiguration(config), /duplicate_function_owner/);
+	});
 	it('validates all three complete reference cases and rejects duplicate physical writers', () => {
 		for (const kind of ['apartment', 'aquarium', 'air'] as const) {
 			assert.ok(referenceConfiguration(kind).functions.length);

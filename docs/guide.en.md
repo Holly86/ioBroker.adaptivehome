@@ -72,3 +72,5 @@ and request/cost budgets. HTTP-JSON, Ollama and OpenAI-compatible responses are 
 return strictly structured candidates for inspection, not scripts or direct state writes. Local full
 automation is independent of providers. No paid calls or real account delivery were performed for
 this beta. See [operations](operations.md) for private data, diagnostics, updates and rollback.
+
+Beta 2 requires exactly one function per physical output, including disabled aliases. Combine schedules, conditions and hard limits within that function. Before upgrading beta 1, export/backup and remove overlapping function aliases using its Admin. Ambiguous saved configurations are rejected; restore a valid private configuration rather than allowing an automatic guess about ownership.

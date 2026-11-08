@@ -96,7 +96,9 @@ Datenlöschung ebenfalls entfernen.
 Vor Updates exportieren und ioBroker sichern. Lernanpassungen pausieren, Instanz stoppen, geprüftes
 Paket installieren, Admin-Dateien hochladen und starten. Konfiguration bleibt im ioBroker-Datenspeicher.
 Bei Problemen vorige gültige Konfiguration oder vorige geprüfte Paketversion samt kompatiblem Backup
-wiederherstellen. Vor dieser ersten Beta gibt es keine ältere produktive Paketversion.
+wiederherstellen. Es gibt keine ältere Produktivversion. Beta 1 hat eine bekannte Zuständigkeitslücke und ist kein Rückweg bei Aliasproblemen.
 Details: [Betrieb](operations.md), [Kompatibilität](compatibility.md), [Prüfungen](testing.md).
 
 [Hersteller erweitern und tatsächlicher Geräteprüfstand](integration-sdk.de.md).
+
+Beta 2 erlaubt genau eine Funktion pro physischem Ausgang, auch bei deaktivierten Aliasfunktionen. Zeitpläne, Bedingungen und harte Grenzen in dieser Funktion zusammenführen. Vor dem Update von Beta 1 sichern/exportieren und überlappende Aliasfunktionen im Admin entfernen. Mehrdeutige gespeicherte Konfigurationen werden abgelehnt; eine gültige private Konfiguration wiederherstellen, statt Zuständigkeit automatisch zu raten.

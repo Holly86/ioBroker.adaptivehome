@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "adaptivehome",
-    "version": "0.1.0-beta.1",
+    "version": "0.1.0-beta.2",
     "news": {
+      "0.1.0-beta.2": {
+        "en": "Enforce one function owner per physical output so aliases cannot bypass essential service or hard limits.",
+        "de": "Ein Funktionsverantwortlicher je physischem Ausgang verhindert das Umgehen von Mindestfunktion und harten Grenzen durch Aliasfunktionen."
+      },
       "0.1.0-beta.1": {
         "en": "First beta: dynamic configuration, capability SDK and scoped local full automation with effect checks and rollback.",
         "de": "Erste Beta: dynamische Konfiguration, Hersteller-SDK und freigegebene lokale Vollautomatik mit Wirkungsprüfung und Rücknahme."

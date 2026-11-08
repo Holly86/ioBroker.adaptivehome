@@ -5,7 +5,7 @@ air quality, scheduled equipment and continuous minimum service. Start with one 
 learning up to an automatic observe → learn → plan → execute → check effect → rollback cycle.
 No language model, notification account, Node-RED or separate web app is required.
 
-**0.1.0-beta.1:** implemented and tested on a real js-controller with synthetic devices.
+**0.1.0-beta.2:** implemented and tested on a real js-controller with synthetic devices.
 Physical devices and cloud accounts have not been certified. See [compatibility](docs/compatibility.md).
 
 [Deutsche Anleitung](docs/guide.de.md) · [English guide](docs/guide.en.md) ·
@@ -19,7 +19,7 @@ Tested locally: Node 24.22.1, controller 7.2.5, Admin 8.3.11 on Windows.
 Download the release's `.tgz` and `SHA256SUMS.txt`. Verify its checksum, then run in the ioBroker directory:
 
 ```sh
-npm install ./iobroker.adaptivehome-0.1.0-beta.1.tgz
+npm install ./iobroker.adaptivehome-0.1.0-beta.2.tgz
 iobroker upload adaptivehome
 iobroker add adaptivehome --enabled
 ```
@@ -90,6 +90,11 @@ Meter readings, power integration and estimates have distinct labels and coverag
 household energy-saving claim is made.
 
 ## Changelog
+
+### 0.1.0-beta.2
+
+* Reject overlapping function owners in configuration and at the executor boundary. Combine rules and limits in one function per physical output.
+* Beta 1 configurations with overlapping aliases must be corrected before upgrading.
 
 ### 0.1.0-beta.1
 

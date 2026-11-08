@@ -19,8 +19,7 @@ not overwrite an active configuration before validation/activation. Previous con
 a new revision; it does not overwrite newer manual wishes or replay old device queues.
 
 For package rollback stop the instance, reinstall a previous tested artifact and upload its Admin
-files. Restore a compatible private backup if a future release changes schema. This first beta has
-no earlier production version. Ownership must remain exclusive through takeover and rollback.
+files. Restore a compatible private backup if a future release changes schema. There is no earlier production release. Beta 1 has a known ambiguous-ownership issue; it is not a workaround for overlapping functions. Ownership must remain exclusive through takeover and rollback.
 
 Local history is bounded to seven days and 10,000 rows. Old/malformed rows are dropped, with counts.
 Clear history deletes observations; model, adaptation, command, incident and replay journals remain

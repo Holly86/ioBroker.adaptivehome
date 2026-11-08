@@ -37,6 +37,7 @@ export function validateConfiguration(input: unknown, registry?: IntegrationRegi
 			}
 		}
 	}
+	const functionOwners = new Set<string>();
 	for (const fn of config.functions) {
 		for (const dependency of fn.dependencies) {
 			if (!config.functions.some(other => other.id === dependency.functionId)) {
@@ -51,6 +52,10 @@ export function validateConfiguration(input: unknown, registry?: IntegrationRegi
 		if (!binding?.confirmed || !mapping?.writeId || !mapping.confirmId) {
 			throw new Error('unconfirmed_actuator');
 		}
+		if (functionOwners.has(binding.physicalId)) {
+			throw new Error('duplicate_function_owner');
+		}
+		functionOwners.add(binding.physicalId);
 		if (fn.limits.essential && fn.limits.minimumValue === undefined) {
 			throw new Error('minimum_service_required');
 		}

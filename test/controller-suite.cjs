@@ -163,6 +163,10 @@ function defineControllerTests({ suite }) {
 				bad.functions[0].limits.min = 100;
 				bad.functions[0].limits.max = 0;
 				assert.equal((await rpc('applyConfiguration', envelope({ configuration: bad }, 1))).ok, false);
+				const ambiguous = structuredClone(applied.result);
+				ambiguous.functions.push({ ...structuredClone(ambiguous.functions[0]), id: 'alias' });
+				const duplicate = await rpc('applyConfiguration', envelope({ configuration: ambiguous }, 1));
+				assert.equal(duplicate.error, 'duplicate_function_owner');
 				await harness.states.setStateAsync('test.0.motion.motion', {
 					val: true,
 					ack: true,

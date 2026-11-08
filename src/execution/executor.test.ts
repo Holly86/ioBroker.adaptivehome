@@ -5,6 +5,24 @@ import { ManualClock } from '../runtime/clock';
 import type { ExecutionPort } from './executor';
 import { Executor } from './executor';
 describe('AP-06 execution safety', () => {
+	it('also rejects ambiguous owners at the final write boundary for unvalidated caller configurations', async () => {
+		const s = setup(),
+			alias = structuredClone(s.config.functions[1]);
+		alias.id = 'alias';
+		alias.limits.essential = false;
+		delete alias.limits.minimumValue;
+		s.config.functions.push(alias);
+		await assert.rejects(
+			s.executor.execute({
+				...s.intent('alias-off', false),
+				functionId: 'alias',
+				entityId: 'circulation',
+				origin: 'manual',
+			}),
+			/duplicate_function_owner/,
+		);
+		assert.equal(s.writes.length, 0);
+	});
 	function setup() {
 		const clock = new ManualClock(10000),
 			config = referenceConfiguration('aquarium'),

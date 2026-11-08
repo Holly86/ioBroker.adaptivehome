@@ -6,6 +6,7 @@ const executionReasons = new Set([
 	'intent_expired_or_disabled',
 	'maintenance',
 	'binding_not_authorized',
+	'duplicate_function_owner',
 	'value_type',
 	'hard_limit',
 	'unsupported_value',

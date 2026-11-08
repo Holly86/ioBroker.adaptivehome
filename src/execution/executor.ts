@@ -103,6 +103,12 @@ export class Executor {
 		if (!binding?.confirmed || !mapping?.writeId || !mapping.confirmId || mapping.confirmation === 'none') {
 			throw new Error('binding_not_authorized');
 		}
+		const config = this.configuration();
+		const ownerBindings = new Set(config.bindings.filter(b => b.physicalId === binding.physicalId).map(b => b.id));
+		const owners = config.functions.filter(candidate => ownerBindings.has(candidate.actuator.entityId));
+		if (owners.length !== 1) {
+			throw new Error('duplicate_function_owner');
+		}
 		return { physicalId: binding.physicalId, mapping };
 	}
 	async execute(intent: Intent): Promise<Command> {
