@@ -1,8 +1,10 @@
 import * as utils from '@iobroker/adapter-core';
-import { Supervisor } from './runtime/supervisor';
 import { ConfigurationStore, ConfigRecord } from './config/configuration';
+import { HomeRuntime } from './runtime/home';
+import { ExecutionJournal } from './execution/executor';
+import { StateMetadata, StateValue } from './integrations/registry';
 class Adaptivehome extends utils.Adapter {
-    private runtime = new Supervisor();
+    private runtime!: HomeRuntime;
     private timer?: ReturnType<typeof setInterval>;
     private configuration = new ConfigurationStore({
         read: async () => {
@@ -14,12 +16,12 @@ class Adaptivehome extends utils.Adapter {
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
         super({ ...options, name: 'adaptivehome' });
         this.on('ready', () => void this.ready());
-        this.on('stateChange', () => { /* Specific subscriptions are installed with validated bindings. */ });
-        this.on('objectChange', () => { /* Bindings are audited when configuration is activated. */ });
+        this.on('stateChange', (id,state) => { if (state && this.runtime) void this.runtime.executor.feedback(id,state as StateValue).catch(() => this.log.warn('Feedback could not be persisted')); });
+        this.on('objectChange', () => this.runtime?.executor.invalidateAudit());
         this.on('message', obj => void this.message(obj));
         this.on('unload', callback => {
             if (this.timer) clearInterval(this.timer);
-            this.runtime.close();
+            this.runtime?.close();
             callback();
         });
     }
@@ -28,30 +30,56 @@ class Adaptivehome extends utils.Adapter {
             type: 'state', common: {name: 'Authoritative configuration record', type: 'string', role: 'json', read: true, write: false}, native: {},
         });
         await this.configuration.load();
+        this.runtime = new HomeRuntime(() => this.configuration.record.active, {
+            read: async id => await this.getForeignStateAsync(id) as StateValue | null,
+            metadata: async id => { const obj = await this.getForeignObjectAsync(id);return obj?.type === 'state' ? obj.common as StateMetadata : null; },
+            write: async (id,value) => { await this.setForeignStateAsync(id,value,false); },
+            persist: async (key,value) => {
+                await this.setObjectNotExistsAsync(`journal.${key}`,{type:'state',common:{name:`Private ${key} journal`,type:'string',role:'json',read:true,write:false},native:{}});
+                await this.setStateAsync(`journal.${key}`,JSON.stringify(value),true);
+            },
+        });
+        const journal = await this.getStateAsync('journal.execution');
+        await this.runtime.initialize(typeof journal?.val === 'string' ? JSON.parse(journal.val) as ExecutionJournal : undefined);
+        await this.subscriptions();
         await this.setObjectNotExistsAsync('info.connection', {
             type: 'state', common: {name: 'Runtime ready', type: 'boolean', role: 'indicator.connected', read: true, write: false}, native: {},
         });
         await this.setStateAsync('info.connection', true, true);
-        this.timer = setInterval(() => void this.runtime.tick(), 1000);
+        this.timer = setInterval(() => void this.runtime.tick().catch(() => this.log.warn('A runtime round failed; no global device action was issued')), 1000);
+    }
+    private async subscriptions(): Promise<void> {
+        await this.unsubscribeForeignStatesAsync('*');await this.unsubscribeForeignObjectsAsync('*');
+        for (const binding of this.configuration.record.active.bindings) for (const mapping of binding.capabilities) {
+            for (const id of new Set([mapping.readId,mapping.writeId,mapping.confirmId].filter((v): v is string => !!v))) {
+                await this.subscribeForeignStatesAsync(id);await this.subscribeForeignObjectsAsync(id);
+            }
+        }
+        this.runtime.configure();
     }
     private async message(obj: ioBroker.Message): Promise<void> {
         if (!obj.callback) return;
         let result: unknown;
         try {
             switch (obj.command) {
-                case 'health': result = {ready: true, functions: Object.fromEntries(this.runtime.status), revision: this.configuration.record.active.revision}; break;
-                case 'status': result = {functions: Object.fromEntries(this.runtime.status), revision: this.configuration.record.active.revision}; break;
+                case 'health': result = {ready: !!this.runtime, revision: this.configuration.record.active.revision}; break;
+                case 'status': result = this.runtime.status(); break;
                 case 'getConfiguration': result = this.configuration.record; break;
                 case 'previewConfiguration': result = this.configuration.preview(obj.message); break;
                 case 'exportConfiguration': result = this.configuration.export(); break;
                 case 'applyConfiguration':
                     result = await this.configuration.activate(obj.message.configuration, obj.message.expectedRevision);
+                    await this.subscriptions();
                     await this.configuration.applied(this.configuration.record.active.revision);
                     break;
                 case 'rollbackConfiguration':
                     result = await this.configuration.rollback(obj.message.expectedRevision);
+                    await this.subscriptions();
                     await this.configuration.applied(this.configuration.record.active.revision);
                     break;
+                case 'manual': result = await this.runtime.manual(obj.message.functionId,obj.message.value,obj.message.requestId,obj.from);break;
+                case 'resume': result = await this.runtime.executor.resume(obj.message.functionId);break;
+                case 'reconcile': result = await this.runtime.executor.reconcile(obj.message.functionId);break;
                 default: throw new Error('unknown_command');
             }
             this.sendTo(obj.from, obj.command, {ok: true, result}, obj.callback);

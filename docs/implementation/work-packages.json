@@ -189,15 +189,19 @@
         "AP-03",
         "AP-04"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "implemented",
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
-      "evidence": [],
-      "openChecks": [],
+      "evidence": [
+        "docs/verification/AP-06.md"
+      ],
+      "openChecks": [
+        "Controller integration of the command path and delayed-feedback fault matrix follows AP-24"
+      ],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T14:32:20.668Z"
     },
     {
       "id": "AP-07",
