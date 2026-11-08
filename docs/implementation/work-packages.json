@@ -786,5 +786,26 @@
       "distribution": "source correction; published beta-2 artifact unchanged",
       "updatedAt": "2026-11-08T18:32:09.147Z"
     }
-  ]
+  ],
+  "releaseCandidate": {
+    "version": "0.1.0-beta.3",
+    "artifact": "iobroker.adaptivehome-0.1.0-beta.3.tgz",
+    "sha256": "61b4312d6980a7bd26bd393ef3ef9abdc947f0872ddbf4c6a3c91ed91abee55b",
+    "implementationStatus": "implemented",
+    "verificationStatus": "partial",
+    "evidence": [
+      "docs/verification/AP-25.md"
+    ],
+    "checks": {
+      "build": true,
+      "unitContractTests": 60,
+      "packageChecks": 61,
+      "lint": true,
+      "packageContentReview": true,
+      "frozenControllerBrowserSoak": "running",
+      "crossPlatformCI": "pending"
+    },
+    "productionInstallation": "unchanged; no production access performed",
+    "updatedAt": "2026-11-08T18:54:57.384Z"
+  }
 }

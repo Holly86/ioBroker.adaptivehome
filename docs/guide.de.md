@@ -102,3 +102,5 @@ Details: [Betrieb](operations.md), [Kompatibilität](compatibility.md), [Prüfun
 [Hersteller erweitern und tatsächlicher Geräteprüfstand](integration-sdk.de.md).
 
 Beta 2 erlaubt genau eine Funktion pro physischem Ausgang, auch bei deaktivierten Aliasfunktionen. Zeitpläne, Bedingungen und harte Grenzen in dieser Funktion zusammenführen. Vor dem Update von Beta 1 sichern/exportieren und überlappende Aliasfunktionen im Admin entfernen. Mehrdeutige gespeicherte Konfigurationen werden abgelehnt; eine gültige private Konfiguration wiederherstellen, statt Zuständigkeit automatisch zu raten.
+
+Beta 3 trennt Soll- und Messtemperaturen und schließt mehrdeutige Hue-Aktoraliase, Sensorfreigaben und automatische Gruppenvorschläge aus. Quelleinheiten müssen zur Umrechnung passen; Wh werden nach kWh normalisiert. Ältere Air-cx-Ein/Aus-/Lüfterprozent-Pfade bleiben lesend. Die Erkennung schreibt gespeicherte Bindungen nicht automatisch um: Zuordnungen, physische Identität und Datenalter vor Aktivierung prüfen. Der Lernmodus Beobachten stoppt klassische Regeln nicht; ein rein lesender Shadow-Pilot benötigt eine Laufzeit ohne Aktorschreibschnittstelle.

@@ -5,7 +5,7 @@ air quality, scheduled equipment and continuous minimum service. Start with one 
 learning up to an automatic observe → learn → plan → execute → check effect → rollback cycle.
 No language model, notification account, Node-RED or separate web app is required.
 
-**0.1.0-beta.2:** implemented and tested on a real js-controller with synthetic devices.
+**0.1.0-beta.3:** implemented and tested on a real js-controller with synthetic devices.
 Physical devices and cloud accounts have not been certified. See [compatibility](docs/compatibility.md).
 
 [Deutsche Anleitung](docs/guide.de.md) · [English guide](docs/guide.en.md) ·
@@ -19,7 +19,7 @@ Tested locally: Node 24.22.1, controller 7.2.5, Admin 8.3.11 on Windows.
 Download the release's `.tgz` and `SHA256SUMS.txt`. Verify its checksum, then run in the ioBroker directory:
 
 ```sh
-npm install ./iobroker.adaptivehome-0.1.0-beta.2.tgz
+npm install ./iobroker.adaptivehome-0.1.0-beta.3.tgz
 iobroker upload adaptivehome
 iobroker add adaptivehome --enabled
 ```
@@ -91,13 +91,13 @@ household energy-saving claim is made.
 
 ## Changelog
 
-### Unreleased source corrections after 0.1.0-beta.2
+### 0.1.0-beta.3
 
 * Separate measured temperatures from thermostat targets; validate raw units before conversion.
 * Classify Hue resources from parent metadata, exclude sensor/group controls and quarantine duplicate light aliases.
 * Add Shelly Wh/Celsius/gain detection and read-only legacy Air power/percent telemetry.
 * Add anonymous discovery regressions and actual controller-view verification; repeat private read-only shadow checks.
-* These changes are in source only; the immutable beta-2 release package does not contain them.
+* Includes the tested source corrections in the built installable package; earlier release assets remain immutable.
 
 ### 0.1.0-beta.2
 

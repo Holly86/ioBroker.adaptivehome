@@ -1,6 +1,6 @@
 {
   "name": "iobroker.adaptivehome",
-  "version": "0.1.0-beta.2",
+  "version": "0.1.0-beta.3",
   "description": "Configurable capability-based home automation with optional local learning",
   "author": {
     "name": "Holly86",
