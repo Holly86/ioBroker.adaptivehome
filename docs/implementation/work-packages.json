@@ -64,19 +64,17 @@
       "title": "Öffentliches Repository und Entwicklungsbasis",
       "file": "work-packages/AP-00-repository.md",
       "dependencies": [],
-      "status": "implemented",
+      "status": "verified",
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "passed",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-00.md"
       ],
-      "openChecks": [
-        "Controller smoke test result pending"
-      ],
+      "openChecks": [],
       "commit": null,
-      "updatedAt": "2026-11-08T14:15:54.740Z"
+      "updatedAt": "2026-11-08T14:17:44.768Z"
     },
     {
       "id": "AP-01",
@@ -85,15 +83,17 @@
       "dependencies": [
         "AP-00"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "verified",
+      "implementationStatus": "implemented",
+      "verificationStatus": "passed",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
-      "evidence": [],
+      "evidence": [
+        "docs/verification/AP-01.md"
+      ],
       "openChecks": [],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T14:17:44.845Z"
     },
     {
       "id": "AP-02",
