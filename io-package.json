@@ -98,7 +98,9 @@
     ],
     "messagebox": true
   },
-  "native": {},
+  "native": {
+    "integrationProfiles": []
+  },
   "objects": [],
   "instanceObjects": []
 }

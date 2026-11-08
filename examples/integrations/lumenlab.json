@@ -1,0 +1,13 @@
+{
+  "apiVersion": 1,
+  "id": "lumenlab",
+  "name": "Lumen Lab (synthetic SDK example)",
+  "backends": ["lumenlab"],
+  "supportedVersions": ["1.x synthetic contract only"],
+  "rules": [
+    {"capability":"switch","suffix":".actuation.output","type":"boolean","readOnly":false},
+    {"capability":"dimmer","suffix":".actuation.intensity","type":"number","unit":"%","readOnly":false},
+    {"capability":"motion","suffix":".sensing.occupied","type":"boolean","readOnly":true},
+    {"capability":"illuminance","suffix":".sensing.daylight","type":"number","unit":"lx","readOnly":true}
+  ]
+}

@@ -1,1 +1,24 @@
-{"i18n":true,"type":"panel","items":{"notice":{"type":"staticText","text":{"en":"Configure rooms, devices, rules and learning in the Adaptive Home Admin tab. No cloud account is required.","de":"Räume, Geräte, Regeln und Lernen werden im Admin-Tab Adaptive Home eingerichtet. Ein Cloudkonto ist nicht erforderlich."}}}}
+{
+  "i18n": true,
+  "type": "panel",
+  "items": {
+    "notice": {
+      "type": "staticText",
+      "text": {
+        "en": "Configure rooms, devices, rules and learning in the Adaptive Home Admin tab. No cloud account is required.",
+        "de": "Räume, Geräte, Regeln und Lernen werden im Admin-Tab Adaptive Home eingerichtet. Ein Cloudkonto ist nicht erforderlich."
+      }
+    },
+    "integrationProfiles": {
+      "allowEmpty": true,
+      "validateJson": true,
+      "type": "jsonEditor",
+      "xs": 12,
+      "newLine": true,
+      "label": {
+        "de": "Vertrauenswürdige Herstellerprofile (SDK v1, optional)",
+        "en": "Trusted integration profiles (SDK v1, optional)"
+      }
+    }
+  }
+}

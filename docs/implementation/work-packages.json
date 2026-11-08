@@ -372,15 +372,19 @@
         "AP-09",
         "AP-11"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "implemented",
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
-      "evidence": [],
-      "openChecks": [],
+      "evidence": [
+        "docs/verification/AP-14.md"
+      ],
+      "openChecks": [
+        "Policy end-to-end demonstration of the extra integration follows AP-15/AP-24"
+      ],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T14:42:36.242Z"
     },
     {
       "id": "AP-15",

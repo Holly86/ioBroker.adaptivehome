@@ -4,7 +4,10 @@ import { HomeRuntime } from './runtime/home';
 import { ExecutionJournal } from './execution/executor';
 import { StateMetadata, StateValue } from './integrations/registry';
 import { builtInRegistry, discoverProfiles } from './integrations/profiles';
+import { registerDefinitions } from './integrations/sdk';
+import { IntegrationRegistry } from './integrations/registry';
 class Adaptivehome extends utils.Adapter {
+    private registry:IntegrationRegistry = builtInRegistry();
     private runtime!: HomeRuntime;
     private timer?: ReturnType<typeof setInterval>;
     private configuration = new ConfigurationStore({
@@ -13,7 +16,7 @@ class Adaptivehome extends utils.Adapter {
             return typeof value?.val === 'string' ? JSON.parse(value.val) as ConfigRecord : null;
         },
         write: async record => { await this.setStateAsync('configuration.record', JSON.stringify(record), true); },
-    },builtInRegistry());
+    },this.registry);
     public constructor(options: Partial<utils.AdapterOptions> = {}) {
         super({ ...options, name: 'adaptivehome' });
         this.on('ready', () => void this.ready());
@@ -27,6 +30,7 @@ class Adaptivehome extends utils.Adapter {
         });
     }
     private async ready(): Promise<void> {
+        registerDefinitions(this.registry,this.config.integrationProfiles ?? []);
         await this.setObjectNotExistsAsync('configuration.record', {
             type: 'state', common: {name: 'Authoritative configuration record', type: 'string', role: 'json', read: true, write: false}, native: {},
         });
@@ -70,11 +74,11 @@ class Adaptivehome extends utils.Adapter {
                 case 'getConfiguration': result = this.configuration.record; break;
                 case 'discover': {
                     const objects:Record<string,StateMetadata> = {};
-                    for(const profile of builtInRegistry().list())for(const backend of profile.backends){
+                    for(const profile of this.registry.list())for(const backend of profile.backends){
                         const view = await this.getObjectViewAsync('system','state',{startkey:backend + '.',endkey:backend + '.\u9999'});
                         for(const row of view.rows.slice(0,10000))if(row.value?.common)objects[row.id] = row.value.common as StateMetadata;
                     }
-                    result = discoverProfiles(objects);break;
+                    result = discoverProfiles(objects,this.registry);break;
                 }
                 case 'previewConfiguration': result = this.configuration.preview(obj.message); break;
                 case 'exportConfiguration': result = this.configuration.export(); break;

@@ -66,5 +66,10 @@
   "bugs": {
     "url": "https://github.com/Holly86/ioBroker.adaptivehome/issues"
   },
-  "readmeFilename": "README.md"
+  "readmeFilename": "README.md",
+  "exports": {
+    ".": "./build/main.js",
+    "./contracts": "./build/model/contracts.js",
+    "./sdk": "./build/integrations/sdk.js"
+  }
 }
