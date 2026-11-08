@@ -525,15 +525,20 @@
         "AP-16",
         "AP-17"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "implemented",
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
-      "evidence": [],
-      "openChecks": [],
+      "evidence": [
+        "docs/verification/AP-20.md"
+      ],
+      "openChecks": [
+        "Synthetic known-pattern tests passed; no private real-world training or savings validation was performed",
+        "Closed-loop model activation and rollback are completed in AP-22/AP-23"
+      ],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T14:54:26.652Z"
     },
     {
       "id": "AP-21",

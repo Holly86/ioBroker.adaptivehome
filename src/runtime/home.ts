@@ -11,6 +11,7 @@ import { lightingDecision } from '../policies/lighting';
 import { airDecision, climateDecision } from '../policies/climate';
 import { equipmentDecision } from '../policies/equipment';
 import { IncidentService } from '../diagnostics/incidents';
+import { LocalLearning } from '../learning/local';
 import { arbitrate } from '../execution/arbiter';
 export interface HomePort {
     read(id: string): Promise<StateValue | null>;
@@ -27,6 +28,7 @@ export class HomeRuntime {
     private presence = new PresenceContext();
     readonly history = new History();
     readonly incidents:IncidentService;
+    readonly learning:LocalLearning;
     private lastHistoryFlush = 0;
     private memories:Record<string,PolicyMemory> = {};
     private proposals:Intent[] = [];
@@ -34,6 +36,7 @@ export class HomeRuntime {
     private round = 0;
     constructor(private config: () => Configuration, private port: HomePort, readonly clock: Clock = systemClock) {
         this.startedAt = clock.now();
+        this.learning = new LocalLearning(record => port.persist('learning',record));
         this.incidents = new IncidentService(record => port.persist('incidents',record),async (...args) => port.send ? port.send(...args) : undefined);
         this.executor = new Executor(config, {...port,persist: journal => port.persist('execution',journal),inputs: fn => this.inputs(fn)},clock);
     }
@@ -76,6 +79,7 @@ export class HomeRuntime {
             if(/unknown|unavailable|unverified|failed|uncertain|budget|audit/.test(trace.reasonCode))this.incidents.upsert(trace.functionId,trace.reasonCode,'warning',this.clock.now());
             else this.incidents.resolveScope(trace.functionId,this.clock.now());
         }
+        for(const fn of this.config().functions)this.learning.observe(fn,this.config(),this.history,this.clock.now());
         void this.incidents.tick(this.config(),this.clock.now()).catch(() => undefined);
         if(this.clock.now()-this.lastHistoryFlush >= 30000){this.history.rotate(this.clock.now());this.lastHistoryFlush = this.clock.now();
             try{await this.port.persist('history',this.history.record);this.history.storageError = false;}catch{this.history.storageError = true;}
@@ -86,6 +90,7 @@ export class HomeRuntime {
         const config = this.config(), now = this.clock.now(),inputs = await this.inputs(fn),binding = config.bindings.find(b => b.id === fn.actuator.entityId)!;
         const mapping = binding.capabilities.find(c => c.capability === fn.actuator.capability)!;
         const actual = normalize(binding,mapping,await this.port.read(mapping.readId),now);
+        this.history.observation(actual);
         if(round !== this.round || config.revision !== this.config().revision)return;
         const memory = this.memories[fn.id] ??= {}, wish = this.executor.journal.manual[binding.physicalId];
         const ownCommand = this.executor.journal.commands.find(c => c.commandId === memory.commandId);
@@ -105,6 +110,6 @@ export class HomeRuntime {
         const command = this.executor.journal.commands.findLast(c => c.targetPath === id);
         if(command)this.history.event({at:this.clock.now(),type:'feedback',scope:command.intent.functionId,code:command.phase,revision:this.config().revision,commandId:command.commandId});
     }
-    status(): unknown { return {functions:Object.fromEntries(this.supervisor.status),traces:this.traces,commands:this.executor.journal.commands.slice(-50),history:this.history.record.events.slice(-100),historyStorageError:this.history.storageError,incidents:this.incidents.record.incidents}; }
-    close(): void { this.supervisor.close(); }
+    status(): unknown { return {functions:Object.fromEntries(this.supervisor.status),traces:this.traces,commands:this.executor.journal.commands.slice(-50),history:this.history.record.events.slice(-100),historyStorageError:this.history.storageError,incidents:this.incidents.record.incidents,learning:this.learning.record}; }
+    close(): void { this.supervisor.close();this.learning.close(); }
 }

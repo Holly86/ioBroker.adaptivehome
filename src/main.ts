@@ -54,6 +54,8 @@ class Adaptivehome extends utils.Adapter {
         if(typeof incidents?.val === 'string')try{this.runtime.incidents.restore(JSON.parse(incidents.val));}catch{this.log.warn('Incident journal could not be read');}
         const operations = await this.getStateAsync('journal.operations');
         if(typeof operations?.val === 'string')this.guard.records = JSON.parse(operations.val) as RequestRecord[];
+        const learning = await this.getStateAsync('journal.learning');
+        if(typeof learning?.val === 'string')try{this.runtime.learning.restore(JSON.parse(learning.val));}catch{this.log.warn('Learning journal unavailable; classical control continues');}
         await this.subscriptions();
         await this.setObjectNotExistsAsync('info.connection', {
             type: 'state', common: {name: 'Runtime ready', type: 'boolean', role: 'indicator.connected', read: true, write: false}, native: {},
