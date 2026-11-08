@@ -123,15 +123,19 @@
         "AP-01",
         "AP-02"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "implemented",
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
-      "evidence": [],
-      "openChecks": [],
+      "evidence": [
+        "docs/verification/AP-03.md"
+      ],
+      "openChecks": [
+        "Cross-binding physical identity uniqueness and example plugin integration are completed in AP-04/AP-14"
+      ],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T14:20:36.901Z"
     },
     {
       "id": "AP-04",
