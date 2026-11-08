@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "revision": 0,
+  "parentRevision": null,
+  "createdAt": 0,
+  "actor": "synthetic-example",
+  "origin": "operator",
+  "timezone": "UTC",
+  "groups": [
+    {
+      "id": "area",
+      "name": "Air quality area",
+      "kind": "room"
+    }
+  ],
+  "bindings": [
+    {
+      "id": "purifier",
+      "physicalId": "synthetic-purifier",
+      "integrationId": "generic",
+      "family": "synthetic",
+      "backendVersion": "1",
+      "model": "unverified",
+      "confirmed": true,
+      "capabilities": [
+        {
+          "capability": "fan",
+          "readId": "test.0.purifier.fan",
+          "writeId": "test.0.purifier.fan",
+          "confirmId": "test.0.purifier.fan",
+          "valueType": "number",
+          "unit": "%",
+          "scale": 1,
+          "offset": 0,
+          "min": 0,
+          "max": 100,
+          "maxAgeMs": 300000,
+          "tolerance": 0,
+          "confirmation": "backend"
+        },
+        {
+          "capability": "airQuality",
+          "readId": "test.0.purifier.airQuality",
+          "valueType": "number",
+          "unit": "µg/m³",
+          "scale": 1,
+          "offset": 0,
+          "maxAgeMs": 300000,
+          "tolerance": 0,
+          "confirmation": "backend"
+        }
+      ],
+      "verification": "implemented"
+    }
+  ],
+  "functions": [
+    {
+      "id": "air",
+      "name": "Clean air",
+      "groupId": "area",
+      "kind": "air",
+      "enabled": true,
+      "operatingMode": "demand",
+      "actuator": {
+        "entityId": "purifier",
+        "capability": "fan"
+      },
+      "inputs": {
+        "airQuality": {
+          "entityId": "purifier",
+          "capability": "airQuality"
+        }
+      },
+      "rules": [],
+      "parameters": {
+        "threshold": 25,
+        "high": 75,
+        "low": 25,
+        "hysteresis": 5
+      },
+      "limits": {
+        "min": 0,
+        "max": 100,
+        "essential": false,
+        "minOnMs": 0,
+        "minOffMs": 0,
+        "commandsPerHour": 30,
+        "manualHoldMs": 1800000,
+        "protection": []
+      },
+      "autonomy": {
+        "mode": "classic",
+        "granted": false,
+        "parameters": {},
+        "blocks": [],
+        "capabilities": [],
+        "excluded": false,
+        "paused": false,
+        "minSamples": 48,
+        "minCoverage": 0.8,
+        "maxGapMs": 3600000,
+        "changesPerDay": 2,
+        "evaluateAfterMs": 3600000,
+        "degradation": 0.1,
+        "objectives": {
+          "comfort": 1,
+          "energy": 0,
+          "switching": 1
+        }
+      }
+    }
+  ],
+  "sources": [],
+  "notificationRoutes": []
+}

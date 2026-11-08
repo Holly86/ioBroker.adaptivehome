@@ -42,6 +42,8 @@ export const ruleSchema = z.strictObject({
     id, enabled: z.boolean().default(true), block: z.enum(['schedule', 'sensor', 'presence', 'minimum']),
     conditions: z.array(conditionSchema).max(16).default([]), windows: z.array(windowSchema).max(64).default([]),
     value: scalar, priority: z.number().int().min(0).max(100).default(40),
+    validFrom: z.number().finite().optional(), expiresAt: z.number().finite().optional(),
+    excludeDates: z.array(z.string().regex(/^\d{4}-\d{2}-\d{2}$/)).max(366).default([]),
 });
 export type Rule = z.infer<typeof ruleSchema>;
 export const autonomySchema = z.strictObject({

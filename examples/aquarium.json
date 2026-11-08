@@ -1,0 +1,240 @@
+{
+  "schemaVersion": 1,
+  "revision": 0,
+  "parentRevision": null,
+  "createdAt": 0,
+  "actor": "synthetic-example",
+  "origin": "operator",
+  "timezone": "UTC",
+  "groups": [
+    {
+      "id": "area",
+      "name": "Aquarium",
+      "kind": "installation"
+    }
+  ],
+  "bindings": [
+    {
+      "id": "light",
+      "physicalId": "synthetic-light",
+      "integrationId": "generic",
+      "family": "synthetic",
+      "backendVersion": "1",
+      "model": "unverified",
+      "confirmed": true,
+      "capabilities": [
+        {
+          "capability": "switch",
+          "readId": "test.0.light.switch",
+          "writeId": "test.0.light.switch",
+          "confirmId": "test.0.light.switch",
+          "valueType": "boolean",
+          "unit": "",
+          "scale": 1,
+          "offset": 0,
+          "maxAgeMs": 300000,
+          "tolerance": 0,
+          "confirmation": "backend"
+        }
+      ],
+      "verification": "implemented"
+    },
+    {
+      "id": "motion",
+      "physicalId": "synthetic-motion",
+      "integrationId": "generic",
+      "family": "synthetic",
+      "backendVersion": "1",
+      "model": "unverified",
+      "confirmed": true,
+      "capabilities": [
+        {
+          "capability": "motion",
+          "readId": "test.0.motion.motion",
+          "valueType": "boolean",
+          "unit": "",
+          "scale": 1,
+          "offset": 0,
+          "maxAgeMs": 300000,
+          "tolerance": 0,
+          "confirmation": "backend"
+        },
+        {
+          "capability": "illuminance",
+          "readId": "test.0.motion.illuminance",
+          "valueType": "number",
+          "unit": "lx",
+          "scale": 1,
+          "offset": 0,
+          "maxAgeMs": 300000,
+          "tolerance": 0,
+          "confirmation": "backend"
+        }
+      ],
+      "verification": "implemented"
+    },
+    {
+      "id": "circulation",
+      "physicalId": "synthetic-circulation",
+      "integrationId": "generic",
+      "family": "synthetic",
+      "backendVersion": "1",
+      "model": "unverified",
+      "confirmed": true,
+      "capabilities": [
+        {
+          "capability": "switch",
+          "readId": "test.0.circulation.switch",
+          "writeId": "test.0.circulation.switch",
+          "confirmId": "test.0.circulation.switch",
+          "valueType": "boolean",
+          "unit": "",
+          "scale": 1,
+          "offset": 0,
+          "maxAgeMs": 300000,
+          "tolerance": 0,
+          "confirmation": "backend"
+        }
+      ],
+      "verification": "implemented"
+    }
+  ],
+  "functions": [
+    {
+      "id": "light",
+      "name": "Daylight",
+      "groupId": "area",
+      "kind": "lighting",
+      "enabled": true,
+      "operatingMode": "automatic",
+      "actuator": {
+        "entityId": "light",
+        "capability": "switch"
+      },
+      "inputs": {
+        "motion": {
+          "entityId": "motion",
+          "capability": "motion"
+        },
+        "lux": {
+          "entityId": "motion",
+          "capability": "illuminance"
+        }
+      },
+      "rules": [
+        {
+          "id": "day",
+          "enabled": true,
+          "block": "schedule",
+          "conditions": [],
+          "windows": [
+            {
+              "days": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ],
+              "start": "08:00",
+              "end": "20:00"
+            }
+          ],
+          "value": true,
+          "priority": 40,
+          "excludeDates": []
+        },
+        {
+          "id": "night",
+          "enabled": true,
+          "block": "minimum",
+          "conditions": [],
+          "windows": [],
+          "value": false,
+          "priority": 1,
+          "excludeDates": []
+        }
+      ],
+      "parameters": {
+        "holdMs": 300000,
+        "luxThreshold": 100
+      },
+      "limits": {
+        "essential": false,
+        "minOnMs": 0,
+        "minOffMs": 0,
+        "commandsPerHour": 30,
+        "manualHoldMs": 1800000,
+        "protection": []
+      },
+      "autonomy": {
+        "mode": "classic",
+        "granted": false,
+        "parameters": {},
+        "blocks": [],
+        "capabilities": [],
+        "excluded": false,
+        "paused": false,
+        "minSamples": 48,
+        "minCoverage": 0.8,
+        "maxGapMs": 3600000,
+        "changesPerDay": 2,
+        "evaluateAfterMs": 3600000,
+        "degradation": 0.1,
+        "objectives": {
+          "comfort": 1,
+          "energy": 0,
+          "switching": 1
+        }
+      }
+    },
+    {
+      "id": "circulation",
+      "name": "Continuous circulation",
+      "groupId": "area",
+      "kind": "equipment",
+      "enabled": true,
+      "operatingMode": "continuous",
+      "actuator": {
+        "entityId": "circulation",
+        "capability": "switch"
+      },
+      "inputs": {},
+      "rules": [],
+      "parameters": {},
+      "limits": {
+        "minimumValue": true,
+        "essential": true,
+        "minOnMs": 0,
+        "minOffMs": 0,
+        "commandsPerHour": 30,
+        "manualHoldMs": 1800000,
+        "protection": []
+      },
+      "autonomy": {
+        "mode": "classic",
+        "granted": false,
+        "parameters": {},
+        "blocks": [],
+        "capabilities": [],
+        "excluded": false,
+        "paused": false,
+        "minSamples": 48,
+        "minCoverage": 0.8,
+        "maxGapMs": 3600000,
+        "changesPerDay": 2,
+        "evaluateAfterMs": 3600000,
+        "degradation": 0.1,
+        "objectives": {
+          "comfort": 1,
+          "energy": 0,
+          "switching": 1
+        }
+      }
+    }
+  ],
+  "sources": [],
+  "notificationRoutes": []
+}

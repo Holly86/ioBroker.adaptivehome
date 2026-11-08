@@ -144,15 +144,19 @@
       "dependencies": [
         "AP-03"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "implemented",
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
-      "evidence": [],
-      "openChecks": [],
+      "evidence": [
+        "docs/verification/AP-04.md"
+      ],
+      "openChecks": [
+        "Controller and browser hot-configuration end-to-end checks follow AP-05/AP-24"
+      ],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T14:22:52.686Z"
     },
     {
       "id": "AP-05",
