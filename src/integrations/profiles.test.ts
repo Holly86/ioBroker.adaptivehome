@@ -1,5 +1,5 @@
 import { strict as assert } from 'node:assert';
-import { builtInRegistry, shellyProfile, homematicCcuProfile, homematicCloudProfile, hueProfile } from './profiles';
+import { builtInRegistry, shellyProfile, homematicCcuProfile, homematicCloudProfile, hueProfile, philipsAirProfile } from './profiles';
 import { normalize } from './registry';
 describe('AP-09 Shelly contract fixtures', () => {
     it('keeps channels distinct, requires confirmation and preserves false feedback', () => {
@@ -9,6 +9,16 @@ describe('AP-09 Shelly contract fixtures', () => {
     });
     it('does not invent controls or units for unknown raw values', () => {
         assert.deepEqual(shellyProfile.discover({'shelly.0.device.brightness':{type:'number',unit:'unknown',write:true}}),[]);
+    });
+});
+describe('AP-12 model-selected Philips Air backend', () => {
+    it('maps exposed named levels and rejects unknown status codes and timer writes', () => {
+        const binding = philipsAirProfile.discover({'philips-air.0.control.fanSpeed':{type:'string',write:true},'philips-air.0.sensor.pm25':{type:'number',unit:'µg/m³'},'philips-air.0.control.timerCode':{type:'string',write:true}})[0];
+        builtInRegistry().validate(binding);const fan = binding.capabilities.find(c => c.capability === 'fan')!;
+        assert.equal(normalize(binding,fan,{val:'turbo',ts:1},1).value,4);
+        assert.equal(normalize(binding,fan,{val:'unknown-device-code',ts:1},1).quality,'invalid');
+        assert.ok(!binding.capabilities.some(c => c.writeId?.endsWith('timerCode')));
+        assert.ok(!binding.capabilities.some(c => c.capability === 'thermostatSetpoint'));
     });
 });
 describe('AP-11 Hue normalization', () => {

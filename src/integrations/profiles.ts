@@ -17,7 +17,7 @@ export const standardRules: DetectionRule[] = [
     {capability:'power',suffix:/(?:power|Power|act_power)$/i,type:'number',unit:'W',readOnly:true},
     {capability:'energy',suffix:/(?:energy|Energy|total)$/i,type:'number',unit:'kWh',readOnly:true},
 ];
-export function createProfile(id:string,name:string,backends:string[],rules:DetectionRule[]):IntegrationManifest {
+export function createProfile(id:string,name:string,backends:string[],rules:DetectionRule[], channelOf = (path:string):string => path.slice(0,path.lastIndexOf('.'))):IntegrationManifest {
     return {apiVersion:1,id,name,backends,capabilities:[...new Set(rules.map(r => r.capability))],discover(objects) {
         const channels = new Map<string,CapabilityMapping[]>();
         for(const [path,meta] of Object.entries(objects)) {
@@ -33,7 +33,7 @@ export function createProfile(id:string,name:string,backends:string[],rules:Dete
                 sourceType:rule.type,unit,sourceUnit:meta.unit ?? '',scale:rule.scale ?? 1,valueMap:rule.valueMap,codec:rule.codec,
                 ...(meta.write && !rule.readOnly ? {writeId:path,confirmId:path} : {}),min:rule.scale ? meta.min === undefined ? undefined : meta.min*rule.scale : meta.min,max:rule.scale ? meta.max === undefined ? undefined : meta.max*rule.scale : meta.max,
                 values:rule.valueMap ? [...new Set(Object.values(rule.valueMap))] : undefined,confirmation:'backend'});
-            const channel = path.slice(0,path.lastIndexOf('.'));
+            const channel = channelOf(path);
             const list = channels.get(channel) || [];
             if(!list.some(c => c.capability === mapping.capability))list.push(mapping);
             channels.set(channel,list);
@@ -65,6 +65,15 @@ export const hueProfile = createProfile('hue','Philips Hue bridge',['hue'],[
     {capability:'color',suffix:/\.(?:hex|rgb)$/i,type:'string'},
     {capability:'illuminance',suffix:/\.lightlevel$/i,type:'number',unit:'lx',codec:'hueLightLevel',readOnly:true},...standardRules,
 ]);
+export const philipsAirProfile = createProfile('philips-air','Philips Air model-selected backend',['philips-air'],[
+    {capability:'switch',suffix:/\.control\.power$/i,type:'boolean'},
+    // Values are ordinal operating levels, not percentages or universal raw Philips codes.
+    {capability:'fan',suffix:/\.control\.fanSpeed$/i,type:'string',normalizedType:'number',unit:'',valueMap:{silent:0,'1':1,'2':2,'3':3,turbo:4,auto:5,allergenSleep:6}},
+    {capability:'fan',suffix:/\.control\.mode$/i,type:'string',normalizedType:'number',unit:'',valueMap:{off:0,speed1:1,speed2:2,speed3:3,speed4:4,speed5:5,sleep:6,turbo:7,medium:8,auto:9}},
+    {capability:'airQuality',suffix:/\.pm25$/i,type:'number',unit:'µg/m³',readOnly:true},
+    {capability:'filterLife',suffix:/\.(?:hepaFilterReplaceInHours|preFilterCleanInHours)$/i,type:'number',unit:'hours',readOnly:true},
+    ...standardRules.filter(rule => !['power','thermostatSetpoint'].includes(rule.capability)),
+],path => path.split('.').slice(0,2).join('.'));
 export const genericProfile:IntegrationManifest = {apiVersion:1,id:'generic',name:'Explicit state mapping',backends:[],capabilities:['switch','dimmer','color','temperatureSensor','thermostatSetpoint','windowContact','motion','illuminance','power','energy','fan','airQuality','flow','filterLife','online','battery','nativeProfile'],discover:() => []};
-export function builtInRegistry():IntegrationRegistry {const registry = new IntegrationRegistry();for(const profile of [genericProfile,shellyProfile,homematicCcuProfile,homematicCloudProfile,hueProfile])registry.register(profile);return registry;}
+export function builtInRegistry():IntegrationRegistry {const registry = new IntegrationRegistry();for(const profile of [genericProfile,shellyProfile,homematicCcuProfile,homematicCloudProfile,hueProfile,philipsAirProfile])registry.register(profile);return registry;}
 export function discoverProfiles(objects:Record<string,StateMetadata>,registry = builtInRegistry()):DeviceBinding[]{return registry.list().flatMap(profile => profile.discover(objects));}

@@ -323,15 +323,20 @@
         "AP-06",
         "AP-08"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "implemented",
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": true,
-      "evidence": [],
-      "openChecks": [],
+      "evidence": [
+        "docs/verification/AP-12.md"
+      ],
+      "openChecks": [
+        "Real exact-model HTTP/CoAP backend and purifier/fan checks pending; no portfolio-wide claim",
+        "Classic backends without explicit pm25 units require a manually verified unit mapping"
+      ],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T14:40:03.425Z"
     },
     {
       "id": "AP-13",

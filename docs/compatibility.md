@@ -11,6 +11,7 @@ Multi-channel outputs have independent proposed identities. A proposal is not ph
 | Homematic CCU | hm-rpc 4.2.4 | Boolean STATE, fractional LEVEL → percent, thermostat setpoint/temperature, available contact/battery/online | Passed, synthetic fractional-level fixture | Pending |
 | Homematic IP Cloud | hmip 4.1.0 | Group setpoint/temperature/window, activeProfile selection, optional switch/dim states | Passed, synthetic group fixture | Pending |
 | Philips Hue | hue 3.17.4 | on, percent level or 0–254 bri, color string, motion, logarithmic lightlevel → lx | Passed, synthetic sensor fixture | Pending bridge and device |
+| Philips Air | philips-air 2.4.0 | Exposed power, named fanSpeed/mode, pm25 with explicit units, filter hours | Passed, synthetic named-level fixture | Pending exact model and HTTP/CoAP path |
 
 Read and feedback timestamps use the backend's state update time, never only last-change.
 Discovery does not claim the update time proves physical sampling; configure freshness
@@ -41,6 +42,15 @@ again. Discovery keeps exact channel parents; it does not pair differently named
 channels by similarity. Confirm physical identity and combine the actual motion/lux paths
 manually when the backend exposes separate channel IDs. Aggregate groups/scenes are not
 automatically proposed; authorize all memberPhysicalIds before explicit group mapping.
+
+[Philips Air backend](https://github.com/iobroker-community-adapters/ioBroker.philips-air):
+select the exact supported model in that backend. This profile maps its exposed named controls,
+not raw D-codes. Fan values are ordinal: classic fanSpeed silent=0, 1/2/3, turbo=4,
+auto=5, allergenSleep=6; speed-mode profiles use off=0, speed1–5, sleep=6, turbo=7,
+medium=8, auto=9. Configure air-rule low/high to actual available values; these are not %.
+Unknown names remain invalid. No timer or raw-code control is exposed, including the
+CX3550 timer limitation. An unrecognized model can remain read-only. A purifier is not
+assumed to provide a thermostat. PM thresholds are operator choices, not health claims.
 
 Hardware check: record model, firmware, transport, backend version, exclusive output,
 read/command/feedback paths; observe manual input, successful report, timeout, disconnect,
