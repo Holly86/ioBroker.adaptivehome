@@ -141,7 +141,7 @@ async function setJournal(harness, key, value) {
 	await harness.states.setStateAsync(`adaptivehome.0.journal.${key}`, { val: JSON.stringify(value), ack: true });
 }
 function defineControllerTests({ suite }) {
-	suite('S01–S20 actual controller capability execution', getHarness => {
+	suite('Independent controller reference 1', getHarness => {
 		let harness, rpc;
 		before(async () => {
 			harness = getHarness();
@@ -206,6 +206,13 @@ function defineControllerTests({ suite }) {
 				device.close();
 			}
 		});
+	});
+	suite('Independent controller reference 2', getHarness => {
+		let harness, rpc;
+		before(async () => {
+			harness = getHarness();
+			rpc = await operator(harness);
+		});
 		it('S03/S18/S28: an independent essential output survives missing context while scheduled light turns off', async function () {
 			this.timeout(20000);
 			const config = referenceConfiguration('aquarium');
@@ -224,6 +231,7 @@ function defineControllerTests({ suite }) {
 			await seed(harness, config, { 'test.0.light.switch': true });
 			const device = emulator(harness, config);
 			try {
+				await harness.startAdapterAndWait(true);
 				const current = (await rpc('getConfiguration')).result.active.revision;
 				assert.equal((await rpc('applyConfiguration', envelope({ configuration: config }, current))).ok, true);
 				await rpc('resume', envelope({ functionId: 'light' }, current + 1));
@@ -248,6 +256,13 @@ function defineControllerTests({ suite }) {
 				device.close();
 			}
 		});
+	});
+	suite('Independent controller reference 3', getHarness => {
+		let harness, rpc;
+		before(async () => {
+			harness = getHarness();
+			rpc = await operator(harness);
+		});
 		it('S04/S20: separate climate and air functions use actual state APIs and expose room-response evidence', async function () {
 			this.timeout(20000);
 			const config = referenceConfiguration('apartment'),
@@ -257,6 +272,7 @@ function defineControllerTests({ suite }) {
 			await seed(harness, config);
 			const device = emulator(harness, config);
 			try {
+				await harness.startAdapterAndWait(true);
 				const revision = (await rpc('getConfiguration')).result.active.revision;
 				assert.equal((await rpc('applyConfiguration', envelope({ configuration: config }, revision))).ok, true);
 				await until(
@@ -274,6 +290,13 @@ function defineControllerTests({ suite }) {
 				device.close();
 			}
 		});
+	});
+	suite('Independent controller reference 4', getHarness => {
+		let harness, rpc;
+		before(async () => {
+			harness = getHarness();
+			rpc = await operator(harness);
+		});
 		it('S10/S12/S19/S23/S36: manual priority, replay protection and restart never replay a device queue', async function () {
 			this.timeout(25000);
 			const config = referenceConfiguration('apartment');
@@ -282,6 +305,7 @@ function defineControllerTests({ suite }) {
 			await seed(harness, config);
 			const device = emulator(harness, config);
 			try {
+				await harness.startAdapterAndWait(true);
 				const revision = (await rpc('getConfiguration')).result.active.revision;
 				assert.equal((await rpc('applyConfiguration', envelope({ configuration: config }, revision))).ok, true);
 				const payload = envelope({ functionId: 'light', value: true }, revision + 1);

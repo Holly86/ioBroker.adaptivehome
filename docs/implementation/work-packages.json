@@ -613,7 +613,7 @@
         "docs/verification/scenarios.md"
       ],
       "openChecks": [],
-      "commit": null,
+      "commit": "551728d84d2827714258d2c6d01fa1f0e811af9d",
       "updatedAt": "2026-11-08T16:09:46.352Z"
     },
     {
@@ -628,8 +628,8 @@
         "AP-23",
         "AP-24"
       ],
-      "status": "in_progress",
-      "implementationStatus": "in_progress",
+      "status": "implemented",
+      "implementationStatus": "implemented",
       "verificationStatus": "partial",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
@@ -637,11 +637,11 @@
         "docs/verification/AP-25.md"
       ],
       "openChecks": [
-        "Frozen artifact installation, public push and GitHub prerelease are being completed.",
-        "No authenticated npm publishing account; catalog acceptance remains external."
+        "Public GitHub prerelease creation follows the final CI run.",
+        "npm publication requires maintainer authentication; latest/stable catalog acceptance is external."
       ],
       "commit": null,
-      "updatedAt": "2026-11-08T16:05:32.721Z"
+      "updatedAt": "2026-11-08T16:15:14.260Z"
     },
     {
       "id": "AP-26",

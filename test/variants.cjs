@@ -46,6 +46,12 @@ function variant(name, index) {
 	fn.id = 'additional';
 	fn.name = 'Additional independent output';
 	fn.actuator.entityId = extra.id;
+	if (index === 1) {
+		fn.kind = 'equipment';
+		fn.operatingMode = 'continuous';
+		fn.inputs = {};
+		fn.rules = [];
+	}
 	if (index === 2) {
 		fn.inputs.airQuality.entityId = extra.id;
 	}
