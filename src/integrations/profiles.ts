@@ -46,6 +46,17 @@ export const shellyProfile = createProfile('shelly','Shelly via existing adapter
     {capability:'dimmer',suffix:/(?:brightness|dim|Brightness)$/i,type:'number',unit:'%'},
     {capability:'color',suffix:/(?:rgb|color)$/i,type:'string'},...standardRules,
 ]);
+export const homematicCcuProfile = createProfile('homematic-ccu','Homematic CCU',['hm-rpc'],[
+    {capability:'switch',suffix:/\.STATE$/i,type:'boolean'},
+    {capability:'dimmer',suffix:/\.LEVEL$/i,type:'number',unit:'%',scale:100},
+    {capability:'windowContact',suffix:/\.(?:STATE|WINDOW_STATE)$/i,type:'boolean',readOnly:true},...standardRules,
+]);
+export const homematicCloudProfile = createProfile('homematic-cloud','Homematic IP Cloud',['hmip'],[
+    {capability:'switch',suffix:/\.(?:on|state)$/i,type:'boolean'},
+    {capability:'dimmer',suffix:/\.dimLevel$/i,type:'number',unit:'%',scale:100},
+    {capability:'nativeProfile',suffix:/\.activeProfile$/i,type:'string'},
+    {capability:'windowContact',suffix:/\.windowOpen$/i,type:'boolean',readOnly:true},...standardRules,
+]);
 export const genericProfile:IntegrationManifest = {apiVersion:1,id:'generic',name:'Explicit state mapping',backends:[],capabilities:['switch','dimmer','color','temperatureSensor','thermostatSetpoint','windowContact','motion','illuminance','power','energy','fan','airQuality','flow','filterLife','online','battery','nativeProfile'],discover:() => []};
-export function builtInRegistry():IntegrationRegistry {const registry = new IntegrationRegistry();for(const profile of [genericProfile,shellyProfile])registry.register(profile);return registry;}
+export function builtInRegistry():IntegrationRegistry {const registry = new IntegrationRegistry();for(const profile of [genericProfile,shellyProfile,homematicCcuProfile,homematicCloudProfile])registry.register(profile);return registry;}
 export function discoverProfiles(objects:Record<string,StateMetadata>,registry = builtInRegistry()):DeviceBinding[]{return registry.list().flatMap(profile => profile.discover(objects));}

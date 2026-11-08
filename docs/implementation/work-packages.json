@@ -276,15 +276,20 @@
         "AP-06",
         "AP-08"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "implemented",
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": true,
-      "evidence": [],
-      "openChecks": [],
+      "evidence": [
+        "docs/verification/AP-10.md"
+      ],
+      "openChecks": [
+        "Real CCU and Cloud backend integration and exact thermostat/group devices pending",
+        "Native device expiry is not certified; unsupported native-deadline capability is deliberately absent"
+      ],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T14:37:51.553Z"
     },
     {
       "id": "AP-11",
