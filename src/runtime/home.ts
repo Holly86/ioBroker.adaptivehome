@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { Configuration, DecisionTrace, FunctionConfig, Intent, Observation, Scalar } from '../model/contracts';
 import { normalize, StateMetadata, StateValue } from '../integrations/registry';
 import { ExecutionJournal, Executor } from '../execution/executor';
-import { Clock, systemClock } from './clock';
+import { Clock, deadline, systemClock } from './clock';
 import { Supervisor } from './supervisor';
 import { PresenceContext } from '../context/context';
 import { History } from '../diagnostics/history';
@@ -12,6 +12,7 @@ import { airDecision, climateDecision } from '../policies/climate';
 import { equipmentDecision } from '../policies/equipment';
 import { IncidentService } from '../diagnostics/incidents';
 import { LocalLearning } from '../learning/local';
+import { AdaptationController } from '../learning/adaptation';
 import { arbitrate } from '../execution/arbiter';
 export interface HomePort {
     read(id: string): Promise<StateValue | null>;
@@ -29,6 +30,7 @@ export class HomeRuntime {
     readonly history = new History();
     readonly incidents:IncidentService;
     readonly learning:LocalLearning;
+    readonly adaptation:AdaptationController;
     private lastHistoryFlush = 0;
     private memories:Record<string,PolicyMemory> = {};
     private proposals:Intent[] = [];
@@ -37,6 +39,7 @@ export class HomeRuntime {
     constructor(private config: () => Configuration, private port: HomePort, readonly clock: Clock = systemClock) {
         this.startedAt = clock.now();
         this.learning = new LocalLearning(record => port.persist('learning',record));
+        this.adaptation = new AdaptationController(record => port.persist('adaptation',record));
         this.incidents = new IncidentService(record => port.persist('incidents',record),async (...args) => port.send ? port.send(...args) : undefined);
         this.executor = new Executor(config, {...port,persist: journal => port.persist('execution',journal),inputs: fn => this.inputs(fn)},clock);
     }
@@ -65,16 +68,19 @@ export class HomeRuntime {
     async tick(): Promise<void> {
         if(this.ticking)return;this.ticking = true;
         try{
-        this.proposals = [];await this.executor.expire();await this.supervisor.tick();
+        this.proposals = [];await this.executor.expire();
+        try{await deadline(this.adaptation.advance(this.config(),this.learning.record.models,this.history,this.executor.journal,this.clock.now()),100);}catch{ /* Classical control remains available on adaptation storage failure. */ }
+        await this.supervisor.tick();
         const decisions = arbitrate(this.proposals,this.config());
-        for(const intent of decisions.accepted){
+        await Promise.all(decisions.accepted.map(async intent => {
             try{
-                const command = await this.executor.execute(intent);const trace = this.traces[intent.functionId];if(trace)trace.command = command;
-                if(intent.reasonCode === 'motion_on'){this.memories[intent.functionId].commandId = command.commandId;this.memories[intent.functionId].ownerManualAt = this.executor.journal.manual[command.physicalId]?.at ?? 0;}
+                const command = await deadline(this.executor.execute(intent),2000);const trace = this.traces[intent.functionId];if(trace)trace.command = command;
+                const fn = this.config().functions.find(f => f.id === intent.functionId)!;
+                if(intent.reasonCode === 'motion_on' || (intent.planId && fn.kind === 'lighting' && intent.typedValue !== false && intent.typedValue !== 0)){this.memories[intent.functionId].commandId = command.commandId;this.memories[intent.functionId].ownerManualAt = this.executor.journal.manual[command.physicalId]?.at ?? 0;}
                 if(intent.reasonCode === 'motion_quiet_expired')delete this.memories[intent.functionId].commandId;
                 this.history.event({at:this.clock.now(),type:'command',scope:intent.functionId,code:command.phase,revision:this.config().revision,commandId:command.commandId});
             }catch(error){const trace = this.traces[intent.functionId];if(trace){trace.reasonCode = error instanceof Error ? error.message : 'execution_failed';trace.reasonText = trace.reasonCode;}}
-        }
+        }));
         for(const trace of Object.values(this.traces)){
             if(/unknown|unavailable|unverified|failed|uncertain|budget|audit/.test(trace.reasonCode))this.incidents.upsert(trace.functionId,trace.reasonCode,'warning',this.clock.now());
             else this.incidents.resolveScope(trace.functionId,this.clock.now());
@@ -97,12 +103,15 @@ export class HomeRuntime {
         const owns = !!ownCommand?.feedbackMatched && ownCommand.generation === this.executor.generation && (!wish || wish.at <= (memory.ownerManualAt ?? 0));
         if(wish && wish.at > (memory.ownerManualAt ?? 0))delete memory.commandId;
         const context = {now,startedAt:this.startedAt,timezone:config.timezone,inputs,actual,owns,manual:!!wish && wish.until > now};
-        const decision:PolicyDecision = commonDecision(fn,context) ?? (fn.kind === 'lighting' ? lightingDecision(fn,context,memory) : fn.kind === 'climate' ? climateDecision(fn,context,memory) : fn.kind === 'air' ? airDecision(fn,context,memory) : equipmentDecision(fn,context));
+        const effective = this.adaptation.effective(fn,config,context.manual);
+        const baseDecision = effective.kind === 'lighting' ? lightingDecision(effective,context,memory) : effective.kind === 'climate' ? climateDecision(effective,context,memory) : effective.kind === 'air' ? airDecision(effective,context,memory) : equipmentDecision(effective,context);
+        const decision:PolicyDecision = commonDecision(effective,context) ?? baseDecision;
         const trace:DecisionTrace = {at:now,functionId:fn.id,configRevision:config.revision,reasonCode:decision.reason,reasonText:decision.text,inputs,nextStep:decision.nextAt ? new Date(decision.nextAt).toISOString() : undefined};
         this.traces[fn.id] = trace;this.history.event({at:now,type:'decision',scope:fn.id,code:decision.reason,revision:config.revision});
         if(decision.value === undefined)return;
         if(actual.quality === 'valid' && actual.value === decision.value){trace.nextStep = 'Already matches the requested value';return;}
-        const intent:Intent = {...fn.actuator,intentId:randomUUID(),functionId:fn.id,typedValue:decision.value,origin:'configured_rule',actor:'policy',reasonCode:decision.reason,reasonText:decision.text,sourceSnapshotId:randomUUID(),configRevision:config.revision,priority:decision.priority,validFrom:now,expiresAt:Math.min(decision.expiresAt ?? now+10000,now+10000)};
+        const active = effective !== fn && decision.priority<800 ? this.adaptation.active(fn.id) : undefined;
+        const intent:Intent = {...fn.actuator,intentId:randomUUID(),functionId:fn.id,typedValue:decision.value,origin:active ? 'learned_policy' : 'configured_rule',planId:active?.plan.planId,actor:'policy',reasonCode:decision.reason,reasonText:decision.text,sourceSnapshotId:randomUUID(),configRevision:config.revision,priority:decision.priority,validFrom:now,expiresAt:Math.min(decision.expiresAt ?? now+10000,now+10000)};
         trace.intent = intent;this.proposals.push(intent);
     }
     async feedback(id:string,state:StateValue):Promise<void>{
@@ -110,6 +119,6 @@ export class HomeRuntime {
         const command = this.executor.journal.commands.findLast(c => c.targetPath === id);
         if(command)this.history.event({at:this.clock.now(),type:'feedback',scope:command.intent.functionId,code:command.phase,revision:this.config().revision,commandId:command.commandId});
     }
-    status(): unknown { return {functions:Object.fromEntries(this.supervisor.status),traces:this.traces,commands:this.executor.journal.commands.slice(-50),history:this.history.record.events.slice(-100),historyStorageError:this.history.storageError,incidents:this.incidents.record.incidents,learning:this.learning.record}; }
+    status(): unknown { return {functions:Object.fromEntries(this.supervisor.status),traces:this.traces,commands:this.executor.journal.commands.slice(-50),history:this.history.record.events.slice(-100),historyStorageError:this.history.storageError,incidents:this.incidents.record.incidents,learning:Object.fromEntries(this.config().functions.map(fn => [fn.id,{models:this.learning.record.models[fn.id],error:this.learning.record.errors[fn.id],active:this.adaptation.active(fn.id),plans:this.adaptation.record.plans.filter(p => p.plan.functionId === fn.id)}]))}; }
     close(): void { this.supervisor.close();this.learning.close(); }
 }

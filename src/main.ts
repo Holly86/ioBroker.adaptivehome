@@ -58,6 +58,8 @@ class Adaptivehome extends utils.Adapter {
         if(typeof operations?.val === 'string')this.guard.records = JSON.parse(operations.val) as RequestRecord[];
         const learning = await this.getStateAsync('journal.learning');
         if(typeof learning?.val === 'string')try{this.runtime.learning.restore(JSON.parse(learning.val));}catch{this.log.warn('Learning journal unavailable; classical control continues');}
+        const adaptation = await this.getStateAsync('journal.adaptation');
+        if(typeof adaptation?.val === 'string')try{this.runtime.adaptation.restore(JSON.parse(adaptation.val));}catch{this.log.warn('Adaptation journal unavailable; classical control continues');}
         const budgets = await this.getStateAsync('journal.providerBudgets');
         if(typeof budgets?.val === 'string')this.provider.budgets = JSON.parse(budgets.val);
         await this.subscriptions();
@@ -137,6 +139,7 @@ class Adaptivehome extends utils.Adapter {
                     const model = this.runtime.learning.record.models[fn.id]?.at(-1);
                     result = await this.provider.propose(providerSchema.parse(this.config.modelProvider),this.config.modelToken ?? '',fn,this.configuration.record.active.revision,Date.now(),model ? {type:model.modelType,coverage:model.coverage,baselineMAE:model.baselineMAE,candidateMAE:model.candidateMAE} : {});break;
                 }
+                case 'adaptation': result = await this.runtime.adaptation.action(data.functionId,data.action,this.configuration.record.active,this.runtime.learning.record.models,this.runtime.history,this.runtime.executor.journal,Date.now());break;
                 default: throw new Error('unknown_command');
             }
             const response = {ok:true,result};if(operationKey)await this.guard.complete(operationKey,response);

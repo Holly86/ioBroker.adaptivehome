@@ -105,7 +105,11 @@ export class Executor {
             this.journal.budgets[physicalId] = [...recent, now];
             if (intent.origin === 'manual') this.journal.manual[physicalId] = {at: now, until: now + fn.limits.manualHoldMs, value: intent.typedValue, actor: intent.actor};
             await this.persist(); // Reserve quota and idempotency before dispatch, also across crashes.
-            if (this.configuration().revision !== intent.configRevision) throw new Error('revision_changed_before_dispatch');
+            const latestInputs = await this.port.inputs(fn),latestProtection = fn.limits.protection.filter(p => conditionMatches(p.when,latestInputs) === true);
+            const blockedByHuman = this.journal.manual[physicalId] && this.journal.manual[physicalId].until>this.clock.now() && intent.origin !== 'manual' && !latestProtection.length;
+            if (this.configuration().revision !== intent.configRevision || intent.expiresAt<=this.clock.now() || blockedByHuman || fn.limits.protection.some(p => conditionMatches(p.when,latestInputs) === null) || latestProtection.some(p => p.value !== intent.typedValue)) {
+                command.phase = 'failed';command.uncertainty = 'preflight_cancelled_before_dispatch';await this.persist();throw new Error('dispatch_conditions_changed');
+            }
             command.phase = 'accepted';
             try {
                 let value: Scalar = typeof intent.typedValue === 'number' ? (intent.typedValue - mapping.offset) / mapping.scale : intent.typedValue;

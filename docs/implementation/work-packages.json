@@ -600,15 +600,20 @@
         "AP-19",
         "AP-22"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "implemented",
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
-      "evidence": [],
-      "openChecks": [],
+      "evidence": [
+        "docs/verification/AP-23.md"
+      ],
+      "openChecks": [
+        "Real js-controller closed-loop and browser acceptance follows AP-24",
+        "No physical device efficacy or measured energy-saving claim is made"
+      ],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T15:04:44.733Z"
     },
     {
       "id": "AP-24",
