@@ -620,8 +620,8 @@
         "docs/verification/discovery-corrections.md"
       ],
       "openChecks": [],
-      "commit": "4b2fde448bbe458a6688c4a52fe0dcc5b6e0c42d",
-      "updatedAt": "2026-11-08T18:32:09.147Z"
+      "commit": "4ea2a2aeac20dae023676b4536df40965e95dbf9",
+      "updatedAt": "2026-11-08T19:02:48.977Z"
     },
     {
       "id": "AP-25",
@@ -646,8 +646,8 @@
       "openChecks": [
         "npm needs authenticated publishing rights; ioBroker package co-ownership and latest/stable acceptance remain external."
       ],
-      "commit": "5a91d88ed7380a5ca955b76444ee9dfc8eb26e85",
-      "updatedAt": "2026-11-08T16:57:04.193Z"
+      "commit": "4ea2a2aeac20dae023676b4536df40965e95dbf9",
+      "updatedAt": "2026-11-08T19:02:48.977Z"
     },
     {
       "id": "AP-26",
@@ -673,8 +673,8 @@
       "openChecks": [
         "Read-only/shadow repeat completed privately without device/configuration writes. Exact physical identity, freshness, supported platform, exclusive ownership, native minimum behavior, backup and specifically authorized actuator scope remain required before control takeover."
       ],
-      "commit": "4b2fde448bbe458a6688c4a52fe0dcc5b6e0c42d",
-      "updatedAt": "2026-11-08T18:32:09.147Z"
+      "commit": "4ea2a2aeac20dae023676b4536df40965e95dbf9",
+      "updatedAt": "2026-11-08T19:02:48.977Z"
     },
     {
       "id": "AP-27",
@@ -695,8 +695,8 @@
         "docs/handoff.md"
       ],
       "openChecks": [],
-      "commit": "5a91d88ed7380a5ca955b76444ee9dfc8eb26e85",
-      "updatedAt": "2026-11-08T16:57:04.193Z"
+      "commit": "4ea2a2aeac20dae023676b4536df40965e95dbf9",
+      "updatedAt": "2026-11-08T19:02:48.977Z"
     }
   ],
   "scenarioIds": [
@@ -738,13 +738,13 @@
     "S36"
   ],
   "repositoryUrl": "https://github.com/Holly86/ioBroker.adaptivehome",
-  "releasedVersion": "0.1.0-beta.2",
-  "releaseUrl": "https://github.com/Holly86/ioBroker.adaptivehome/releases/tag/v0.1.0-beta.2",
+  "releasedVersion": "0.1.0-beta.3",
+  "releaseUrl": "https://github.com/Holly86/ioBroker.adaptivehome/releases/tag/v0.1.0-beta.3",
   "artifact": {
-    "name": "iobroker.adaptivehome-0.1.0-beta.2.tgz",
-    "sha256": "4c11e9980631b5b30d567cdab2881a78ae7b14daf4cb0a35cd4f8f00336ef9dd",
-    "runtimeSourceCommit": "5a91d88ed7380a5ca955b76444ee9dfc8eb26e85",
-    "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42501670754"
+    "name": "iobroker.adaptivehome-0.1.0-beta.3.tgz",
+    "sha256": "61b4312d6980a7bd26bd393ef3ef9abdc947f0872ddbf4c6a3c91ed91abee55b",
+    "runtimeSourceCommit": "4ea2a2aeac20dae023676b4536df40965e95dbf9",
+    "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42512362542"
   },
   "corrections": [
     {
@@ -783,29 +783,43 @@
         "rawEvidence": "ignored local storage only",
         "controlTakeover": false
       },
-      "distribution": "source correction; published beta-2 artifact unchanged",
+      "distribution": "included in published 0.1.0-beta.3 installable package; earlier artifacts unchanged",
       "updatedAt": "2026-11-08T18:32:09.147Z"
     }
   ],
-  "releaseCandidate": {
+  "releaseHistory": [
+    {
+      "version": "0.1.0-beta.2",
+      "url": "https://github.com/Holly86/ioBroker.adaptivehome/releases/tag/v0.1.0-beta.2",
+      "artifact": {
+        "name": "iobroker.adaptivehome-0.1.0-beta.2.tgz",
+        "sha256": "4c11e9980631b5b30d567cdab2881a78ae7b14daf4cb0a35cd4f8f00336ef9dd",
+        "runtimeSourceCommit": "5a91d88ed7380a5ca955b76444ee9dfc8eb26e85",
+        "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42501670754"
+      }
+    }
+  ],
+  "releaseVerification": {
     "version": "0.1.0-beta.3",
-    "artifact": "iobroker.adaptivehome-0.1.0-beta.3.tgz",
-    "sha256": "61b4312d6980a7bd26bd393ef3ef9abdc947f0872ddbf4c6a3c91ed91abee55b",
     "implementationStatus": "implemented",
-    "verificationStatus": "partial",
-    "evidence": [
-      "docs/verification/AP-25.md"
-    ],
+    "verificationStatus": "passed",
+    "evidence": "docs/verification/AP-25.md",
     "checks": {
       "build": true,
+      "typecheck": true,
+      "lint": true,
       "unitContractTests": 60,
       "packageChecks": 61,
-      "lint": true,
-      "packageContentReview": true,
-      "frozenControllerBrowserSoak": "running",
-      "crossPlatformCI": "pending"
+      "controllerBrowserSoakTests": 11,
+      "installedRuntimeAdminFiles": 80,
+      "quietMs": 300666,
+      "admin": "8.3.11",
+      "alternateConfigurations": 3,
+      "crossPlatformJobs": 7,
+      "publicContentReview": true,
+      "publishedDownloadByteIdentical": true
     },
-    "productionInstallation": "unchanged; no production access performed",
-    "updatedAt": "2026-11-08T18:54:57.384Z"
+    "productionAccessPerformed": false,
+    "updatedAt": "2026-11-08T19:02:48.977Z"
   }
 }

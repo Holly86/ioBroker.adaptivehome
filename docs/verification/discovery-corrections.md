@@ -22,3 +22,7 @@ the corrected source removed the reproduced setpoint/sensor-enable/aggregate mis
 Actual cache freshness, ambiguous aliases, disabled/model-conflicting sources and minimum platform
 versions remain deployment gates. Private IDs, counts, versions, raw data and report paths are not
 part of this public evidence. No existing home configuration was imported or activated.
+
+The source corrections above are now included in the built 0.1.0-beta.3 release. Exact frozen-package,
+Admin/variant/soak, cross-platform CI and public download verification passed; see [AP-25](AP-25.md).
+The earlier beta-2 artifact remains unchanged.

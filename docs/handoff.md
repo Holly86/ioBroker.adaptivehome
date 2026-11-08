@@ -1,9 +1,9 @@
 # Betriebsübergabe — Adaptive Home
 
-Stand: 2026-11-08. Produktversion: 0.1.0-beta.2.
+Stand: 2026-11-08. Produktversion: 0.1.0-beta.3.
 
 Repository: https://github.com/Holly86/ioBroker.adaptivehome
-Release: https://github.com/Holly86/ioBroker.adaptivehome/releases/tag/v0.1.0-beta.2
+Release: https://github.com/Holly86/ioBroker.adaptivehome/releases/tag/v0.1.0-beta.3
 Produktdateien liegen ausschließlich im eigenen Repository. Private Hauskonfigurationen,
 Zugangsdaten und Rohprotokolle wurden nicht übernommen. Die bestehende Haussteuerung wurde nicht geändert.
 
@@ -74,13 +74,19 @@ Prüfdetails: [Szenariomatrix](verification/scenarios.md), [Kompatibilität](com
 
 ## Abschließender Prüfstand
 
-Aktuelle Veröffentlichung ist 0.1.0-beta.2. Pro physischem Ausgang gilt genau eine Funktion, auch bei
+Aktuelle Veröffentlichung ist 0.1.0-beta.3. Pro physischem Ausgang gilt genau eine Funktion, auch bei
 deaktivierten Aliasfunktionen; Zeitpläne, Bedingungen und Grenzen innerhalb dieser Funktion zusammenführen.
 Vor einem Update von Beta 1 überlappende Aliase im Admin entfernen und privat sichern. Beta 1 ist mit
 einem entsprechenden Hinweis versehen. Mindestfunktion und harte Grenzen werden zusätzlich im Executor geprüft.
 
-52 Modul-/Vertragstests, 61 Paketprüfungen, zehn Controller-/Browser-/Langlaufprüfungen und alle sieben
-Plattformprüfaufträge bestehen. Die heruntergeladene Veröffentlichung lief zusätzlich unverändert in drei
-anderen Konfigurationen mit abweichenden Zeitzonen, Geräteanzahlen und Herstellerkombinationen.
-Das Manifest weist alle 28 APs als implementiert aus; 20 sind geprüft, acht haben ausschließlich die dort
-konkret genannten externen Geräte-/Kontonachweise offen. Für den Kernbetrieb sind diese Konten optional.
+60 Modul-/Vertragstests, 61 Paketprüfungen, elf Controller-/Browser-/Langlaufprüfungen und alle sieben
+Plattformprüfaufträge bestehen. Das exakt geprüfte Paket lief in drei Konfigurationen mit abweichenden
+Zeitzonen, Geräteanzahlen und Herstellerkombinationen. Nach Veröffentlichung wurden Download, Prüfsumme
+und GitHub-Digest mit dem unveränderten Testpaket verglichen: bytegleich. Der echte Nachlauf dauerte
+300666 ms; alle 80 installierten Laufzeit-/Admin-Dateien stimmen überein.
+
+Beta 3 enthält die geprüften Erkennungskorrekturen. Gespeicherte Bindungen werden dadurch nicht
+stillschweigend umgeschrieben. Mehrdeutige Hue-Aliase und unbestätigte Modelle/Quellen bleiben gesperrt
+bzw. lesend. Die vorhandene Haussteuerung wurde für diese Veröffentlichung nicht angesprochen.
+Das Manifest weist weiterhin alle 28 APs als implementiert aus; 20 sind geprüft, acht haben ausschließlich
+die dort konkret genannten externen Geräte-/Kontonachweise offen.
