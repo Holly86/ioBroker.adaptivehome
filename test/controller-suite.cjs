@@ -341,6 +341,8 @@ function defineControllerTests({ suite }) {
 				fn = config.functions[0],
 				now = Date.now(),
 				day = Date.UTC(new Date(now).getUTCFullYear(), new Date(now).getUTCMonth(), new Date(now).getUTCDate());
+			const offset = new Date(now).getUTCHours() - 12;
+			config.timezone = offset === 0 ? 'UTC' : `Etc/GMT${offset > 0 ? '+' : ''}${offset}`;
 			fn.autonomy = {
 				...fn.autonomy,
 				mode: 'full',
@@ -413,6 +415,15 @@ function defineControllerTests({ suite }) {
 				assert.ok(status.learning.air.models.some(m => m.admitted));
 				assert.ok(status.learning.air.plans[0].plan.rules.length);
 				assert.ok(status.commands.some(c => c.intent.origin === 'learned_policy' && c.deviceConfirmed));
+				assert.ok(
+					status.commands.some(
+						c =>
+							c.intent.origin === 'learned_policy' &&
+							c.intent.reasonCode === 'rule_schedule' &&
+							c.intent.typedValue === 75 &&
+							c.deviceConfirmed,
+					),
+				);
 				airQuality = 45;
 				const outcome = await until(
 					async () => {
@@ -424,6 +435,22 @@ function defineControllerTests({ suite }) {
 				);
 				assert.ok(outcome.effect.score > outcome.baseline.score);
 				assert.equal(outcome.status, 'rolled_back');
+				const rollbackAt = Date.now();
+				airQuality = 20;
+				await until(async () => {
+					const current = (await rpc('status')).result;
+					return (
+						!current.learning.air.active &&
+						current.commands.some(
+							c =>
+								c.sentAt >= rollbackAt &&
+								c.intent.origin === 'configured_rule' &&
+								c.intent.typedValue === 25 &&
+								c.feedbackMatched,
+						)
+					);
+				}, 'classical device output restored after rollback');
+				assert.equal((await harness.states.getStateAsync('test.0.purifier.fan')).val, 25);
 			} catch (error) {
 				fs.mkdirSync(path.join(__dirname, '../.local/evidence/AP-24'), { recursive: true });
 				fs.writeFileSync(

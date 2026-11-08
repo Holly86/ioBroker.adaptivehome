@@ -63,8 +63,7 @@ entfernen die Anpassung und stellen eine gültige Vorgängerlösung oder klassis
 Der kurze Vergleich kontrolliert äußere Ursachen nicht.
 
 Pause deaktiviert Lernanpassungen; klassische Regeln laufen weiter. Fortsetzen prüft Plan/Freigabe
-erneut. Abbrechen/Zurücknehmen entfernt den Plan. Für vollständigen Befehlsstopp Funktion deaktivieren
-oder Aus-/Handmodus wählen. Die Instanz lässt sich im ioBroker-Admin stoppen. Geräte können ihren
+erneut. Abbrechen/Zurücknehmen entfernt den Plan. Für vollständigen Befehlsstopp die Funktion im Formular deaktivieren. Die Instanz lässt sich im ioBroker-Admin stoppen. Geräte können ihren
 letzten Zustand beibehalten.
 
 ## Optionale Kanäle und Modelle

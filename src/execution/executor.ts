@@ -44,6 +44,17 @@ export interface ExecutionPort {
 	persist(journal: ExecutionJournal): Promise<void>;
 	inputs(fn: FunctionConfig): Promise<Record<string, Observation | null>>;
 }
+/** Freshness still uses ts. lc may only bridge <=1s of host clock jitter for a changed value. */
+function followsDispatch(state: StateValue, sentAt: number, now: number): boolean {
+	return (
+		state.ts >= sentAt ||
+		(state.ts >= sentAt - 1000 &&
+			typeof state.lc === 'number' &&
+			Number.isFinite(state.lc) &&
+			state.lc >= sentAt &&
+			state.lc <= now)
+	);
+}
 export class Executor {
 	readonly generation = randomUUID();
 	journal: ExecutionJournal = { commands: [], manual: {}, budgets: {}, transitions: {}, blocked: {} };
@@ -317,7 +328,6 @@ export class Executor {
 				c =>
 					c.physicalId === physicalId &&
 					c.generation === this.generation &&
-					c.sentAt <= state.ts &&
 					c.deadline >= now &&
 					c.phase === 'accepted' &&
 					!c.feedbackMatched,
@@ -328,6 +338,11 @@ export class Executor {
 			}
 			const latest = candidates.at(-1);
 			if (latest && state.ack && id === mapping.confirmId && !state.q && state.ts <= now) {
+				if (!followsDispatch(state, latest.sentAt, now)) {
+					latest.uncertainty = 'feedback_timestamp_before_dispatch';
+					await this.persist();
+					continue;
+				}
 				const binding = config.bindings.find(b => b.id === fn.actuator.entityId)!;
 				const observation = normalize(binding, { ...mapping, readId: id }, state, now);
 				const expected = latest.intent.typedValue,
@@ -431,7 +446,7 @@ export class Executor {
 			!command ||
 			!raw?.ack ||
 			raw.q ||
-			raw.ts < command.sentAt ||
+			!followsDispatch(raw, command.sentAt, this.clock.now()) ||
 			raw.ts > this.clock.now() ||
 			this.clock.now() - raw.ts > mapping.maxAgeMs
 		) {

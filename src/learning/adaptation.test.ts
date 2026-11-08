@@ -84,6 +84,7 @@ describe('AP-23 closed local automation through the real executor', () => {
 			assert.ok(active.plan.rules.length);
 			assert.equal(s.writes.length, 1);
 			assert.equal(s.runtime.executor.journal.commands[0].intent.origin, 'learned_policy');
+			assert.equal(s.runtime.executor.journal.commands[0].intent.reasonCode, 'rule_schedule');
 			assert.equal(s.runtime.executor.journal.commands[0].deviceConfirmed, true);
 			for (let n = 0; n < 3; n++) {
 				s.clock.advance(2000);

@@ -603,18 +603,20 @@
         "AP-22",
         "AP-23"
       ],
-      "status": "verified",
+      "status": "implemented",
       "implementationStatus": "implemented",
-      "verificationStatus": "passed",
+      "verificationStatus": "partial",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-24.md",
         "docs/verification/scenarios.md"
       ],
-      "openChecks": [],
+      "openChecks": [
+        "Final clock-jitter regression, frozen artifact and five-minute soak rerun in progress."
+      ],
       "commit": "551728d84d2827714258d2c6d01fa1f0e811af9d",
-      "updatedAt": "2026-11-08T16:09:46.352Z"
+      "updatedAt": "2026-11-08T16:27:06.049Z"
     },
     {
       "id": "AP-25",

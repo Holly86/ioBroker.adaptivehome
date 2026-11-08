@@ -55,7 +55,7 @@ choices remove the overlay and restore a valid previous plan or classical policy
 does not control environmental causes and does not prove energy savings.
 
 Pause disables the learned overlay; classical rules continue. Resume revalidates the grant. Cancel/
-revert removes the plan. Disable a function or choose its off/manual mode to stop its commands.
+revert removes the plan. Disable a function to stop its commands.
 Stopping the instance stops the adapter. Devices can retain their last value.
 
 ## Optional services

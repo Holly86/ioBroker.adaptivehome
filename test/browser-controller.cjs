@@ -23,11 +23,18 @@ function defineBrowserTests({ suite }) {
 				'test-iobroker.adaptivehome/node_modules/iobroker.js-controller',
 			);
 			const link = path.join(path.dirname(adminDir), 'iobroker.js-controller');
+			if (
+				fs.existsSync(link) &&
+				fs.lstatSync(link).isSymbolicLink() &&
+				path.resolve(fs.realpathSync(link)) !== path.resolve(controllerDir)
+			) {
+				fs.unlinkSync(link);
+			}
 			if (!fs.existsSync(link)) {
 				fs.symlinkSync(controllerDir, link, process.platform === 'win32' ? 'junction' : 'dir');
 			}
 			const adminLink = path.join(path.dirname(controllerDir), 'iobroker.admin');
-			if (!fs.existsSync(adminLink)) {
+			if (path.resolve(adminLink) !== path.resolve(adminDir) && !fs.existsSync(adminLink)) {
 				fs.symlinkSync(adminDir, adminLink, process.platform === 'win32' ? 'junction' : 'dir');
 			}
 			const pkg = JSON.parse(fs.readFileSync(path.join(adminDir, 'package.json'), 'utf8')),

@@ -60,6 +60,18 @@ describe('AP-06 execution safety', () => {
 		await assert.rejects(s.executor.execute(s.intent('race')), /manual_priority/);
 		assert.equal(s.writes.length, 0);
 	});
+	it('requires new report evidence across millisecond clock jitter and never treats an old own report as human input', async () => {
+		const s = setup();
+		s.executor.journal.transitions['synthetic-light'] = { at: 9000, value: false };
+		await s.executor.execute(s.intent('clock-jitter'));
+		await s.executor.feedback('test.0.light.switch', { val: true, ack: true, ts: 9990, lc: 9990 });
+		assert.equal(s.executor.journal.commands[0].feedbackMatched, false);
+		assert.equal(s.executor.journal.manual['synthetic-light'], undefined);
+		s.clock.advance(2);
+		await s.executor.feedback('test.0.light.switch', { val: true, ack: true, ts: 9999, lc: 10001 });
+		assert.equal(s.executor.journal.commands[0].feedbackMatched, true);
+		assert.equal(s.executor.journal.manual['synthetic-light'], undefined);
+	});
 	it('keeps delayed intermediate/duplicate feedback distinct from human commands and reconciles normalized enums', async () => {
 		const s = setup();
 		const mapping = s.config.bindings[0].capabilities[0];
