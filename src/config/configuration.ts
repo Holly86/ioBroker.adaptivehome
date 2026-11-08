@@ -21,6 +21,7 @@ export function validateConfiguration(input: unknown, registry?: IntegrationRegi
         }
     }
     for (const fn of config.functions) {
+        for(const dependency of fn.dependencies)if(!config.functions.some(other => other.id === dependency.functionId))throw new Error('unknown_dependency');
         if (!config.groups.some(group => group.id === fn.groupId)) throw new Error('unknown_group');
         const binding = config.bindings.find(item => item.id === fn.actuator.entityId);
         const mapping = binding?.capabilities.find(item => item.capability === fn.actuator.capability);
@@ -45,6 +46,11 @@ export function validateConfiguration(input: unknown, registry?: IntegrationRegi
             for (const condition of rule.conditions) if (!(condition.input in fn.inputs)) throw new Error('unknown_rule_input');
         }
     }
+    const visited = new Set<string>(), visiting = new Set<string>();
+    const visit = (key:string):void => {if(visiting.has(key))throw new Error('dependency_cycle');if(visited.has(key))return;visiting.add(key);
+        for(const dependency of config.functions.find(fn => fn.id === key)!.dependencies)visit(dependency.functionId);
+        visiting.delete(key);visited.add(key);};
+    for(const fn of config.functions)visit(fn.id);
     return config;
 }
 export function validateValue(fn: FunctionConfig, value: Scalar, type: string, min?: number, max?: number, values?: Scalar[]): void {

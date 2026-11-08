@@ -451,15 +451,20 @@
         "AP-08",
         "AP-09"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "implemented",
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
-      "evidence": [],
-      "openChecks": [],
+      "evidence": [
+        "docs/verification/AP-17.md"
+      ],
+      "openChecks": [
+        "Physical flow, dry-run, water and animal-related protection checks remain unavailable and are not authorized by simulation",
+        "Reference installation controller run follows AP-24"
+      ],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T14:46:36.433Z"
     },
     {
       "id": "AP-18",

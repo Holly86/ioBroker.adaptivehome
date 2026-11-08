@@ -69,6 +69,14 @@ export class Executor {
                 } catch (error) { this.audits.set(physicalId, {at: now, valid: false}); throw error; }
             } else if (!audit.valid) throw new Error('audit_retry_wait');
             const inputs = await this.port.inputs(fn);
+            for(const dependency of fn.dependencies){
+                const prerequisite = config.functions.find(f => f.id === dependency.functionId)!;
+                const prerequisiteBinding = config.bindings.find(b => b.id === prerequisite.actuator.entityId)!;
+                const prerequisiteMapping = prerequisiteBinding.capabilities.find(c => c.capability === prerequisite.actuator.capability)!;
+                const raw = await this.port.read(prerequisiteMapping.confirmId!);
+                const observed = normalize(prerequisiteBinding,prerequisiteMapping,raw,this.clock.now());
+                if(!raw?.ack || observed.quality !== 'valid' || observed.value !== dependency.requiredValue || (dependency.confirmation === 'device' && prerequisiteMapping.confirmation !== 'device'))throw new Error('dependency_unconfirmed');
+            }
             const protections = fn.limits.protection.filter(p => conditionMatches(p.when, inputs) === true);
             const unknownProtection = fn.limits.protection.some(p => conditionMatches(p.when, inputs) === null);
             if (unknownProtection) throw new Error('protection_unknown');

@@ -68,6 +68,7 @@ export const functionSchema = z.strictObject({
     actuator: refSchema, inputs: z.record(id, refSchema).default({}),
     rules: z.array(ruleSchema).max(128).default([]),
     parameters: z.record(id, z.number().finite()).default({}),
+    dependencies: z.array(z.strictObject({functionId:id,requiredValue:scalar,confirmation:z.enum(['device','backend']).default('device')})).max(32).default([]),
     limits: z.strictObject({
         min: z.number().finite().optional(), max: z.number().finite().optional(), minimumValue: scalar.optional(),
         essential: z.boolean().default(false), minOnMs: z.number().int().nonnegative().default(0), minOffMs: z.number().int().nonnegative().default(0),
