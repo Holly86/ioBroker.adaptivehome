@@ -15,6 +15,7 @@ export const mappingSchema = z.strictObject({
     capability: id, readId: stateId, writeId: stateId.optional(), confirmId: stateId.optional(),
     valueType: z.enum(['boolean', 'number', 'string']), unit: z.string().max(32).default(''),
     sourceType: z.enum(['boolean', 'number', 'string']).optional(), valueMap: z.record(z.string(), scalar).optional(),
+    codec: z.enum(['identity','hueLightLevel']).default('identity'),
     sourceUnit: z.string().max(32).optional(), scale: z.number().finite().positive().default(1), offset: z.number().finite().default(0),
     min: z.number().finite().optional(), max: z.number().finite().optional(), values: z.array(scalar).max(64).optional(),
     maxAgeMs: z.number().int().min(1000).max(86400000).default(300000),

@@ -10,6 +10,7 @@ Multi-channel outputs have independent proposed identities. A proposal is not ph
 | Shelly | shelly 12.1.1 | Exact channel switch, percent dimmer, string color, available sensor/power/energy roles | Passed, synthetic two-channel fixture | Pending; no model/generation certified |
 | Homematic CCU | hm-rpc 4.2.4 | Boolean STATE, fractional LEVEL → percent, thermostat setpoint/temperature, available contact/battery/online | Passed, synthetic fractional-level fixture | Pending |
 | Homematic IP Cloud | hmip 4.1.0 | Group setpoint/temperature/window, activeProfile selection, optional switch/dim states | Passed, synthetic group fixture | Pending |
+| Philips Hue | hue 3.17.4 | on, percent level or 0–254 bri, color string, motion, logarithmic lightlevel → lx | Passed, synthetic sensor fixture | Pending bridge and device |
 
 Read and feedback timestamps use the backend's state update time, never only last-change.
 Discovery does not claim the update time proves physical sampling; configure freshness
@@ -33,6 +34,13 @@ overlapping write paths. No backend file is modified. Cloud commands should be i
 the adapter's durable limits are local operator limits, not a claimed vendor quota.
 Missing sources keep the already running native device program; Adaptive Home issues no
 global off or blanket profile reset on an outage.
+
+[Hue backend](https://github.com/iobroker-community-adapters/ioBroker.hue): lightlevel
+is converted from the Hue logarithmic scale to lx. Already-normalized lux is not converted
+again. Discovery keeps exact channel parents; it does not pair differently named sensor
+channels by similarity. Confirm physical identity and combine the actual motion/lux paths
+manually when the backend exposes separate channel IDs. Aggregate groups/scenes are not
+automatically proposed; authorize all memberPhysicalIds before explicit group mapping.
 
 Hardware check: record model, firmware, transport, backend version, exclusive output,
 read/command/feedback paths; observe manual input, successful report, timeout, disconnect,

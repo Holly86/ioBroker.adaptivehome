@@ -1,5 +1,5 @@
 import { strict as assert } from 'node:assert';
-import { builtInRegistry, shellyProfile, homematicCcuProfile, homematicCloudProfile } from './profiles';
+import { builtInRegistry, shellyProfile, homematicCcuProfile, homematicCloudProfile, hueProfile } from './profiles';
 import { normalize } from './registry';
 describe('AP-09 Shelly contract fixtures', () => {
     it('keeps channels distinct, requires confirmation and preserves false feedback', () => {
@@ -9,6 +9,14 @@ describe('AP-09 Shelly contract fixtures', () => {
     });
     it('does not invent controls or units for unknown raw values', () => {
         assert.deepEqual(shellyProfile.discover({'shelly.0.device.brightness':{type:'number',unit:'unknown',write:true}}),[]);
+    });
+});
+describe('AP-11 Hue normalization', () => {
+    it('converts logarithmic light level to lux and excludes unapproved groups', () => {
+        const fixtures = {'hue.0.synthetic.lightlevel':{type:'number',unit:'',write:false},'hue.0.synthetic.presence':{type:'boolean',write:false},'hue.0.groups.excluded.on':{type:'boolean',write:true}};
+        const bindings = hueProfile.discover(fixtures);assert.equal(bindings.length,1);assert.equal(bindings[0].capabilities.length,2);
+        const light = bindings[0].capabilities.find(c => c.capability === 'illuminance')!;
+        assert.equal(normalize(bindings[0],light,{val:20001,ts:1},1).value,100);builtInRegistry().validate(bindings[0]);
     });
 });
 describe('AP-10 separate Homematic transports', () => {

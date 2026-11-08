@@ -42,7 +42,9 @@ export function normalize(binding: DeviceBinding, mapping: CapabilityMapping, ra
     if (typeof raw.val !== (mapping.sourceType ?? mapping.valueType) || (typeof raw.val === 'number' && !Number.isFinite(raw.val))) { result.quality = 'invalid'; return result; }
     const decoded = mapping.valueMap ? mapping.valueMap[String(raw.val)] : raw.val;
     if(decoded === undefined || typeof decoded !== mapping.valueType){result.quality = 'invalid';return result;}
-    const value = typeof decoded === 'number' ? decoded * mapping.scale + mapping.offset : decoded as Scalar;
+    const converted = mapping.codec === 'hueLightLevel' && typeof decoded === 'number' ? Math.pow(10,(decoded-1)/10000) : decoded;
+    const value = typeof converted === 'number' ? converted * mapping.scale + mapping.offset : converted as Scalar;
+    if(typeof value === 'number' && !Number.isFinite(value)){result.quality = 'invalid';return result;}
     if (typeof value === 'number' && ((mapping.min !== undefined && value < mapping.min) || (mapping.max !== undefined && value > mapping.max))) {
         result.quality = 'invalid'; return result;
     }

@@ -300,15 +300,19 @@
         "AP-06",
         "AP-08"
       ],
-      "status": "planned",
-      "implementationStatus": "not_started",
-      "verificationStatus": "not_run",
+      "status": "implemented",
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
       "requiredForBeta": true,
       "hardwareChecksMayBePending": true,
-      "evidence": [],
-      "openChecks": [],
+      "evidence": [
+        "docs/verification/AP-11.md"
+      ],
+      "openChecks": [
+        "Real Hue bridge, exact sensor identity and physical dimming/manual-control checks pending"
+      ],
       "commit": null,
-      "updatedAt": null
+      "updatedAt": "2026-11-08T14:38:58.648Z"
     },
     {
       "id": "AP-12",

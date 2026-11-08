@@ -4,6 +4,7 @@ import { IntegrationManifest, IntegrationRegistry, StateMetadata } from './regis
 export interface DetectionRule {
     capability:string; suffix:RegExp; type:'boolean'|'number'|'string'; unit?:string;
     readOnly?:boolean; scale?:number; valueMap?:Record<string,boolean|number|string>; normalizedType?:'boolean'|'number'|'string';
+    codec?:'identity'|'hueLightLevel';
 }
 export const standardRules: DetectionRule[] = [
     {capability:'motion',suffix:/(?:motion|presence|PRESENCE_DETECTION_STATE)$/i,type:'boolean',readOnly:true},
@@ -27,9 +28,9 @@ export function createProfile(id:string,name:string,backends:string[],rules:Dete
             if(!rule)continue;
             const unit = rule.unit ?? meta.unit ?? '';
             // Unknown units are not guessed, except explicit identity-unit profiles.
-            if((meta.unit ?? '') !== unit && !rule.scale && !rule.valueMap)continue;
+            if((meta.unit ?? '') !== unit && !rule.scale && !rule.valueMap && !rule.codec)continue;
             const mapping = mappingSchema.parse({capability:rule.capability,readId:path,valueType:rule.normalizedType ?? rule.type,
-                sourceType:rule.type,unit,sourceUnit:meta.unit ?? '',scale:rule.scale ?? 1,valueMap:rule.valueMap,
+                sourceType:rule.type,unit,sourceUnit:meta.unit ?? '',scale:rule.scale ?? 1,valueMap:rule.valueMap,codec:rule.codec,
                 ...(meta.write && !rule.readOnly ? {writeId:path,confirmId:path} : {}),min:rule.scale ? meta.min === undefined ? undefined : meta.min*rule.scale : meta.min,max:rule.scale ? meta.max === undefined ? undefined : meta.max*rule.scale : meta.max,
                 values:rule.valueMap ? [...new Set(Object.values(rule.valueMap))] : undefined,confirmation:'backend'});
             const channel = path.slice(0,path.lastIndexOf('.'));
@@ -57,6 +58,13 @@ export const homematicCloudProfile = createProfile('homematic-cloud','Homematic 
     {capability:'nativeProfile',suffix:/\.activeProfile$/i,type:'string'},
     {capability:'windowContact',suffix:/\.windowOpen$/i,type:'boolean',readOnly:true},...standardRules,
 ]);
+export const hueProfile = createProfile('hue','Philips Hue bridge',['hue'],[
+    {capability:'switch',suffix:/\.on$/i,type:'boolean'},
+    {capability:'dimmer',suffix:/\.level$/i,type:'number',unit:'%'},
+    {capability:'dimmer',suffix:/\.bri$/i,type:'number',unit:'%',scale:100/254},
+    {capability:'color',suffix:/\.(?:hex|rgb)$/i,type:'string'},
+    {capability:'illuminance',suffix:/\.lightlevel$/i,type:'number',unit:'lx',codec:'hueLightLevel',readOnly:true},...standardRules,
+]);
 export const genericProfile:IntegrationManifest = {apiVersion:1,id:'generic',name:'Explicit state mapping',backends:[],capabilities:['switch','dimmer','color','temperatureSensor','thermostatSetpoint','windowContact','motion','illuminance','power','energy','fan','airQuality','flow','filterLife','online','battery','nativeProfile'],discover:() => []};
-export function builtInRegistry():IntegrationRegistry {const registry = new IntegrationRegistry();for(const profile of [genericProfile,shellyProfile,homematicCcuProfile,homematicCloudProfile])registry.register(profile);return registry;}
+export function builtInRegistry():IntegrationRegistry {const registry = new IntegrationRegistry();for(const profile of [genericProfile,shellyProfile,homematicCcuProfile,homematicCloudProfile,hueProfile])registry.register(profile);return registry;}
 export function discoverProfiles(objects:Record<string,StateMetadata>,registry = builtInRegistry()):DeviceBinding[]{return registry.list().flatMap(profile => profile.discover(objects));}
