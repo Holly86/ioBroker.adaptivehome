@@ -71,3 +71,16 @@ letzte gültige Konfiguration und Rückweg. Siehe [Pilotvoraussetzungen](pilot.m
 Prüfdetails: [Szenariomatrix](verification/scenarios.md), [Kompatibilität](compatibility.md),
 [deutsche Anleitung](guide.de.md), [SDK](integration-sdk.de.md) und das alleinige
 [AP-Manifest](implementation/work-packages.json).
+
+## Abschließender Prüfstand
+
+Aktuelle Veröffentlichung ist 0.1.0-beta.2. Pro physischem Ausgang gilt genau eine Funktion, auch bei
+deaktivierten Aliasfunktionen; Zeitpläne, Bedingungen und Grenzen innerhalb dieser Funktion zusammenführen.
+Vor einem Update von Beta 1 überlappende Aliase im Admin entfernen und privat sichern. Beta 1 ist mit
+einem entsprechenden Hinweis versehen. Mindestfunktion und harte Grenzen werden zusätzlich im Executor geprüft.
+
+52 Modul-/Vertragstests, 61 Paketprüfungen, zehn Controller-/Browser-/Langlaufprüfungen und alle sieben
+Plattformprüfaufträge bestehen. Die heruntergeladene Veröffentlichung lief zusätzlich unverändert in drei
+anderen Konfigurationen mit abweichenden Zeitzonen, Geräteanzahlen und Herstellerkombinationen.
+Das Manifest weist alle 28 APs als implementiert aus; 20 sind geprüft, acht haben ausschließlich die dort
+konkret genannten externen Geräte-/Kontonachweise offen. Für den Kernbetrieb sind diese Konten optional.
