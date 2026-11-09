@@ -5,13 +5,12 @@ air quality, scheduled equipment and continuous minimum service. Start with one 
 learning up to an automatic observe → learn → plan → execute → check effect → rollback cycle.
 No language model, notification account, Node-RED or separate web app is required.
 
-The branch contains **0.1.0-beta.6-dev.0** readiness corrections described in
-[connections](docs/connections.md#unreleased-readiness-corrections-after-beta-5).
-These are unreleased source changes; the built public Beta 5 remains unchanged.
-
-**0.1.0-beta.5** adds [read connections and a backend-hosted native transport](docs/connections.md),
-seven optional read-only data profiles and SQL telemetry logging. Tested on a real js-controller
-with synthetic devices. Physical devices and cloud accounts have not been certified. See [compatibility](docs/compatibility.md).
+**0.1.0-beta.6** adds independent source receipts, operator/calendar/presence projections,
+read-only shared-session profile inspection, optional native dated heating leases with App priority,
+and guarded handoff/rollback preparation. It includes the seven optional read-only data profiles
+and SQL telemetry from Beta 5. Tested on a real js-controller with synthetic devices.
+Physical devices and cloud accounts have not been certified. See [compatibility](docs/compatibility.md)
+and [connection and native expiry requirements](docs/connections.md).
 
 [Deutsche Anleitung](docs/guide.de.md) · [English guide](docs/guide.en.md) ·
 [SDK](docs/integration-sdk.md) · [Verification](docs/verification/scenarios.md) ·
@@ -24,7 +23,7 @@ Tested locally: Node 24.22.1, controller 7.2.5, Admin 8.3.11 on Windows.
 Download the release's `.tgz` and `SHA256SUMS.txt`. Verify its checksum, then run in the ioBroker directory:
 
 ```sh
-npm install ./iobroker.adaptivehome-0.1.0-beta.5.tgz
+npm install ./iobroker.adaptivehome-0.1.0-beta.6.tgz
 iobroker upload adaptivehome
 iobroker add adaptivehome --enabled
 ```
@@ -33,11 +32,13 @@ Open Adaptive Home in Admin's tab menu. Use the built `.tgz`; the source archive
 build. GitHub beta, npm publication and ioBroker latest/stable inclusion are separate statuses.
 This beta does not claim catalog inclusion.
 
-Beta 5 includes the [freshness and policy corrections](docs/policy-parity.md).
+Beta 6 includes the [freshness and policy corrections](docs/policy-parity.md).
 Device read-evidence and normalized context sources must actually be connected.
 The native heating profile extension is contract-tested; the standard hmip backend
 does not provide its full-profile/absolute-expiry transport. Keep unsupported
-functions disabled. Beta 5 does not authorize a production handoff.
+functions disabled. Dated leases additionally require a commissioned constant fallback,
+scoped physical acceptance and an explicitly authorized control host. Beta 6 does not
+authorize a production handoff; handoff SDK functions only propose guarded transitions.
 
 ## Configure
 
@@ -102,6 +103,16 @@ household energy-saving claim is made.
 
 ## Changelog
 
+### 0.1.0-beta.6
+
+- Add independent original-receipt operator, calendar and per-device presence projections.
+- Add credential references and maintained read-only full-profile inspection through an existing session.
+- Preserve actual native group/member feedback times independently of API read receipts.
+- Add optional native heating leases with a fifteen-minute maximum, shared deadline and App priority.
+- Require fixed commissioned fallback profiles, scoped physical acceptance and durable send journals.
+- Add pure guarded writer-handoff/rollback proposals that preserve newer manual wishes and wait for native expiry.
+- Keep new control deployment, hardware expiry and actual writer handoff as separate commissioning gates.
+
 ### 0.1.0-beta.5
 
 - Add explicit read evidence, configured read sources and shared-session native heating transport.
@@ -149,7 +160,3 @@ household energy-saving claim is made.
 ## License
 
 MIT. Copyright (c) 2026 Holly86.
-
-The branch contains **0.1.0-beta.6-dev.0** readiness corrections described in
-[connections](docs/connections.md#unreleased-readiness-corrections-after-beta-5).
-These are unreleased source changes; the built public Beta 5 remains unchanged.

@@ -170,10 +170,10 @@ Wettervorhersage und Medienstatus werden erst durch ausdrückliche Zuordnung zu
 passenden Regeleingängen steuerungsrelevant. Im Lese-/Shadow-Pilot bleiben
 Aktorfunktionen und SQL-Export deaktiviert.
 
-## Unreleased readiness corrections after Beta 5
+## Readiness corrections in Beta 6
 
-The following source additions are in `0.1.0-beta.6-dev.0`; the published Beta 5
-package is unchanged. They do not install, restart or alter an existing backend.
+The following additions are included in Beta 6. Earlier release tags and assets
+remain unchanged. They do not install, restart or alter an existing backend.
 
 Protected source credentials can reference an existing explicitly declared native
 `sourceFiles` entry. Example instance setting (synthetic endpoint):
@@ -277,7 +277,7 @@ test loading under that user before restarting, and keep a scoped rollback. Scan
 evidence must cover the installation's actual probe method; an absent ARP scanner or a
 failed ping must never be reported as a successful negative device observation.
 
-### Native dated leases (development contract)
+### Native dated leases (Beta 6 SDK contract)
 
 A function's nativeProgram and its nativeTransports entry must both select strategy
 `timed-lease`. The function uses activationDelayMs 0, a maximum horizon of 900000 ms

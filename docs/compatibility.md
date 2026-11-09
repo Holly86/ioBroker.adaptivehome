@@ -107,3 +107,14 @@ See [data selection and SQL logging](connections.md#optional-cache-only-adapter-
 SQL 3.0.1 / SQLite integration is tested using a real isolated database; other SQL
 dialects remain API-compatible but database-unverified. Private cache observations
 are separate evidence and contain no production actuation or writer transfer.
+
+## Native expiry and handoff in Beta 6
+
+The optional `timed-lease` SDK path is tested with an anonymized native simulator,
+including App priority, shared end times and fallback without a running adapter.
+This is not a physical cloud/firmware or offline-expiry certificate. Control remains
+blocked until target/profile/member/timezone-bound acceptance and a commissioned
+constant fallback are supplied. The installed read-only host cannot apply commands.
+The standard hmip adapter does not expose this complete extended transport by itself.
+Handoff/rollback helpers are pure proposals; no production writer switch follows
+from installing this beta. See [connection requirements](connections.md).
