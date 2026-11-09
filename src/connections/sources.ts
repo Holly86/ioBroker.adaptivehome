@@ -4,6 +4,7 @@ import { connectionPrefix } from './schema';
 import { deadline } from '../runtime/clock';
 import { windowMatches } from '../config/schedule';
 import { createHash } from 'node:crypto';
+import { calendarAvailable, type CalendarRead } from '../context/read-observer';
 
 export function select(document: unknown, path: (string | number)[]): unknown {
 	let current = document;
@@ -66,7 +67,9 @@ function decoded(output: SourceOutput, document: unknown, now: number): unknown 
 			return undefined;
 		}
 	}
-	if (output.transform === 'cases') {
+	if (output.transform === 'calendarAvailable') {
+		raw = output.calendar ? calendarAvailable(raw as CalendarRead, output.calendar, now) : undefined;
+	} else if (output.transform === 'cases') {
 		const match = output.cases?.find(
 			c =>
 				c.requires.every(r => select(document, r.path) === r.equals) &&
@@ -321,34 +324,42 @@ export class SourceConnections {
 			return;
 		}
 		const previous = this.accepted.get(p);
-		const timed = o.transform === 'cases' || !!o.forecast?.points;
+		const timed = o.transform === 'cases' || o.transform === 'calendarAvailable' || !!o.forecast?.points;
 		const basis = timed
 			? createHash('sha256')
 					.update(
 						JSON.stringify(
-							o.transform === 'cases'
-								? o.cases?.map(c => c.requires.map(r => select(data.document, r.path)))
-								: o.forecast!.points!.map(point => [
-										select(data.document, point.at),
-										select(data.document, point.minimum),
-										select(data.document, point.maximum),
-										...point.timestamps.map(path => select(data.document, path)),
-									]),
+							o.transform === 'calendarAvailable'
+								? select(data.document, o.path)
+								: o.transform === 'cases'
+									? o.cases?.map(c => c.requires.map(r => select(data.document, r.path)))
+									: o.forecast!.points!.map(point => [
+											select(data.document, point.at),
+											select(data.document, point.minimum),
+											select(data.document, point.maximum),
+											...point.timestamps.map(path => select(data.document, path)),
+										]),
 						),
 					)
 					.digest('hex')
 			: undefined;
 		const phase = forecastRows
 			? JSON.stringify(forecastRows.map(row => row.at))
-			: o.transform === 'cases'
-				? String(
-						o.cases?.findIndex(
-							c =>
-								c.requires.every(r => select(data.document, r.path) === r.equals) &&
-								(!c.window || windowMatches(c.window, now, c.timezone)),
-						),
-					)
-				: undefined;
+			: o.transform === 'calendarAvailable'
+				? value === true
+					? 'available'
+					: value === false
+						? 'unavailable'
+						: 'unknown'
+				: o.transform === 'cases'
+					? String(
+							o.cases?.findIndex(
+								c =>
+									c.requires.every(r => select(data.document, r.path) === r.equals) &&
+									(!c.window || windowMatches(c.window, now, c.timezone)),
+							),
+						)
+					: undefined;
 		const timedTransition = timed && !!previous && previous.basis === basis && previous.phase !== phase;
 		if (
 			previous &&

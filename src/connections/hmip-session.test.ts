@@ -1,6 +1,7 @@
 import { strict as assert } from 'node:assert';
 import { HmipSessionSource } from './hmip-session';
 import { nativeTransportSchema } from './schema';
+import { createHmipBackendHost } from './hmip-host';
 
 describe('Existing HmIP session read adapter', () => {
 	it('reads actual server state, preserves cached proof time, verifies membership and never authenticates a second client', async () => {
@@ -93,6 +94,31 @@ describe('Existing HmIP session read adapter', () => {
 		now += 15000;
 		raw.groups['group-id'].channels = [];
 		await assert.rejects(source.snapshot(t), /membership_changed/);
+		raw.groups['group-id'].channels = [{ deviceId: 'valve-id' }];
+		profile.profileDays.MONDAY.baseValue = 22;
+		const host = createHmipBackendHost({
+			api: {
+				callRestApi: async endpoint => {
+					calls.push(endpoint);
+					return structuredClone(endpoint === 'home/getCurrentState' ? raw : profile);
+				},
+			},
+			clientCharacteristics: {},
+			allowedSenders: ['system.adapter.adaptivehome.7'],
+			targets: [t],
+			now: () => now,
+		});
+		const read: any = (
+			await host.handle({
+				command: 'adaptivehomeProfileRead',
+				from: 'system.adapter.adaptivehome.7',
+				message: { protocol: 'adaptivehome.profile-read.v1', targetId: t.id },
+			})
+		).result;
+		assert.equal(read.group.profile.profileDays.MONDAY.baseValue, 22);
+		assert.equal(read.group.profileCheckedAt, now);
+		assert.equal(host.capabilities().controlEnabled, false);
+		assert.equal(host.capabilities().absoluteExpiryRegistered, false);
 		assert.ok(calls.every(c => ['home/getCurrentState', 'group/heating/getProfile'].includes(c)));
 	});
 });

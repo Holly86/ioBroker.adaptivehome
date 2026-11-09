@@ -11,6 +11,117 @@ import { referenceConfiguration } from '../config/examples';
 import { validateConfiguration } from '../config/configuration';
 
 describe('Anonymous source connections and device read evidence', () => {
+	it('distinguishes server valve fractions from a percentage-valued cached driver source', async () => {
+		const now = 100000;
+		const base = { enabled: true, intervalMs: 1000, maxAgeMs: 30000, kind: 'json-file', fileKey: 'fixture' };
+		const fraction = connectionSchema.parse({
+			...base,
+			id: 'server',
+			outputs: [
+				{ key: 'valve', type: 'number', path: ['fraction'], timestampPath: ['at'], scale: 1, min: 0, max: 1 },
+			],
+		});
+		const percent = connectionSchema.parse({
+			...base,
+			id: 'driver',
+			outputs: [
+				{ key: 'valve', type: 'number', path: ['percent'], timestampPath: ['at'], scale: 0.01, min: 0, max: 1 },
+			],
+		});
+		const s = new SourceConnections(
+			'adaptivehome.7',
+			{
+				readFile: async () => ({ at: now, fraction: 0.69, percent: 69 }),
+				readState: async () => null,
+				getJSON: async () => {
+					throw Error('unexpected');
+				},
+				readBackend: async () => {
+					throw Error('unexpected');
+				},
+			},
+			() => now,
+		);
+		await s.refresh([fraction, percent]);
+		assert.equal(s.read('adaptivehome.7.connections.server.valve')?.val, 0.69);
+		assert.ok(Math.abs(Number(s.read('adaptivehome.7.connections.driver.valve')?.val) - 0.69) < 1e-12);
+	});
+	it('advances calendar phase at a clock boundary while retaining the original independent fetch receipt', async () => {
+		let now = Date.parse('2027-04-12T13:29:00Z');
+		const fetchedAt = now - 1000,
+			doc = {
+				calendar: {
+					fetchedAt,
+					complete: true,
+					from: now - 86400000,
+					through: now + 86400000,
+					events: [] as any[],
+				},
+			};
+		const c = connectionSchema.parse({
+			id: 'calendar',
+			enabled: true,
+			kind: 'json-file',
+			fileKey: 'calendar',
+			intervalMs: 1000,
+			maxAgeMs: 3600000,
+			outputs: [
+				{
+					key: 'available',
+					type: 'boolean',
+					path: ['calendar'],
+					timestampPath: ['calendar', 'fetchedAt'],
+					transform: 'calendarAvailable',
+					calendar: {
+						timezone: 'UTC',
+						maxAgeMs: 3600000,
+						awayKind: 'trip',
+						school: {
+							agKind: 'club',
+							departure: '07:30',
+							return: '13:30',
+							agReturn: '17:00',
+							validFrom: '2027-01-01',
+							validThrough: '2027-12-31',
+							publicHolidays: [],
+							holidays: [],
+						},
+					},
+				},
+			],
+		});
+		const s = new SourceConnections(
+			'adaptivehome.7',
+			{
+				readFile: async () => doc,
+				readState: async () => null,
+				getJSON: async () => {
+					throw Error('unexpected');
+				},
+				readBackend: async () => {
+					throw Error('unexpected');
+				},
+			},
+			() => now,
+		);
+		await s.refresh([c]);
+		assert.equal(s.read('adaptivehome.7.connections.calendar.available')?.val, false);
+		now += 60000;
+		await s.refresh([c]);
+		assert.equal(s.read('adaptivehome.7.connections.calendar.available')?.val, true);
+		assert.equal(s.read('adaptivehome.7.connections.calendar.available.verifiedAt')?.val, fetchedAt);
+		doc.calendar.events.push({ kind: 'trip', allDay: true, start: '2027-04-12', end: '2027-04-13' });
+		now += 1000;
+		await s.refresh([c]);
+		assert.equal(s.read('adaptivehome.7.connections.calendar.available')?.q, 1);
+		doc.calendar.fetchedAt = now;
+		now += 1000;
+		await s.refresh([c]);
+		assert.equal(s.read('adaptivehome.7.connections.calendar.available')?.val, false);
+		now += 3600001;
+		await s.refresh([c]);
+		assert.equal(s.read('adaptivehome.7.connections.calendar.available')?.q, 1);
+	});
 	it('resolves a Hue read reference through its existing configuration without pairing or exporting credentials', async () => {
 		const selected: string[] = [];
 		const endpoint = (await resolveSourceEndpoint(

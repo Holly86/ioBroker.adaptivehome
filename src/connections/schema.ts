@@ -6,6 +6,35 @@ const key = z
 	.refine(v => !['__proto__', 'prototype', 'constructor'].includes(v));
 const selector = z.array(z.union([key, z.number().int().min(0).max(10000)])).max(16);
 const value = z.union([z.boolean(), z.number().finite(), z.string().max(512)]);
+const date = z.string().regex(/^\d{4}-\d\d-\d\d$/);
+const time = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/);
+const calendarRules = z.strictObject({
+	timezone: z
+		.string()
+		.max(128)
+		.refine(v => {
+			try {
+				new Intl.DateTimeFormat('en', { timeZone: v });
+				return true;
+			} catch {
+				return false;
+			}
+		}),
+	maxAgeMs: z.number().int().min(1000).max(86400000),
+	awayKind: key,
+	school: z
+		.strictObject({
+			agKind: key,
+			departure: time,
+			return: time,
+			agReturn: time,
+			validFrom: date,
+			validThrough: date,
+			publicHolidays: z.array(date).max(1000),
+			holidays: z.array(z.strictObject({ from: date, through: date })).max(200),
+		})
+		.optional(),
+});
 export const outputSchema = z.strictObject({
 	key,
 	type: z.enum(['boolean', 'number', 'string']),
@@ -27,7 +56,10 @@ export const outputSchema = z.strictObject({
 	offset: z.number().finite().default(0),
 	min: z.number().finite().optional(),
 	max: z.number().finite().optional(),
-	transform: z.enum(['scalar', 'any', 'all', 'maximum', 'forecastMedian', 'cases']).default('scalar'),
+	transform: z
+		.enum(['scalar', 'any', 'all', 'maximum', 'forecastMedian', 'cases', 'calendarAvailable'])
+		.default('scalar'),
+	calendar: calendarRules.optional(),
 	defaultValue: value.optional(),
 	cases: z
 		.array(

@@ -87,7 +87,14 @@ export function createHmipBackendHost(options: HmipHostOptions): HmipBackendHost
 		capabilities,
 		invalidateProfile: (groupId: string) => source.invalidateProfile(groupId),
 		async handle(envelope: BackendEnvelope): Promise<{ handled: boolean; result?: unknown }> {
-			if (!['adaptivehomeCapabilities', 'adaptivehomeRead', 'adaptivehomeNative'].includes(envelope.command)) {
+			if (
+				![
+					'adaptivehomeCapabilities',
+					'adaptivehomeRead',
+					'adaptivehomeProfileRead',
+					'adaptivehomeNative',
+				].includes(envelope.command)
+			) {
 				return { handled: false };
 			}
 			if (!options.allowedSenders.includes(envelope.from)) {
@@ -102,6 +109,14 @@ export function createHmipBackendHost(options: HmipHostOptions): HmipBackendHost
 					throw Error('backend_read_protocol_invalid');
 				}
 				return { handled: true, result: await source.handleRead(envelope.from, options.allowedSenders) };
+			}
+			if (envelope.command === 'adaptivehomeProfileRead') {
+				const message = envelope.message as { protocol?: unknown; targetId?: unknown };
+				const target = targets.find(t => t.enabled && t.id === message?.targetId);
+				if (message?.protocol !== 'adaptivehome.profile-read.v1' || !target) {
+					throw Error('backend_profile_read_invalid');
+				}
+				return { handled: true, result: await source.snapshot(target) };
 			}
 			const message = envelope.message as { operation?: unknown };
 			if (mode === 'read-only' && message?.operation !== 'inspect') {

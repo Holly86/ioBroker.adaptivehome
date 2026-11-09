@@ -33,6 +33,18 @@ describe('Maintained HmIP backend registration', () => {
 		).result;
 		assert.equal(r.document.home.id, 'home-a');
 		assert.equal(reads, 1);
+		await assert.rejects(
+			h.handle({
+				...env,
+				command: 'adaptivehomeProfileRead',
+				message: { protocol: 'adaptivehome.profile-read.v1', targetId: 'unconfigured' },
+			}),
+			/profile_read_invalid/,
+		);
+		await assert.rejects(
+			h.handle({ ...env, command: 'adaptivehomeProfileRead', from: 'system.adapter.other.0', message: {} }),
+			/sender/,
+		);
 		await h.handle({ ...env, command: 'adaptivehomeRead', message: { protocol: 'adaptivehome.read.v1' } });
 		assert.equal(reads, 1);
 		await assert.rejects(

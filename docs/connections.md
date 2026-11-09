@@ -216,7 +216,7 @@ const host = registerHmipBackendHost(adapter, {
 // On a real profile-change event: host.invalidateProfile(changedGroupId);
 ```
 
-The host registers adaptivehomeCapabilities, adaptivehomeRead and adaptivehomeNative.
+The host registers adaptivehomeCapabilities, adaptivehomeRead, adaptivehomeProfileRead and adaptivehomeNative.
 Unrelated backend handlers are preserved. Registration starts no REST call or cloud
 session. Read-only mode rejects apply requests before any vendor mutation and ignores
 execution journals; capabilities explicitly report no control or physical acceptance.
@@ -239,3 +239,40 @@ is kept separate from the unchanged source receipt. Identical-receipt source-con
 changes and backwards evaluation clocks remain rejected. A partial aggregate refresh
 may remain unavailable until its oldest contributing receipt advances; this is a
 conservative failure rather than invented freshness.
+
+### Independent context observations
+
+An operator-hosted read-only producer can use the SDK's pure `manualRequest`,
+`rgbHue`, `roomUsage`, `calendarAvailable` and `ReadPresence` projections. These
+functions have no I/O or command port. Persistent human requests must come from
+the authoritative request store; an unreadable store is unknown. Room usage keeps
+the configured primary/auxiliary light and motion semantics. RGB hue is calculated
+from validated direct feedback. A process heartbeat cannot renew per-person evidence:
+negative presence requires actual fresh per-device scan receipts through the whole
+absence delay. Unknown input, a new scan session or an observation gap resets that delay.
+Corroboration of a hallway event uses the original event time.
+
+`calendarAvailable` source outputs select an independently fetched calendar document
+and declare `calendar` rules: timezone, maximum age, an away-event kind, and optionally
+school departure/return times, same-day group-event kind, explicit public holidays and
+finite inclusive school-holiday/coverage dates. Calendar events have kind, allDay,
+start and exclusive end. Stale, incomplete or malformed calendars remain unknown.
+This is a declared clock-derived projection: time boundaries may change availability
+without renewing the original calendar fetch receipt. Source-content changes with an
+identical receipt remain rejected. Optional calendars do not authorize any actuator.
+
+`adaptivehomeProfileRead` accepts only `{protocol: 'adaptivehome.profile-read.v1',
+targetId: '<enabled configured target>'}` from the host's allowlist. It returns a validated
+full snapshot/profile through the existing session, even when native control acceptance
+is pending. It never implies verified autonomous expiry or physical acceptance.
+The SDK's `readOnlyHmipPort(existingApi)` provides a second unconditional boundary:
+only home/getCurrentState and group/heating/getProfile reach the original API, using
+strict error propagation and a bounded timeout. Registration and profile inspection
+create no authentication client and do not modify existing backend handlers.
+
+A private deployment hook is installation-specific lifecycle evidence, not a generally
+supported foreign-adapter installer. Pin its exact backend version/hash, preserve vendor
+files and existing configuration, derive filesystem ownership from the real runtime user,
+test loading under that user before restarting, and keep a scoped rollback. Scanner
+evidence must cover the installation's actual probe method; an absent ARP scanner or a
+failed ping must never be reported as a successful negative device observation.
