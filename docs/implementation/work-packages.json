@@ -137,9 +137,9 @@
         "docs/verification/beta5-release.md"
       ],
       "openChecks": [],
-      "commit": "3676191e44ee307fc483419ea771a432a31037dd",
-      "updatedAt": "2026-11-09T14:25:02.302Z",
-      "correctionSummary": "Beta 5 software: seven optional cache-only data profiles, selected-source processing and bounded SQL telemetry export; actual isolated SQLite persistence verified. No production activation."
+      "commit": "a8cdae6a3e85876781f3ec4888af17505cd8d10c",
+      "updatedAt": "2026-11-09T14:38:17.825Z",
+      "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
     },
     {
       "id": "AP-04",
@@ -179,9 +179,9 @@
         "docs/verification/beta5-release.md"
       ],
       "openChecks": [],
-      "commit": "3676191e44ee307fc483419ea771a432a31037dd",
-      "updatedAt": "2026-11-09T14:25:02.302Z",
-      "correctionSummary": "Beta 5 software: seven optional cache-only data profiles, selected-source processing and bounded SQL telemetry export; actual isolated SQLite persistence verified. No production activation."
+      "commit": "a8cdae6a3e85876781f3ec4888af17505cd8d10c",
+      "updatedAt": "2026-11-09T14:38:17.825Z",
+      "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
     },
     {
       "id": "AP-06",
@@ -248,9 +248,9 @@
         "docs/verification/beta5-release.md"
       ],
       "openChecks": [],
-      "commit": "beacb7d767f7fe1f3a6006f680053b10d8eae1ed",
-      "updatedAt": "2026-11-09T14:25:02.302Z",
-      "correctionSummary": "Beta 5 software: seven optional cache-only data profiles, selected-source processing and bounded SQL telemetry export; actual isolated SQLite persistence verified. No production activation."
+      "commit": "a8cdae6a3e85876781f3ec4888af17505cd8d10c",
+      "updatedAt": "2026-11-09T14:38:17.825Z",
+      "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
     },
     {
       "id": "AP-09",
@@ -400,9 +400,9 @@
         "docs/verification/beta5-release.md"
       ],
       "openChecks": [],
-      "commit": "4b2fde448bbe458a6688c4a52fe0dcc5b6e0c42d",
-      "updatedAt": "2026-11-09T14:25:02.302Z",
-      "correctionSummary": "Beta 5 software: seven optional cache-only data profiles, selected-source processing and bounded SQL telemetry export; actual isolated SQLite persistence verified. No production activation."
+      "commit": "a8cdae6a3e85876781f3ec4888af17505cd8d10c",
+      "updatedAt": "2026-11-09T14:38:17.825Z",
+      "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
     },
     {
       "id": "AP-15",
@@ -658,9 +658,9 @@
         "docs/verification/beta5-release.md"
       ],
       "openChecks": [],
-      "commit": "3676191e44ee307fc483419ea771a432a31037dd",
-      "updatedAt": "2026-11-09T14:25:02.302Z",
-      "correctionSummary": "Beta 5 software: seven optional cache-only data profiles, selected-source processing and bounded SQL telemetry export; actual isolated SQLite persistence verified. No production activation."
+      "commit": "a8cdae6a3e85876781f3ec4888af17505cd8d10c",
+      "updatedAt": "2026-11-09T14:38:17.825Z",
+      "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
     },
     {
       "id": "AP-25",
@@ -687,9 +687,9 @@
       "openChecks": [
         "npm needs authenticated publishing rights; ioBroker package co-ownership and latest/stable acceptance remain external."
       ],
-      "commit": "577a660adb1f073e3e0d68c96e100635ddd0e0af",
-      "updatedAt": "2026-11-09T14:25:02.302Z",
-      "correctionSummary": "Beta 5 software: seven optional cache-only data profiles, selected-source processing and bounded SQL telemetry export; actual isolated SQLite persistence verified. No production activation."
+      "commit": "a8cdae6a3e85876781f3ec4888af17505cd8d10c",
+      "updatedAt": "2026-11-09T14:38:17.825Z",
+      "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
     },
     {
       "id": "AP-26",
@@ -720,9 +720,9 @@
         "Published Beta 4 read-only/shadow repeat completed with no device/configuration writes, runtime installation or restart; checked production settings unchanged.",
         "Before control takeover: supported installed platform, real device read-evidence producers, verified normalized sources, backend enrollment/availability, physical feedback, native full-profile/absolute-expiry transport, exclusive writer handoff, backup and rollback acceptance."
       ],
-      "commit": "3676191e44ee307fc483419ea771a432a31037dd",
-      "updatedAt": "2026-11-09T14:25:02.302Z",
-      "correctionSummary": "Beta 5 software: seven optional cache-only data profiles, selected-source processing and bounded SQL telemetry export; actual isolated SQLite persistence verified. No production activation."
+      "commit": "a8cdae6a3e85876781f3ec4888af17505cd8d10c",
+      "updatedAt": "2026-11-09T14:38:17.825Z",
+      "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
     },
     {
       "id": "AP-27",
@@ -741,14 +741,15 @@
       "evidence": [
         "docs/verification/AP-27.md",
         "docs/handoff.md",
-        "docs/verification/beta4-release.md"
+        "docs/verification/beta4-release.md",
+        "docs/verification/beta5-release.md"
       ],
       "openChecks": [
         "Software release accepted. Physical/source/native-backend acceptance and expressly scoped production handoff remain pending; no takeover authorized or performed."
       ],
-      "commit": "577a660adb1f073e3e0d68c96e100635ddd0e0af",
-      "updatedAt": "2026-11-09T11:52:19.845Z",
-      "correctionSummary": "Published Beta 4: read-evidence freshness, continuous quiet/manual handling, configurable rule parity and bounded report-time corrections; exact artifact passed isolated tests. Physical/backend acceptance remains separate."
+      "commit": "a8cdae6a3e85876781f3ec4888af17505cd8d10c",
+      "updatedAt": "2026-11-09T14:38:17.825Z",
+      "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
     }
   ],
   "scenarioIds": [
@@ -790,13 +791,13 @@
     "S36"
   ],
   "repositoryUrl": "https://github.com/Holly86/ioBroker.adaptivehome",
-  "releasedVersion": "0.1.0-beta.4",
-  "releaseUrl": "https://github.com/Holly86/ioBroker.adaptivehome/releases/tag/v0.1.0-beta.4",
+  "releasedVersion": "0.1.0-beta.5",
+  "releaseUrl": "https://github.com/Holly86/ioBroker.adaptivehome/releases/tag/v0.1.0-beta.5",
   "artifact": {
-    "name": "iobroker.adaptivehome-0.1.0-beta.4.tgz",
-    "sha256": "26d6f51ae85757f8a8c9477e456461f70573d7ab95dfa2f883511b79e6955269",
-    "runtimeSourceCommit": "577a660adb1f073e3e0d68c96e100635ddd0e0af",
-    "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42610700553"
+    "name": "iobroker.adaptivehome-0.1.0-beta.5.tgz",
+    "sha256": "b95ea53fdcc074face97b9686eb2f910e70317cdc7948f06cad97baba8ca9ddc",
+    "runtimeSourceCommit": "a8cdae6a3e85876781f3ec4888af17505cd8d10c",
+    "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42634521526"
   },
   "corrections": [
     {
@@ -950,23 +951,21 @@
       "verificationStatus": "passed",
       "evidence": "docs/verification/beta5-release.md",
       "checks": {
-        "typecheck": true,
         "build": true,
+        "typecheck": true,
         "lint": true,
         "unitContractTests": 116,
         "packageChecks": 61,
         "controllerBrowserSoakTests": 14,
-        "realSqlAdapter": "3.0.1",
-        "actualSQLitePersistenceVerified": true,
-        "frozenPackageFiles": 123,
+        "additionalPublishedPackageControllerChecks": 2,
         "installedRuntimeAdminFiles": 100,
-        "publicContentReview": true
-      },
-      "candidate": {
-        "version": "0.1.0-beta.5",
-        "sha256": "b95ea53fdcc074face97b9686eb2f910e70317cdc7948f06cad97baba8ca9ddc",
-        "publication": "pending CI and immutable release",
-        "privatePilot": "pending published package download"
+        "quietMs": 301694,
+        "admin": "8.3.11",
+        "alternateConfigurations": 3,
+        "crossPlatformJobs": 7,
+        "actualSqlSQLiteVerified": true,
+        "publicContentReview": true,
+        "publishedDownloadByteIdentical": true
       },
       "remainingGates": [
         "Exact physical/backend acceptance remains separate",
@@ -974,7 +973,26 @@
         "Scoped source access independent of prior writers",
         "Exclusive writer handoff and rollback not performed"
       ],
-      "updatedAt": "2026-11-09T14:25:02.302Z"
+      "updatedAt": "2026-11-09T14:38:17.825Z",
+      "release": {
+        "version": "0.1.0-beta.5",
+        "url": "https://github.com/Holly86/ioBroker.adaptivehome/releases/tag/v0.1.0-beta.5",
+        "sourceCommit": "a8cdae6a3e85876781f3ec4888af17505cd8d10c",
+        "sha256": "b95ea53fdcc074face97b9686eb2f910e70317cdc7948f06cad97baba8ca9ddc",
+        "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42634521526"
+      },
+      "privateConfiguration": {
+        "disabledDraftCompleted": true,
+        "schemaAndMetadataAuditsPassed": true,
+        "readOnlyPilotPassed": true,
+        "SQLLoggingPreparedDisabled": true,
+        "actuatorWrites": 0,
+        "configurationWrites": 0,
+        "SQLMessages": 0,
+        "productionUnchanged": true,
+        "rawEvidence": "ignored local storage only",
+        "controlTakeover": false
+      }
     }
   ],
   "releaseHistory": [
@@ -997,74 +1015,45 @@
         "runtimeSourceCommit": "4ea2a2aeac20dae023676b4536df40965e95dbf9",
         "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42512362542"
       }
+    },
+    {
+      "version": "0.1.0-beta.4",
+      "url": "https://github.com/Holly86/ioBroker.adaptivehome/releases/tag/v0.1.0-beta.4",
+      "artifact": {
+        "name": "iobroker.adaptivehome-0.1.0-beta.4.tgz",
+        "sha256": "26d6f51ae85757f8a8c9477e456461f70573d7ab95dfa2f883511b79e6955269",
+        "runtimeSourceCommit": "577a660adb1f073e3e0d68c96e100635ddd0e0af",
+        "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42610700553"
+      }
     }
   ],
   "releaseVerification": {
-    "version": "0.1.0-beta.4",
-    "implementationStatus": "implemented",
-    "verificationStatus": "passed",
-    "evidence": "docs/verification/beta4-release.md",
-    "checks": {
-      "build": true,
-      "typecheck": true,
-      "lint": true,
-      "unitContractTests": 85,
-      "packageChecks": 61,
-      "controllerBrowserSoakTests": 12,
-      "installedRuntimeAdminFiles": 84,
-      "quietMs": 301578,
-      "admin": "8.3.11",
-      "alternateConfigurations": 3,
-      "crossPlatformJobs": 7,
-      "publicContentReview": true,
-      "publishedDownloadByteIdentical": true
-    },
-    "productionAccessPerformed": false,
-    "privateReadOnlyPilotPerformedSeparately": true,
-    "updatedAt": "2026-11-09T11:52:19.845Z"
-  },
-  "developmentVersion": "0.1.0-beta.5",
-  "developmentVerification": {
-    "id": "beta5-data-connectors-sql-2026-11-09",
-    "affectedPackages": [
-      "AP-03",
-      "AP-05",
-      "AP-08",
-      "AP-14",
-      "AP-24",
-      "AP-25",
-      "AP-26"
-    ],
+    "version": "0.1.0-beta.5",
     "implementationStatus": "implemented",
     "verificationStatus": "passed",
     "evidence": "docs/verification/beta5-release.md",
     "checks": {
-      "typecheck": true,
       "build": true,
+      "typecheck": true,
       "lint": true,
       "unitContractTests": 116,
       "packageChecks": 61,
       "controllerBrowserSoakTests": 14,
-      "realSqlAdapter": "3.0.1",
-      "actualSQLitePersistenceVerified": true,
-      "frozenPackageFiles": 123,
+      "additionalPublishedPackageControllerChecks": 2,
       "installedRuntimeAdminFiles": 100,
-      "publicContentReview": true
+      "quietMs": 301694,
+      "admin": "8.3.11",
+      "alternateConfigurations": 3,
+      "crossPlatformJobs": 7,
+      "actualSqlSQLiteVerified": true,
+      "publicContentReview": true,
+      "publishedDownloadByteIdentical": true
     },
-    "candidate": {
-      "version": "0.1.0-beta.5",
-      "sha256": "b95ea53fdcc074face97b9686eb2f910e70317cdc7948f06cad97baba8ca9ddc",
-      "publication": "pending CI and immutable release",
-      "privatePilot": "pending published package download"
-    },
-    "remainingGates": [
-      "Exact physical/backend acceptance remains separate",
-      "Native shared-session registration and real absolute-expiry support",
-      "Scoped source access independent of prior writers",
-      "Exclusive writer handoff and rollback not performed"
-    ],
-    "updatedAt": "2026-11-09T14:25:02.302Z",
-    "version": "0.1.0-beta.5",
-    "distribution": "frozen candidate; GitHub publication pending CI"
+    "productionControlChanges": false,
+    "privateReadOnlyPilotPerformedSeparately": true,
+    "actuatorWrites": 0,
+    "configurationWrites": 0,
+    "SQLMessages": 0,
+    "updatedAt": "2026-11-09T14:38:17.825Z"
   }
 }
