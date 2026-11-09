@@ -17,6 +17,36 @@ const fields = (value: unknown, keys: string[]): Data => {
 	const record = object(value);
 	return Object.fromEntries(keys.filter(k => Object.hasOwn(record, k)).map(k => [k, record[k]]));
 };
+/** Real getProfile replies omit index/name. Bind these to independently read group metadata. */
+export function normalizeHmipProfile(raw: unknown, group: Data, index: string): HmipProfile {
+	const profile = object(raw),
+		metadata = object(object(group.profiles)[index]);
+	const id = metadata.profileId ?? metadata.id;
+	if (
+		typeof id !== 'string' ||
+		!id ||
+		(metadata.id !== undefined && metadata.profileId !== undefined && metadata.id !== metadata.profileId) ||
+		profile.id !== id ||
+		profile.groupId !== group.id ||
+		profile.homeId !== group.homeId ||
+		metadata.enabled !== true ||
+		profile.type !== 'HEATING_COOLING' ||
+		!profile.profileDays ||
+		Object.keys(profile.profileDays).length !== 7 ||
+		['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'].some(
+			day =>
+				!Number.isFinite(profile.profileDays[day]?.baseValue) ||
+				!Array.isArray(profile.profileDays[day]?.periods),
+		) ||
+		(metadata.index !== undefined && metadata.index !== index) ||
+		(profile.index !== undefined && profile.index !== index) ||
+		typeof metadata.name !== 'string' ||
+		(profile.name !== undefined && profile.name !== metadata.name)
+	) {
+		throw Error('hmip_profile_identity_changed');
+	}
+	return { ...profile, index, name: metadata.name } as HmipProfile;
+}
 /** Real GET-like REST reads through the existing authenticated client, with bounded shared caching. */
 export class HmipSessionSource {
 	private cached?: SourceDocument;
@@ -119,6 +149,17 @@ export class HmipSessionSource {
 		const metadata = object(group.profiles)[t.profileIndex],
 			fingerprint = JSON.stringify(metadata),
 			old = this.profiles.get(t.groupId);
+		const identity = object(metadata);
+		// The backend uses profileId; some compatible implementations expose id.
+		// Conflicting identifiers must never be resolved by choosing one silently.
+		const profileId = identity.profileId ?? identity.id;
+		if (
+			typeof profileId !== 'string' ||
+			!profileId ||
+			(identity.id !== undefined && identity.profileId !== undefined && identity.id !== identity.profileId)
+		) {
+			throw Error('hmip_profile_identity_changed');
+		}
 		let profile =
 			old?.fingerprint === fingerprint &&
 			this.now() >= old.checkedAt &&
@@ -126,18 +167,20 @@ export class HmipSessionSource {
 				? old.profile
 				: undefined;
 		if (!profile) {
-			profile = object(
+			profile = normalizeHmipProfile(
 				await this.api.callRestApi('group/heating/getProfile', {
 					groupId: t.groupId,
 					profileIndex: t.profileIndex,
 					profileName: object(metadata).name,
 				}),
-			) as HmipProfile;
+				group,
+				t.profileIndex,
+			);
 			if (
 				profile.groupId !== t.groupId ||
 				profile.index !== t.profileIndex ||
 				profile.homeId !== group.homeId ||
-				profile.id !== object(metadata).id
+				profile.id !== profileId
 			) {
 				throw Error('hmip_profile_identity_changed');
 			}
@@ -185,6 +228,11 @@ export class HmipSessionSource {
 		if (endpoint.endsWith('updateProfile')) {
 			this.cached = undefined;
 			this.profiles.delete(String(body.groupId));
+		}
+		if (endpoint === 'group/heating/getProfile') {
+			const data = object((await this.read()).document),
+				group = object(data.groups[String(body.groupId)]);
+			return normalizeHmipProfile(result, group, String(body.profileIndex));
 		}
 		return result;
 	}

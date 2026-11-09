@@ -5,6 +5,10 @@ air quality, scheduled equipment and continuous minimum service. Start with one 
 learning up to an automatic observe → learn → plan → execute → check effect → rollback cycle.
 No language model, notification account, Node-RED or separate web app is required.
 
+The branch contains **0.1.0-beta.6-dev.0** readiness corrections described in
+[connections](docs/connections.md#unreleased-readiness-corrections-after-beta-5).
+These are unreleased source changes; the built public Beta 5 remains unchanged.
+
 **0.1.0-beta.5** adds [read connections and a backend-hosted native transport](docs/connections.md),
 seven optional read-only data profiles and SQL telemetry logging. Tested on a real js-controller
 with synthetic devices. Physical devices and cloud accounts have not been certified. See [compatibility](docs/compatibility.md).
@@ -145,3 +149,7 @@ household energy-saving claim is made.
 ## License
 
 MIT. Copyright (c) 2026 Holly86.
+
+The branch contains **0.1.0-beta.6-dev.0** readiness corrections described in
+[connections](docs/connections.md#unreleased-readiness-corrections-after-beta-5).
+These are unreleased source changes; the built public Beta 5 remains unchanged.

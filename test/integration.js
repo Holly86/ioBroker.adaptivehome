@@ -7,6 +7,7 @@ tests.integration(path.join(__dirname, '..'), { controllerVersion: '7.2.5', defi
     require('./controller-suite.cjs').defineControllerTests(context);
     require('./sdk-controller.cjs').defineSdkTests(context);
     require('./connections-controller.cjs').defineConnectionTests(context);
+    require('./hmip-host-controller.cjs').defineHmipHostTests(context);
 		require('./sql-controller.cjs').defineSqlTests(context);
     require('./browser-controller.cjs').defineBrowserTests(context);
 } });

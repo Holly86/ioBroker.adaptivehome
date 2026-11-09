@@ -46,6 +46,7 @@ class Adaptivehome extends utils.Adapter {
 					return obj?.native ?? {};
 				},
 				value => this.decrypt(value),
+				key => readSourceFile(key, this.config.sourceFiles ?? {}),
 			);
 			return getSourceJSON(resolved);
 		},

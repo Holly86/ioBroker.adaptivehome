@@ -15,6 +15,7 @@ export const outputSchema = z.strictObject({
 	jsonPath: selector.optional(),
 	// Source timestamps are mandatory for files/cache documents. File mtime is never evidence.
 	timestampPath: selector.optional(),
+	timestampPaths: z.array(selector).min(1).max(512).optional(),
 	eventTimestampPath: selector.optional(),
 	sessionPath: selector.optional(),
 	requires: z
@@ -61,6 +62,18 @@ export const outputSchema = z.strictObject({
 			samples: z.number().int().min(2).max(200),
 			cadenceMs: z.number().int().min(60000),
 			horizonMs: z.number().int().min(60000),
+			points: z
+				.array(
+					z.strictObject({
+						at: selector,
+						minimum: selector,
+						maximum: selector,
+						timestamps: z.array(selector).min(1).max(3),
+					}),
+				)
+				.min(2)
+				.max(200)
+				.optional(),
 		})
 		.optional(),
 });

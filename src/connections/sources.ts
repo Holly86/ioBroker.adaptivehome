@@ -3,6 +3,7 @@ import type { SourceConnection, SourceOutput } from './schema';
 import { connectionPrefix } from './schema';
 import { deadline } from '../runtime/clock';
 import { windowMatches } from '../config/schedule';
+import { createHash } from 'node:crypto';
 
 export function select(document: unknown, path: (string | number)[]): unknown {
 	let current = document;
@@ -26,8 +27,35 @@ export function sourceTimestamp(value: unknown): number {
 			? Date.parse(/(?:Z|[+-]\d\d:\d\d)$/.test(value) ? value : `${value}Z`)
 			: NaN;
 }
+function stateForecast(
+	output: SourceOutput,
+	document: unknown,
+	now: number,
+): { at: number; temperature: number; checkedAt: number }[] | undefined {
+	if (!output.forecast?.points) {
+		return undefined;
+	}
+	return output.forecast.points
+		.map(p => {
+			const at = select(document, p.at),
+				lo = select(document, p.minimum),
+				hi = select(document, p.maximum),
+				times = p.timestamps.map(path => sourceTimestamp(select(document, path)));
+			return {
+				at: typeof at === 'number' ? at : NaN,
+				temperature: typeof lo === 'number' && typeof hi === 'number' && lo <= hi ? (lo + hi) / 2 : NaN,
+				checkedAt: times.every(Number.isFinite) ? Math.min(...times) : NaN,
+			};
+		})
+		.filter(p => !Number.isFinite(p.at) || p.at > now)
+		.sort((a, b) => a.at - b.at)
+		.slice(0, output.forecast.samples);
+}
 function decoded(output: SourceOutput, document: unknown, now: number): unknown {
 	let raw = output.paths ? output.paths.map(path => select(document, path)) : select(document, output.path);
+	if (output.transform === 'forecastMedian' && output.forecast?.points) {
+		raw = stateForecast(output, document, now);
+	}
 	if (output.jsonPath) {
 		if (typeof raw !== 'string' || raw.length > 16384) {
 			return undefined;
@@ -122,7 +150,16 @@ export class SourceConnections {
 	private attempted = new Map<string, number>();
 	private accepted = new Map<
 		string,
-		{ checkedAt: number; eventAt?: number; value: unknown; ts: number; lc?: number }
+		{
+			checkedAt: number;
+			eventAt?: number;
+			value: unknown;
+			ts: number;
+			lc?: number;
+			evaluatedAt: number;
+			basis?: string;
+			phase?: string;
+		}
 	>();
 	private sessions = new Map<string, string>();
 	private signature = '';
@@ -255,14 +292,22 @@ export class SourceConnections {
 	private project(c: SourceConnection, o: SourceOutput, data: SourceDocument): void {
 		const p = `${connectionPrefix(this.namespace, c.id)}.${o.key}`,
 			now = this.now();
-		const checkedAt = o.timestampPath
-			? sourceTimestamp(select(data.document, o.timestampPath))
-			: c.kind === 'http-json'
-				? data.fetchedAt
-				: undefined;
+		const forecastRows = o.forecast?.points ? stateForecast(o, data.document, now) : undefined;
+		const stamps = o.timestampPaths?.map(path => sourceTimestamp(select(data.document, path)));
+		const evidenceTimes = forecastRows?.map(p => p.checkedAt) ?? stamps ?? [];
+		const checkedAt = forecastRows
+			? Math.min(...forecastRows.map(p => p.checkedAt))
+			: stamps
+				? Math.min(...stamps)
+				: o.timestampPath
+					? sourceTimestamp(select(data.document, o.timestampPath))
+					: c.kind === 'http-json'
+						? data.fetchedAt
+						: undefined;
 		const eventAt = o.eventTimestampPath ? sourceTimestamp(select(data.document, o.eventTimestampPath)) : undefined;
 		const value = decoded(o, data.document, now);
 		if (
+			evidenceTimes.some(t => !Number.isFinite(t) || t < 0 || t > now || now - t > c.maxAgeMs) ||
 			checkedAt === undefined ||
 			!Number.isFinite(checkedAt) ||
 			checkedAt > now ||
@@ -276,10 +321,41 @@ export class SourceConnections {
 			return;
 		}
 		const previous = this.accepted.get(p);
+		const timed = o.transform === 'cases' || !!o.forecast?.points;
+		const basis = timed
+			? createHash('sha256')
+					.update(
+						JSON.stringify(
+							o.transform === 'cases'
+								? o.cases?.map(c => c.requires.map(r => select(data.document, r.path)))
+								: o.forecast!.points!.map(point => [
+										select(data.document, point.at),
+										select(data.document, point.minimum),
+										select(data.document, point.maximum),
+										...point.timestamps.map(path => select(data.document, path)),
+									]),
+						),
+					)
+					.digest('hex')
+			: undefined;
+		const phase = forecastRows
+			? JSON.stringify(forecastRows.map(row => row.at))
+			: o.transform === 'cases'
+				? String(
+						o.cases?.findIndex(
+							c =>
+								c.requires.every(r => select(data.document, r.path) === r.equals) &&
+								(!c.window || windowMatches(c.window, now, c.timezone)),
+						),
+					)
+				: undefined;
+		const timedTransition = timed && !!previous && previous.basis === basis && previous.phase !== phase;
 		if (
 			previous &&
-			(checkedAt < previous.checkedAt ||
-				(checkedAt === previous.checkedAt && value !== previous.value) ||
+			(now < previous.evaluatedAt ||
+				checkedAt < previous.checkedAt ||
+				(timed && checkedAt === previous.checkedAt && basis !== previous.basis) ||
+				(checkedAt === previous.checkedAt && value !== previous.value && !timedTransition) ||
 				(eventAt !== undefined && previous.eventAt !== undefined && eventAt < previous.eventAt))
 		) {
 			this.invalidate(p);
@@ -301,9 +377,9 @@ export class SourceConnections {
 		}
 		const changed = previous?.value !== value;
 		// A repeat read advances proof only. It cannot manufacture a new physical event.
-		const ts = eventAt ?? (changed ? checkedAt : previous.ts),
+		const ts = eventAt ?? (changed ? (timed ? now : checkedAt) : previous.ts),
 			lc = changed ? ts : previous?.lc;
-		this.accepted.set(p, { checkedAt, eventAt, value, ts, lc });
+		this.accepted.set(p, { checkedAt, eventAt, value, ts, lc, evaluatedAt: now, basis, phase });
 		this.values.set(p, { val: value, ts, lc, ack: true, q: 0 });
 		this.values.set(`${p}.verifiedAt`, { val: checkedAt, ts: checkedAt, ack: true, q: 0 });
 		if (eventAt !== undefined) {

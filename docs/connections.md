@@ -169,3 +169,73 @@ Ohne aktiviertes Logging erfolgen keine Datenbanknachrichten. Geräteanwesenheit
 Wettervorhersage und Medienstatus werden erst durch ausdrückliche Zuordnung zu
 passenden Regeleingängen steuerungsrelevant. Im Lese-/Shadow-Pilot bleiben
 Aktorfunktionen und SQL-Export deaktiviert.
+
+## Unreleased readiness corrections after Beta 5
+
+The following source additions are in `0.1.0-beta.6-dev.0`; the published Beta 5
+package is unchanged. They do not install, restart or alter an existing backend.
+
+Protected source credentials can reference an existing explicitly declared native
+`sourceFiles` entry. Example instance setting (synthetic endpoint):
+
+```json
+{"kind":"shelly-status","origin":"http://127.0.0.1/","credentialFile":{"key":"deviceAccess","userField":"username","secretField":"password"},"expectedDevice":{"mac":"AABBCCDDEEFF","model":"synthetic-relay"}}
+```
+
+Keep the referenced JSON private (owner-only permissions), separately from configuration
+exports. The file contains the selected username/password keys. The runtime resolves
+those fields in memory and returns no credentials in source documents or diagnostics.
+A Shelly status read with expectedDevice first checks the fixed `/shelly` identity
+route (Gen 2: `/rpc/Shelly.GetDeviceInfo`) and rejects a different MAC/model before
+querying status. Hue still checks the configured unique resource identities in outputs.
+No arbitrary action URL, redirect, pairing or authentication session is introduced.
+
+State-map outputs may declare `timestampPaths` for all contributing values. Every
+receipt must be valid and the oldest is retained as evidence; polling never renews it.
+Forecast outputs can supply `forecast.points`, each with at/minimum/maximum selectors
+and contributing timestamp selectors. The runtime selects the next declared number of
+future samples, requires exact cadence and configured horizon coverage, and computes
+the median of each min/max midpoint. Missing, out-of-order, duplicate, expired, future
+receipt times or incomplete coverage fail closed. Twenty-four three-hour forecast points
+span 69 hours between the first and last point; do not label that as independently proven
+continuous 72-hour measurement coverage. These selectors are editable in Admin.
+
+### Maintained backend registration
+
+The SDK now exports `createHmipBackendHost` and `registerHmipBackendHost`:
+
+```ts
+const host = registerHmipBackendHost(adapter, {
+  api: existingAuthenticatedApi,
+  clientCharacteristics: existingClientCharacteristics,
+  allowedSenders: ['system.adapter.adaptivehome.7'],
+  targets: reviewedTargets,
+  mode: 'read-only',
+});
+// During backend shutdown: host.close();
+// On a real profile-change event: host.invalidateProfile(changedGroupId);
+```
+
+The host registers adaptivehomeCapabilities, adaptivehomeRead and adaptivehomeNative.
+Unrelated backend handlers are preserved. Registration starts no REST call or cloud
+session. Read-only mode rejects apply requests before any vendor mutation and ignores
+execution journals; capabilities explicitly report no control or physical acceptance.
+A control host additionally requires independent authority and durable persistence ports;
+a real absolute-expiry provider is still required for elevated one-shot profiles.
+
+Real HmIP getProfile responses omit name/index and group metadata uses profileId.
+The reader verifies home/group/profile IDs and enabled status, checks a complete heating
+week, and supplies name/index only from independently verified group metadata. Conflicting
+aliases or response claims fail closed. Profile readback uses the same normalization.
+
+This is a backend integration API, not a patch installer. A maintained backend release
+must explicitly register it on its existing authenticated API. Installing this adapter
+alone cannot add missing commands to an already running foreign process. Private cache
+inspection, software contracts and physical expiry/actuator acceptance remain separate.
+
+For declared time-derived case/forecast outputs, an evaluated value may change when
+a configured window or selected forecast interval advances. Its evaluation/event time
+is kept separate from the unchanged source receipt. Identical-receipt source-content
+changes and backwards evaluation clocks remain rejected. A partial aggregate refresh
+may remain unavailable until its oldest contributing receipt advances; this is a
+conservative failure rather than invented freshness.

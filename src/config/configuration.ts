@@ -37,7 +37,11 @@ export function validateConfiguration(input: unknown, registry?: IntegrationRegi
 		}
 		if (
 			c.outputs.some(
-				o => (c.kind !== 'http-json' && !o.timestampPath) || (o.transform === 'forecastMedian' && !o.forecast),
+				o =>
+					(c.kind !== 'http-json' && !o.timestampPath && !o.timestampPaths && !o.forecast?.points) ||
+					(o.transform === 'forecastMedian' && !o.forecast) ||
+					!!(o.timestampPath && o.timestampPaths) ||
+					(!!o.forecast?.points && o.transform !== 'forecastMedian'),
 			)
 		) {
 			throw Error('source_evidence_required');

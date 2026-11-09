@@ -12,8 +12,13 @@ describe('Existing HmIP session read adapter', () => {
 				groupId: 'group-id',
 				index: 'PROFILE_3',
 				name: 'Selected',
-				type: 'HEATING_PROFILE',
-				profileDays: {},
+				type: 'HEATING_COOLING',
+				profileDays: Object.fromEntries(
+					['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'].map(day => [
+						day,
+						{ baseValue: 17, periods: [] },
+					]),
+				),
 			};
 		const raw = {
 			home: { id: 'home-id', connected: true, secret: 'must-not-export' },
@@ -22,7 +27,7 @@ describe('Existing HmIP session read adapter', () => {
 					id: 'group-id',
 					homeId: 'home-id',
 					channels: [{ deviceId: 'valve-id' }],
-					profiles: { PROFILE_3: { id: 'profile-id', name: 'Selected' } },
+					profiles: { PROFILE_3: { id: 'profile-id', name: 'Selected', enabled: true } },
 					activeProfile: 'PROFILE_3',
 					controlMode: 'AUTOMATIC',
 					unreach: false,

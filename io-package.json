@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "adaptivehome",
-    "version": "0.1.0-beta.5",
+    "version": "0.1.0-beta.6-dev.0",
     "news": {
+      "0.1.0-beta.6-dev.0": {
+        "en": "Unreleased source credential references, independent forecast input and maintained read-only HmIP backend registration.",
+        "de": "Unveröffentlichte Zugangsdatenverweise, unabhängige Wetterquelle und reine Lese-Registrierung für bestehende HmIP-Anbindungen."
+      },
       "0.1.0-beta.5": {
         "en": "Read evidence and native transport, seven optional read-only data connectors and bounded SQL telemetry logging.",
         "de": "Frischenachweise und nativer Transport, sieben optionale Lese-Connectoren und begrenztes SQL-Telemetrielogging."

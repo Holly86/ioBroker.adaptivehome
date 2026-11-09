@@ -3,7 +3,14 @@ import { z } from 'zod';
 import type { SourceDocument } from './sources';
 
 export const endpointSchema = z.strictObject({
-	kind: z.enum(['hue-lights', 'hue-sensors', 'shelly-status', 'shelly-rpc-status']),
+	kind: z.enum([
+		'hue-lights',
+		'hue-sensors',
+		'shelly-status',
+		'shelly-rpc-status',
+		'shelly-device',
+		'shelly-rpc-info',
+	]),
 	origin: z
 		.string()
 		.url()
@@ -20,17 +27,57 @@ export const endpointSchema = z.strictObject({
 		}),
 	user: z.string().max(256).optional(),
 	secret: z.string().max(512).optional(),
+	expectedDevice: z
+		.strictObject({ mac: z.string().regex(/^[a-fA-F0-9]{12}$/), model: z.string().min(1).max(64) })
+		.optional(),
 });
 const hueReference = z.strictObject({
 	kind: z.enum(['hue-lights', 'hue-sensors']),
 	backendRef: z.string().regex(/^hue\.\d+$/),
+});
+const field = z
+	.string()
+	.regex(/^[a-zA-Z0-9_-]{1,64}$/)
+	.refine(v => !['__proto__', 'constructor', 'prototype'].includes(v));
+const fileReference = endpointSchema.omit({ user: true, secret: true }).extend({
+	credentialFile: z.strictObject({ key: field, userField: field.optional(), secretField: field }),
 });
 /** Reuse the configured bridge application key; pairing and new vendor sessions are never started. */
 export async function resolveSourceEndpoint(
 	input: unknown,
 	readBackend: (id: string) => Promise<Record<string, unknown>>,
 	decrypt: (value: string) => string,
+	readCredentials?: (key: string) => Promise<unknown>,
 ): Promise<unknown> {
+	if (input && typeof input === 'object' && Object.hasOwn(input, 'credentialFile')) {
+		const ref = fileReference.parse(input);
+		if (!readCredentials) {
+			throw Error('source_credentials_unavailable');
+		}
+		const data = await readCredentials(ref.credentialFile.key);
+		if (!data || typeof data !== 'object' || Array.isArray(data)) {
+			throw Error('source_credentials_invalid');
+		}
+		const record = data as Record<string, unknown>,
+			get = (key: string): string => {
+				if (
+					!Object.hasOwn(record, key) ||
+					typeof record[key] !== 'string' ||
+					!record[key] ||
+					record[key].length > 512
+				) {
+					throw Error('source_credentials_invalid');
+				}
+				return record[key];
+			};
+		return endpointSchema.parse({
+			kind: ref.kind,
+			origin: ref.origin,
+			expectedDevice: ref.expectedDevice,
+			user: ref.credentialFile.userField ? get(ref.credentialFile.userField) : undefined,
+			secret: get(ref.credentialFile.secretField),
+		});
+	}
 	if (!input || typeof input !== 'object' || !Object.hasOwn(input, 'backendRef')) {
 		return endpointSchema.parse(input);
 	}
@@ -61,6 +108,29 @@ export async function getSourceJSON(
 ): Promise<SourceDocument> {
 	const endpoint = endpointSchema.parse(input),
 		headers: Record<string, string> = {};
+	if (endpoint.expectedDevice) {
+		if (!['shelly-status', 'shelly-rpc-status'].includes(endpoint.kind)) {
+			throw Error('source_identity_configuration_invalid');
+		}
+		const identity = await getSourceJSON(
+			{
+				...endpoint,
+				expectedDevice: undefined,
+				kind: endpoint.kind === 'shelly-status' ? 'shelly-device' : 'shelly-rpc-info',
+			},
+			fetcher,
+			now,
+		);
+		const device = identity.document as { mac?: unknown; type?: unknown; model?: unknown };
+		if (
+			!device ||
+			typeof device.mac !== 'string' ||
+			device.mac.replace(/[:-]/g, '').toUpperCase() !== endpoint.expectedDevice.mac.toUpperCase() ||
+			(device.type ?? device.model) !== endpoint.expectedDevice.model
+		) {
+			throw Error('source_device_identity_mismatch');
+		}
+	}
 	let route: string;
 	if (endpoint.kind.startsWith('hue-')) {
 		if (!endpoint.secret) {
@@ -68,7 +138,14 @@ export async function getSourceJSON(
 		}
 		route = `/api/${encodeURIComponent(endpoint.secret)}/${endpoint.kind === 'hue-lights' ? 'lights' : 'sensors'}`;
 	} else {
-		route = endpoint.kind === 'shelly-status' ? '/status' : '/rpc/Shelly.GetStatus';
+		route =
+			endpoint.kind === 'shelly-status'
+				? '/status'
+				: endpoint.kind === 'shelly-device'
+					? '/shelly'
+					: endpoint.kind === 'shelly-rpc-info'
+						? '/rpc/Shelly.GetDeviceInfo'
+						: '/rpc/Shelly.GetStatus';
 		if (endpoint.secret) {
 			headers.Authorization = `Basic ${Buffer.from(`${endpoint.user ?? ''}:${endpoint.secret}`).toString('base64')}`;
 		}

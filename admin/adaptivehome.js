@@ -37,6 +37,11 @@
 		requires: ['Required source evidence', 'Erforderliche Quellennachweise'],
 		path: ['Value path (comma separated)', 'Wertpfad (durch Komma getrennt)'],
 		timestampPath: ['Read timestamp path', 'Pfad der Abfragezeit'],
+		timestampPaths: ['All contributing read times', 'Abfragezeiten aller beteiligten Werte'],
+		points: ['Selected forecast samples', 'Gewählte Vorhersagepunkte'],
+		timestamps: ['Source timestamps', 'Quellzeitstempel'],
+		forecastMinimum: ['Lower temperature', 'Untere Temperatur'],
+		maximum: ['Upper temperature', 'Obere Temperatur'],
 		eventTimestampPath: ['Event timestamp path', 'Pfad der Ereigniszeit'],
 		sessionPath: ['Source session path', 'Pfad der Quellensitzung'],
 		fileKey: ['Declared source file name', 'Name der hinterlegten Quelldatei'],
@@ -1712,18 +1717,20 @@
 								}
 							});
 						}
-						optionalSection(box, o, 'paths', [], (r, paths) =>
-							repeat(
-								r,
-								'paths',
-								paths,
-								() => [],
-								(row, path) =>
-									field(row, 'path', path.join(','), v =>
-										path.splice(0, path.length, ...v.split(',').map(x => x.trim())),
-									),
-							),
-						);
+						for (const key of ['paths', 'timestampPaths']) {
+							optionalSection(box, o, key, [], (r, paths) =>
+								repeat(
+									r,
+									key,
+									paths,
+									() => [],
+									(row, path) =>
+										field(row, 'path', path.join(','), v =>
+											path.splice(0, path.length, ...v.split(',').map(x => x.trim())),
+										),
+								),
+							);
+						}
 						optionalSection(box, o, 'cases', [], (r, cases) => {
 							form(r, o, { defaultValue: 'scalar?' });
 							repeat(
@@ -1792,7 +1799,36 @@
 							o,
 							'forecast',
 							{ samples: 24, cadenceMs: 10800000, horizonMs: 248400000 },
-							(r, f) => form(r, f, { samples: 'number', cadenceMs: 'number', horizonMs: 'number' }),
+							(r, f) => {
+								form(r, f, { samples: 'number', cadenceMs: 'number', horizonMs: 'number' });
+								optionalSection(r, f, 'points', [], (rr, points) =>
+									repeat(
+										rr,
+										'points',
+										points,
+										() => ({ at: [], minimum: [], maximum: [], timestamps: [] }),
+										(row, p) => {
+											form(row, p, { at: 'strings', maximum: 'strings' });
+											field(
+												row,
+												'forecastMinimum',
+												p.minimum.join(','),
+												v => (p.minimum = v.split(',').map(x => x.trim())),
+											);
+											repeat(
+												row,
+												'timestamps',
+												p.timestamps,
+												() => [],
+												(item, path) =>
+													field(item, 'path', path.join(','), v =>
+														path.splice(0, path.length, ...v.split(',').map(s => s.trim())),
+													),
+											);
+										},
+									),
+								);
+							},
 						);
 					},
 				);

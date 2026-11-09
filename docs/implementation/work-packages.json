@@ -134,11 +134,12 @@
         "docs/verification/policy-parity-corrections.md",
         "docs/verification/beta4-release.md",
         "docs/verification/source-connections.md",
-        "docs/verification/beta5-release.md"
+        "docs/verification/beta5-release.md",
+        "docs/verification/readiness-connections.md"
       ],
       "openChecks": [],
       "commit": "a8cdae6a3e85876781f3ec4888af17505cd8d10c",
-      "updatedAt": "2026-11-09T14:38:17.825Z",
+      "updatedAt": "2026-11-09T16:10:33.566Z",
       "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
     },
     {
@@ -176,11 +177,12 @@
       "evidence": [
         "docs/verification/AP-05.md",
         "docs/verification/source-connections.md",
-        "docs/verification/beta5-release.md"
+        "docs/verification/beta5-release.md",
+        "docs/verification/readiness-connections.md"
       ],
       "openChecks": [],
       "commit": "a8cdae6a3e85876781f3ec4888af17505cd8d10c",
-      "updatedAt": "2026-11-09T14:38:17.825Z",
+      "updatedAt": "2026-11-09T16:10:33.566Z",
       "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
     },
     {
@@ -200,11 +202,12 @@
         "docs/verification/AP-06.md",
         "docs/verification/policy-parity-corrections.md",
         "docs/verification/beta4-release.md",
-        "docs/verification/source-connections.md"
+        "docs/verification/source-connections.md",
+        "docs/verification/readiness-connections.md"
       ],
       "openChecks": [],
       "commit": "3676191e44ee307fc483419ea771a432a31037dd",
-      "updatedAt": "2026-11-09T13:21:30.007Z",
+      "updatedAt": "2026-11-09T16:10:33.566Z",
       "correctionSummary": "Published Beta 4: read-evidence freshness, continuous quiet/manual handling, configurable rule parity and bounded report-time corrections; exact artifact passed isolated tests. Physical/backend acceptance remains separate."
     },
     {
@@ -223,11 +226,12 @@
       "evidence": [
         "docs/verification/AP-07.md",
         "docs/verification/policy-parity-corrections.md",
-        "docs/verification/source-connections.md"
+        "docs/verification/source-connections.md",
+        "docs/verification/readiness-connections.md"
       ],
       "openChecks": [],
       "commit": "3676191e44ee307fc483419ea771a432a31037dd",
-      "updatedAt": "2026-11-09T13:21:30.007Z",
+      "updatedAt": "2026-11-09T16:10:33.566Z",
       "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries."
     },
     {
@@ -295,14 +299,15 @@
       "evidence": [
         "docs/verification/AP-10.md",
         "docs/verification/discovery-corrections.md",
-        "docs/verification/source-connections.md"
+        "docs/verification/source-connections.md",
+        "docs/verification/readiness-connections.md"
       ],
       "openChecks": [
-        "Public read/native extension is implemented and software-tested but not registered in the installed standard backend. Maintained backend integration and exact physical group/member acceptance remain pending.",
-        "A real device/server absolute one-shot expiry facility is still required. The standard weekly recurrence is not this facility; no local timer or private installed-module patch substitutes for it."
+        "Backend-host registration is implemented and actual controller-message tested but not installed in the running backend; a maintained integration/lifecycle change is separate from read-only work.",
+        "Actual independent server/device absolute one-shot expiry, physical feedback and ownership/handoff remain unverified."
       ],
       "commit": "3676191e44ee307fc483419ea771a432a31037dd",
-      "updatedAt": "2026-11-09T13:21:30.007Z"
+      "updatedAt": "2026-11-09T16:10:33.566Z"
     },
     {
       "id": "AP-11",
@@ -397,11 +402,12 @@
         "docs/verification/AP-14.md",
         "docs/verification/discovery-corrections.md",
         "docs/verification/policy-parity-corrections.md",
-        "docs/verification/beta5-release.md"
+        "docs/verification/beta5-release.md",
+        "docs/verification/readiness-connections.md"
       ],
       "openChecks": [],
       "commit": "a8cdae6a3e85876781f3ec4888af17505cd8d10c",
-      "updatedAt": "2026-11-09T14:38:17.825Z",
+      "updatedAt": "2026-11-09T16:10:33.566Z",
       "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
     },
     {
@@ -655,11 +661,12 @@
         "docs/verification/policy-parity-corrections.md",
         "docs/verification/beta4-release.md",
         "docs/verification/source-connections.md",
-        "docs/verification/beta5-release.md"
+        "docs/verification/beta5-release.md",
+        "docs/verification/readiness-connections.md"
       ],
       "openChecks": [],
       "commit": "a8cdae6a3e85876781f3ec4888af17505cd8d10c",
-      "updatedAt": "2026-11-09T14:38:17.825Z",
+      "updatedAt": "2026-11-09T16:10:33.566Z",
       "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
     },
     {
@@ -714,14 +721,15 @@
         "docs/verification/policy-parity-corrections.md",
         "docs/verification/beta4-release.md",
         "docs/verification/source-connections.md",
-        "docs/verification/beta5-release.md"
+        "docs/verification/beta5-release.md",
+        "docs/verification/readiness-connections.md"
       ],
       "openChecks": [
         "Published Beta 4 read-only/shadow repeat completed with no device/configuration writes, runtime installation or restart; checked production settings unchanged.",
         "Before control takeover: supported installed platform, real device read-evidence producers, verified normalized sources, backend enrollment/availability, physical feedback, native full-profile/absolute-expiry transport, exclusive writer handoff, backup and rollback acceptance."
       ],
       "commit": "a8cdae6a3e85876781f3ec4888af17505cd8d10c",
-      "updatedAt": "2026-11-09T14:38:17.825Z",
+      "updatedAt": "2026-11-09T16:10:33.566Z",
       "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
     },
     {
@@ -993,6 +1001,59 @@
         "rawEvidence": "ignored local storage only",
         "controlTakeover": false
       }
+    },
+    {
+      "id": "readiness-connections-2026-11-09",
+      "affectedPackages": [
+        "AP-03",
+        "AP-05",
+        "AP-06",
+        "AP-07",
+        "AP-10",
+        "AP-14",
+        "AP-24",
+        "AP-26"
+      ],
+      "implementationStatus": "implemented",
+      "verificationStatus": "passed",
+      "verificationScope": "local software and isolated controller; deployment gates remain open",
+      "evidence": "docs/verification/readiness-connections.md",
+      "checks": {
+        "typecheck": true,
+        "build": true,
+        "lint": true,
+        "unitContractTests": 129,
+        "packageChecks": 61,
+        "controllerBrowserSoakTests": 15,
+        "installedRuntimeAdminFiles": 102,
+        "actualSqlSQLiteVerified": true,
+        "readOnlyHostActualMessageboxVerified": true,
+        "publicContentReview": true,
+        "crossPlatformCI": "pending"
+      },
+      "privateConfiguration": {
+        "disabledDraftCompleted": true,
+        "schemaAndMetadataAuditsPassed": true,
+        "directIndependentReadsVerified": true,
+        "cachedProfileShapeReviewed": true,
+        "remainingLegacyContext": true,
+        "backendRegistrationInstalled": false,
+        "absoluteExpiryVerified": false,
+        "actuatorWrites": 0,
+        "configurationWrites": 0,
+        "productionLifecycleChanges": 0,
+        "SQLMessages": 0,
+        "productionUnchanged": true,
+        "readyForCutover": false,
+        "rawEvidence": "ignored local evidence only"
+      },
+      "remainingGates": [
+        "Independent legacy context or explicit manual/state transfer",
+        "Maintained backend registration requiring a separate production change",
+        "Real device/server absolute expiry proof",
+        "Physical feedback, exclusive writer handoff and rollback acceptance"
+      ],
+      "updatedAt": "2026-11-09T16:10:33.566Z"
     }
   ],
   "releaseHistory": [
@@ -1055,5 +1116,62 @@
     "configurationWrites": 0,
     "SQLMessages": 0,
     "updatedAt": "2026-11-09T14:38:17.825Z"
+  },
+  "developmentVersion": "0.1.0-beta.6-dev.0",
+  "developmentVerification": {
+    "id": "readiness-connections-2026-11-09",
+    "affectedPackages": [
+      "AP-03",
+      "AP-05",
+      "AP-06",
+      "AP-07",
+      "AP-10",
+      "AP-14",
+      "AP-24",
+      "AP-26"
+    ],
+    "implementationStatus": "implemented",
+    "verificationStatus": "passed",
+    "verificationScope": "local software and isolated controller; deployment gates remain open",
+    "evidence": "docs/verification/readiness-connections.md",
+    "checks": {
+      "typecheck": true,
+      "build": true,
+      "lint": true,
+      "unitContractTests": 129,
+      "packageChecks": 61,
+      "controllerBrowserSoakTests": 15,
+      "installedRuntimeAdminFiles": 102,
+      "actualSqlSQLiteVerified": true,
+      "readOnlyHostActualMessageboxVerified": true,
+      "publicContentReview": true,
+      "crossPlatformCI": "pending"
+    },
+    "privateConfiguration": {
+      "disabledDraftCompleted": true,
+      "schemaAndMetadataAuditsPassed": true,
+      "directIndependentReadsVerified": true,
+      "cachedProfileShapeReviewed": true,
+      "remainingLegacyContext": true,
+      "backendRegistrationInstalled": false,
+      "absoluteExpiryVerified": false,
+      "actuatorWrites": 0,
+      "configurationWrites": 0,
+      "productionLifecycleChanges": 0,
+      "SQLMessages": 0,
+      "productionUnchanged": true,
+      "readyForCutover": false,
+      "rawEvidence": "ignored local evidence only"
+    },
+    "remainingGates": [
+      "Independent legacy context or explicit manual/state transfer",
+      "Maintained backend registration requiring a separate production change",
+      "Real device/server absolute expiry proof",
+      "Physical feedback, exclusive writer handoff and rollback acceptance"
+    ],
+    "updatedAt": "2026-11-09T16:10:33.566Z",
+    "version": "0.1.0-beta.6-dev.0",
+    "artifactSha256": "07b30dc4e585c3e0c257b16a5f355763350cddcea151597fd21b512ea10cbd6f",
+    "distribution": "unreleased development source and locally frozen candidate; published Beta 5 unchanged"
   }
 }

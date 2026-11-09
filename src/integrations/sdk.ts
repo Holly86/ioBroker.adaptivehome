@@ -90,3 +90,5 @@ export type {
 } from '../connections/heating-backend';
 export { SourceConnections } from '../connections/sources';
 export { getSourceJSON, readSourceFile, resolveSourceEndpoint } from '../connections/io';
+export { createHmipBackendHost, registerHmipBackendHost } from '../connections/hmip-host';
+export type { HmipHostOptions, BackendEnvelope } from '../connections/hmip-host';
