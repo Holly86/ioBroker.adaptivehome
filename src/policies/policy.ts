@@ -10,6 +10,18 @@ export interface PolicyMemory {
 	airHigh?: boolean;
 	demandSince?: number;
 	demandTemperature?: number;
+	lastEvaluation?: number;
+	baselineAt?: number;
+	luxArmed?: boolean;
+	presence?: boolean;
+	welcomeUntil?: number;
+	sessionAt?: number;
+	sessionUntil?: number;
+	houseEvaluation?: number;
+	usageUntil?: number;
+	unusedSince?: number;
+	climateEvaluation?: number;
+	thermal?: { goal: number; since: number; baseline: number; checkedAt: number; trialAt?: number };
 }
 export interface PolicyContext {
 	now: number;
@@ -19,6 +31,8 @@ export interface PolicyContext {
 	actual: Observation | null;
 	owns: boolean;
 	manual: boolean;
+	manualAt?: number;
+	manualValue?: Scalar;
 }
 export interface PolicyDecision {
 	value?: Scalar;
@@ -27,9 +41,13 @@ export interface PolicyDecision {
 	priority: number;
 	expiresAt?: number;
 	nextAt?: number;
+	manualLeaseAt?: number;
 }
 export const noAction = (reason: string, text: string): PolicyDecision => ({ reason, text, priority: 0 });
 export function commonDecision(fn: FunctionConfig, ctx: PolicyContext): PolicyDecision | undefined {
+	if (!fn.enabled) {
+		return noAction('disabled', 'Function is disabled');
+	}
 	const protection = fn.limits.protection.filter(p => conditionMatches(p.when, ctx.inputs) === true);
 	if (protection.length) {
 		return {
@@ -50,9 +68,6 @@ export function commonDecision(fn: FunctionConfig, ctx: PolicyContext): PolicyDe
 			priority: 900,
 		};
 	}
-	if (!fn.enabled) {
-		return noAction('disabled', 'Function is disabled');
-	}
 	if (ctx.manual) {
 		return noAction('manual_priority', 'A newer manual request has priority');
 	}
@@ -65,6 +80,9 @@ export function commonDecision(fn: FunctionConfig, ctx: PolicyContext): PolicyDe
 	if (ctx.inputs.inhibit?.value === true) {
 		return noAction('inhibited', 'The configured inhibit source is active');
 	}
+	if (fn.climate) {
+		return undefined;
+	} // Climate gates also apply to its configured schedules.
 	const matching = fn.rules
 		.filter(
 			rule =>

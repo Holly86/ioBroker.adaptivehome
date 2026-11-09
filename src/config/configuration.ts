@@ -56,6 +56,107 @@ export function validateConfiguration(input: unknown, registry?: IntegrationRegi
 			throw new Error('duplicate_function_owner');
 		}
 		functionOwners.add(binding.physicalId);
+		if (fn.behavior) {
+			if (!['lighting', 'equipment'].includes(fn.kind)) {
+				throw new Error('behavior_kind');
+			}
+			if ((fn.behavior.awayOff || fn.behavior.welcomeHoldMs) && !fn.inputs.presence) {
+				throw new Error('behavior_presence_required');
+			}
+			if (fn.behavior.welcomeHoldMs && !fn.inputs.lux) {
+				throw new Error('behavior_lux_required');
+			}
+			if (fn.behavior.manualOffQuietMs && !fn.inputs.motion) {
+				throw new Error('behavior_motion_required');
+			}
+			if ((fn.behavior.awayOff || fn.behavior.sessionOffMs) && fn.limits.essential) {
+				throw new Error('behavior_essential_conflict');
+			}
+			for (const name of [...fn.behavior.manualSignatureInputs, ...fn.behavior.manualSignals.map(s => s.input)]) {
+				if (!fn.inputs[name]) {
+					throw new Error('manual_input_missing');
+				}
+			}
+		}
+		const activationCapabilities = new Set<string>([fn.actuator.capability]);
+		for (const effect of fn.activation ?? []) {
+			const component = binding.capabilities.find(m => m.capability === effect.capability);
+			if (
+				!component?.writeId ||
+				!component.confirmId ||
+				component.confirmation === 'none' ||
+				activationCapabilities.has(effect.capability)
+			) {
+				throw new Error('activation_mapping_invalid');
+			}
+			activationCapabilities.add(effect.capability);
+			validateValue(
+				{ ...fn, limits: { ...fn.limits, min: undefined, max: undefined } },
+				effect.value,
+				component.valueType,
+				component.min,
+				component.max,
+				component.writeValues ?? component.values,
+			);
+		}
+		if (
+			fn.parameters.luxRearmAbove !== undefined &&
+			fn.parameters.luxRearmAbove < (fn.parameters.luxThreshold ?? 100)
+		) {
+			throw new Error('lux_hysteresis_range');
+		}
+		if (fn.climate) {
+			if (fn.kind !== 'climate' || fn.actuator.capability !== 'thermostatSetpoint') {
+				throw new Error('climate_kind');
+			}
+			if (fn.climate.weatherBelow !== undefined && !fn.inputs.weather) {
+				throw new Error('weather_input_missing');
+			}
+			if (fn.climate.deepIdle && (!fn.inputs.humidity || !fn.inputs.temperature || !fn.inputs.usage)) {
+				throw new Error('deep_idle_inputs_missing');
+			}
+			if (fn.climate.thermalAssist && (!fn.inputs.valve || !fn.inputs.temperature || !fn.nativeProgram)) {
+				throw new Error('thermal_assist_native_inputs_missing');
+			}
+			for (const value of [
+				fn.climate.deepIdle?.value,
+				fn.climate.thermalAssist?.maxSetpoint,
+				...fn.climate.weekly.map(w => w.value),
+			].filter((v): v is number => v !== undefined)) {
+				validateValue(
+					fn,
+					value,
+					mapping.valueType,
+					mapping.min,
+					mapping.max,
+					mapping.writeValues ?? mapping.values,
+				);
+			}
+		}
+		if (fn.nativeProgram) {
+			if (
+				fn.kind !== 'climate' ||
+				mapping.codec !== 'nativeHeatingProgram' ||
+				mapping.sourceType !== 'string' ||
+				mapping.valueType !== 'number' ||
+				fn.nativeProgram.activationDelayMs >= fn.nativeProgram.maxHorizonMs
+			) {
+				throw new Error('native_program_mapping');
+			}
+			validateValue(
+				fn,
+				fn.nativeProgram.fallback,
+				mapping.valueType,
+				mapping.min,
+				mapping.max,
+				mapping.writeValues ?? mapping.values,
+			);
+			if (fn.enabled && !fn.nativeProgram.backendContractVerified) {
+				throw new Error('native_backend_unverified');
+			}
+		} else if (mapping.codec === 'nativeHeatingProgram') {
+			throw new Error('native_program_required');
+		}
 		if (fn.limits.essential && fn.limits.minimumValue === undefined) {
 			throw new Error('minimum_service_required');
 		}
@@ -65,7 +166,14 @@ export function validateConfiguration(input: unknown, registry?: IntegrationRegi
 		for (const value of [fn.limits.minimumValue, ...fn.rules.map(r => r.value)].filter(
 			(v): v is Scalar => v !== undefined,
 		)) {
-			validateValue(fn, value, mapping.valueType, mapping.min, mapping.max, mapping.values);
+			validateValue(
+				fn,
+				value,
+				mapping.valueType,
+				mapping.min,
+				mapping.max,
+				mapping.writeValues ?? mapping.values,
+			);
 		}
 		for (const parameter of fn.kind === 'climate'
 			? ['target', 'setback']
@@ -81,7 +189,7 @@ export function validateConfiguration(input: unknown, registry?: IntegrationRegi
 					mapping.valueType,
 					mapping.min,
 					mapping.max,
-					mapping.values,
+					mapping.writeValues ?? mapping.values,
 				);
 			}
 		}
@@ -137,7 +245,14 @@ export function validateConfiguration(input: unknown, registry?: IntegrationRegi
 				throw new Error('scene_duplicate_output');
 			}
 			scenePhysical.add(binding.physicalId);
-			validateValue(fn, action.value, mapping.valueType, mapping.min, mapping.max, mapping.values);
+			validateValue(
+				fn,
+				action.value,
+				mapping.valueType,
+				mapping.min,
+				mapping.max,
+				mapping.writeValues ?? mapping.values,
+			);
 			if (fn.limits.essential && action.value !== fn.limits.minimumValue) {
 				throw new Error('scene_minimum_service');
 			}

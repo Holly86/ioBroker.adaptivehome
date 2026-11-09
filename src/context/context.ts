@@ -5,6 +5,7 @@ export class PresenceContext {
 		{
 			source: string;
 			lastTs: number;
+			checkedAt?: number;
 			positive: number;
 			absentSince?: number;
 			confirmed?: boolean;
@@ -23,14 +24,21 @@ export class PresenceContext {
 			this.states.set(key, state);
 		}
 		if (observation.quality !== 'valid' || typeof observation.value !== 'boolean') {
+			this.states.delete(key);
 			return {
 				...observation,
 				value: null,
 				quality: observation.quality === 'valid' ? 'invalid' : observation.quality,
 			};
 		}
-		if (observation.measuredAt > state.lastTs) {
-			state.lastTs = observation.measuredAt;
+		if (state.checkedAt !== undefined && (now < state.checkedAt || now - state.checkedAt > 120000)) {
+			state = { source: observation.sourceId, lastTs: -Infinity, positive: 0 };
+			this.states.set(key, state);
+		}
+		state.checkedAt = now;
+		const evidenceAt = observation.verifiedAt ?? observation.measuredAt;
+		if (evidenceAt > state.lastTs) {
+			state.lastTs = evidenceAt;
 			if (observation.value) {
 				state.positive++;
 				delete state.absentSince;
@@ -39,7 +47,7 @@ export class PresenceContext {
 				}
 			} else {
 				state.positive = 0;
-				state.absentSince ??= observation.measuredAt;
+				state.absentSince ??= now;
 			}
 		}
 		if (!observation.value && state.absentSince !== undefined && now - state.absentSince >= absenceConfirmMs) {

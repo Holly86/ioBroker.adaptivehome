@@ -4,6 +4,13 @@ import type { DetectionRule } from './profiles';
 import { createProfile } from './profiles';
 import type { IntegrationManifest, StateMetadata, StateValue } from './registry';
 import { IntegrationRegistry, normalize } from './registry';
+export {
+	nativeHeatingProgramSchema,
+	nativeHeatingReportSchema,
+	parseNativeHeatingReport,
+	compileNativeHeatingProgram,
+} from './native-program';
+export type { NativeHeatingProgram } from './native-program';
 export const integrationDefinitionSchema = z.strictObject({
 	apiVersion: z.literal(1),
 	id,

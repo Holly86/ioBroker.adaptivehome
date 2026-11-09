@@ -191,7 +191,14 @@ class Adaptivehome extends utils.Adapter {
 		for (const binding of this.configuration.record.active.bindings) {
 			for (const mapping of binding.capabilities) {
 				for (const id of new Set(
-					[mapping.readId, mapping.writeId, mapping.confirmId].filter((v): v is string => !!v),
+					[
+						mapping.readId,
+						mapping.writeId,
+						mapping.confirmId,
+						mapping.eventTimestampId,
+						mapping.freshness?.verifiedAtId,
+						mapping.freshness?.reachableId,
+					].filter((v): v is string => !!v),
 				)) {
 					next.add(id);
 				}

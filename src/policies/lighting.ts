@@ -6,25 +6,52 @@ export function lightingDecision(fn: FunctionConfig, ctx: PolicyContext, memory:
 		return noAction('no_matching_rule', 'No configured lighting rule currently applies');
 	}
 	const motion = ctx.inputs.motion;
+	if (ctx.owns && ctx.actual?.quality !== 'valid') {
+		delete memory.commandId;
+		delete memory.quietSince;
+		delete memory.lastMotion;
+		memory.baselineAt = ctx.now;
+		return noAction('actuator_unavailable', 'Automatic ownership discarded after loss of actuator evidence');
+	}
+	const illuminance = ctx.inputs.lux;
+	if (illuminance?.quality === 'valid' && typeof illuminance.value === 'number') {
+		if (illuminance.value < (fn.parameters.luxThreshold ?? 100)) {
+			memory.luxArmed = true;
+		} else if (illuminance.value >= (fn.parameters.luxRearmAbove ?? fn.parameters.luxThreshold ?? 100)) {
+			memory.luxArmed = false;
+		}
+	}
+	const gap =
+		memory.lastEvaluation !== undefined &&
+		(ctx.now < memory.lastEvaluation || ctx.now - memory.lastEvaluation > (fn.behavior?.continuityMs ?? 30000));
+	memory.lastEvaluation = ctx.now;
+	if (gap || !motion || motion.quality !== 'valid' || typeof motion.value !== 'boolean') {
+		delete memory.quietSince;
+		delete memory.lastMotion;
+		delete memory.commandId;
+		memory.baselineAt = ctx.now;
+	}
 	if (!motion || motion.quality !== 'valid' || typeof motion.value !== 'boolean') {
 		return noAction('motion_unavailable', 'A fresh movement measurement is required');
 	}
 	// Do not consume slightly future samples: normalization admits them when their time arrives.
 	const fresh =
 		motion.value &&
+		ctx.now - motion.measuredAt <= (fn.parameters.motionEventMaxAgeMs ?? 20000) &&
 		motion.measuredAt > ctx.startedAt &&
+		motion.measuredAt > (memory.baselineAt ?? ctx.startedAt) &&
 		motion.measuredAt > (memory.consumedMotion ?? ctx.startedAt);
 	if (fresh) {
 		memory.consumedMotion = motion.measuredAt;
 		memory.lastMotion = motion.measuredAt;
 		delete memory.quietSince;
 	}
-	if (ctx.owns && memory.lastMotion !== undefined) {
+	if (!gap && ctx.owns && memory.lastMotion !== undefined) {
 		if (motion.value) {
 			delete memory.quietSince;
 			return noAction('motion_active', 'Movement remains active');
 		}
-		memory.quietSince ??= Math.max(motion.measuredAt, memory.lastMotion);
+		memory.quietSince ??= ctx.now;
 		const deadline = memory.quietSince + (fn.parameters.holdMs ?? 300000);
 		if (ctx.now >= deadline) {
 			return {
@@ -56,7 +83,7 @@ export function lightingDecision(fn: FunctionConfig, ctx: PolicyContext, memory:
 		if (lux?.quality !== 'valid' || typeof lux.value !== 'number') {
 			return noAction('lux_unavailable', 'A valid illuminance measurement is required');
 		}
-		if (lux.value > (fn.parameters.luxThreshold ?? 100)) {
+		if (memory.luxArmed !== true || lux.value >= (fn.parameters.luxThreshold ?? 100)) {
 			return noAction('too_bright', 'The measured illuminance exceeds the configured threshold');
 		}
 	}

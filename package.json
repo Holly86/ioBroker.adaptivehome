@@ -59,7 +59,8 @@
     "examples/telegram-gateway.cjs",
     "docs/verification/scenarios.md",
     "docs/integration-sdk.de.md",
-    "docs/pilot.md"
+    "docs/pilot.md",
+    "docs/policy-parity.md"
   ],
   "scripts": {
     "prebuild": "rimraf build",

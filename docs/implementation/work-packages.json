@@ -130,11 +130,13 @@
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-03.md",
-        "docs/verification/discovery-corrections.md"
+        "docs/verification/discovery-corrections.md",
+        "docs/verification/policy-parity-corrections.md"
       ],
       "openChecks": [],
       "commit": "4b2fde448bbe458a6688c4a52fe0dcc5b6e0c42d",
-      "updatedAt": "2026-11-08T18:32:09.147Z"
+      "updatedAt": "2026-11-09T10:33:04.486Z",
+      "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries."
     },
     {
       "id": "AP-04",
@@ -189,11 +191,13 @@
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
-        "docs/verification/AP-06.md"
+        "docs/verification/AP-06.md",
+        "docs/verification/policy-parity-corrections.md"
       ],
       "openChecks": [],
       "commit": "21a15f6dedbb636270dd9be501bdb6e410e32f50",
-      "updatedAt": "2026-11-08T16:05:32.714Z"
+      "updatedAt": "2026-11-09T10:33:04.488Z",
+      "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries."
     },
     {
       "id": "AP-07",
@@ -209,11 +213,13 @@
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
-        "docs/verification/AP-07.md"
+        "docs/verification/AP-07.md",
+        "docs/verification/policy-parity-corrections.md"
       ],
       "openChecks": [],
       "commit": "167b2f8faeae931e868a615aa00a240ab5b7d36e",
-      "updatedAt": "2026-11-08T16:05:32.715Z"
+      "updatedAt": "2026-11-09T10:33:04.488Z",
+      "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries."
     },
     {
       "id": "AP-08",
@@ -251,13 +257,15 @@
       "hardwareChecksMayBePending": true,
       "evidence": [
         "docs/verification/AP-09.md",
-        "docs/verification/discovery-corrections.md"
+        "docs/verification/discovery-corrections.md",
+        "docs/verification/policy-parity-corrections.md"
       ],
       "openChecks": [
         "Real exact Shelly model/generation, firmware and installed backend verification pending."
       ],
       "commit": "4b2fde448bbe458a6688c4a52fe0dcc5b6e0c42d",
-      "updatedAt": "2026-11-08T18:32:09.147Z"
+      "updatedAt": "2026-11-09T10:33:04.488Z",
+      "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries."
     },
     {
       "id": "AP-10",
@@ -299,13 +307,15 @@
       "hardwareChecksMayBePending": true,
       "evidence": [
         "docs/verification/AP-11.md",
-        "docs/verification/discovery-corrections.md"
+        "docs/verification/discovery-corrections.md",
+        "docs/verification/policy-parity-corrections.md"
       ],
       "openChecks": [
         "Physical Hue bridge/model, dimming and sensor/manual feedback verification pending."
       ],
       "commit": "4b2fde448bbe458a6688c4a52fe0dcc5b6e0c42d",
-      "updatedAt": "2026-11-08T18:32:09.147Z"
+      "updatedAt": "2026-11-09T10:33:04.488Z",
+      "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries."
     },
     {
       "id": "AP-12",
@@ -372,11 +382,12 @@
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-14.md",
-        "docs/verification/discovery-corrections.md"
+        "docs/verification/discovery-corrections.md",
+        "docs/verification/policy-parity-corrections.md"
       ],
       "openChecks": [],
       "commit": "4b2fde448bbe458a6688c4a52fe0dcc5b6e0c42d",
-      "updatedAt": "2026-11-08T18:32:09.147Z"
+      "updatedAt": "2026-11-09T10:34:11.230Z"
     },
     {
       "id": "AP-15",
@@ -396,11 +407,13 @@
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
-        "docs/verification/AP-15.md"
+        "docs/verification/AP-15.md",
+        "docs/verification/policy-parity-corrections.md"
       ],
       "openChecks": [],
       "commit": "745612ae38e4e7f592aaf9aca08a42bb7b6337f5",
-      "updatedAt": "2026-11-08T16:05:32.718Z"
+      "updatedAt": "2026-11-09T10:33:04.488Z",
+      "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries."
     },
     {
       "id": "AP-16",
@@ -420,11 +433,15 @@
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
-        "docs/verification/AP-16.md"
+        "docs/verification/AP-16.md",
+        "docs/verification/policy-parity-corrections.md"
       ],
-      "openChecks": [],
+      "openChecks": [
+        "The finite native-profile extension is contract-tested only. The standard hmip backend lacks this full-content/absolute-expiry transport; a real backend and autonomous device fallback remain unverified."
+      ],
       "commit": "5f7fa170c777c21554263f217adc977e2040dfa8",
-      "updatedAt": "2026-11-08T16:05:32.718Z"
+      "updatedAt": "2026-11-09T10:33:04.488Z",
+      "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries."
     },
     {
       "id": "AP-17",
@@ -617,11 +634,13 @@
       "evidence": [
         "docs/verification/AP-24.md",
         "docs/verification/scenarios.md",
-        "docs/verification/discovery-corrections.md"
+        "docs/verification/discovery-corrections.md",
+        "docs/verification/policy-parity-corrections.md"
       ],
       "openChecks": [],
       "commit": "4ea2a2aeac20dae023676b4536df40965e95dbf9",
-      "updatedAt": "2026-11-08T19:02:48.977Z"
+      "updatedAt": "2026-11-09T10:33:04.488Z",
+      "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries."
     },
     {
       "id": "AP-25",
@@ -668,13 +687,16 @@
       "hardwareChecksMayBePending": true,
       "evidence": [
         "docs/verification/AP-26.md",
-        "docs/verification/discovery-corrections.md"
+        "docs/verification/discovery-corrections.md",
+        "docs/verification/policy-parity-corrections.md"
       ],
       "openChecks": [
-        "Read-only/shadow repeat completed privately without device/configuration writes. Exact physical identity, freshness, supported platform, exclusive ownership, native minimum behavior, backup and specifically authorized actuator scope remain required before control takeover."
+        "Read-only/shadow repeat completed privately without device/configuration writes. Exact physical identity, freshness, supported platform, exclusive ownership, native minimum behavior, backup and specifically authorized actuator scope remain required before control takeover.",
+        "Disabled private target draft is complete; real device read-evidence producers, normalized source coverage, supported platform, native profile transport and an exclusive writer handoff must pass before enabling it."
       ],
       "commit": "4ea2a2aeac20dae023676b4536df40965e95dbf9",
-      "updatedAt": "2026-11-08T19:02:48.977Z"
+      "updatedAt": "2026-11-09T10:33:04.488Z",
+      "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries."
     },
     {
       "id": "AP-27",

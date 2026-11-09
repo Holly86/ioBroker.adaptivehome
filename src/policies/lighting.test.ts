@@ -31,6 +31,13 @@ describe('AP-15 motion lighting', () => {
 		assert.equal(lightingDecision(fn, context(1000), memory).value, true);
 		const owned = { ...context(2000), owns: true };
 		lightingDecision(fn, owned, memory);
+		for (let now = 3000; now < 302999; now += 10000) {
+			lightingDecision(
+				fn,
+				{ ...owned, now, inputs: { ...owned.inputs, motion: observation(false, 3000) } },
+				memory,
+			);
+		}
 		assert.equal(
 			lightingDecision(
 				fn,

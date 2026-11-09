@@ -125,6 +125,15 @@ function defineBrowserTests({ suite }) {
 					const name = page.getByRole('textbox', { name: 'Name', exact: true }).first();
 					await name.fill(`${config.functions[0].name} UI`);
 					await name.press('Tab');
+					if (index === 0) {
+						await page.getByRole('checkbox', { name: 'House and manual behavior', exact: true }).check();
+						const quiet = page.getByRole('spinbutton', {
+							name: 'Quiet required after manual OFF (ms)',
+							exact: true,
+						});
+						await quiet.fill('1200000');
+						await quiet.press('Tab');
+					}
 					await page
 						.getByRole('button', { name: german ? 'Entwurf prüfen' : 'Validate draft', exact: true })
 						.click();

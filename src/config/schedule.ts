@@ -26,6 +26,15 @@ export function localTime(at: number, timezone: string): LocalTime {
 	};
 }
 const minutes = (value: string): number => Number(value.slice(0, 2)) * 60 + Number(value.slice(3));
+export function preheatedWindow(window: ScheduleWindow, preheatMs: number): ScheduleWindow {
+	const start = minutes(window.start) - Math.floor(preheatMs / 60000);
+	const normalized = (start + 1440) % 1440;
+	return {
+		...window,
+		days: start < 0 ? window.days.map(day => (day + 6) % 7) : window.days,
+		start: `${String(Math.floor(normalized / 60)).padStart(2, '0')}:${String(normalized % 60).padStart(2, '0')}`,
+	};
+}
 export function windowMatches(window: ScheduleWindow, at: number, timezone: string): boolean {
 	const local = localTime(at, timezone),
 		start = minutes(window.start),

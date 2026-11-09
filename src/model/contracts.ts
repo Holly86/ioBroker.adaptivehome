@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { FUNCTION_KINDS, LEARNING_MODES, OPERATING_MODES } from './product';
+import type { NativeHeatingProgram } from '../integrations/native-program';
 export const id = z
 	.string()
 	.regex(/^[a-zA-Z0-9_-]{1,64}$/)
@@ -20,6 +21,9 @@ export const observationSchema = z.strictObject({
 	measuredAt: z.number().finite(),
 	receivedAt: z.number().finite(),
 	lastChange: z.number().finite().optional(),
+	verifiedAt: z.number().finite().optional(),
+	scheduledValue: z.number().finite().optional(),
+	scheduledUntil: z.number().finite().optional(),
 	quality,
 	sourceId: stateId,
 	observationId: z.string().optional(),
@@ -34,16 +38,26 @@ export const mappingSchema = z.strictObject({
 	unit: z.string().max(32).default(''),
 	sourceType: z.enum(['boolean', 'number', 'string']).optional(),
 	valueMap: z.record(z.string(), scalar).optional(),
-	codec: z.enum(['identity', 'hueLightLevel']).default('identity'),
+	codec: z.enum(['identity', 'hueLightLevel', 'nativeHeatingProgram']).default('identity'),
 	sourceUnit: z.string().max(32).optional(),
 	scale: z.number().finite().positive().default(1),
 	offset: z.number().finite().default(0),
 	min: z.number().finite().optional(),
 	max: z.number().finite().optional(),
 	values: z.array(scalar).max(64).optional(),
+	writeValues: z.array(scalar).min(1).max(64).optional(),
 	maxAgeMs: z.number().int().min(1000).max(86400000).default(300000),
 	tolerance: z.number().nonnegative().default(0),
 	confirmation: z.enum(['device', 'backend', 'none']).default('backend'),
+	// A device-scoped successful read timestamp, never process uptime or value lc.
+	freshness: z
+		.strictObject({
+			verifiedAtId: stateId,
+			reachableId: stateId.optional(),
+			maxAgeMs: z.number().int().min(1000).max(86400000),
+		})
+		.optional(),
+	eventTimestampId: stateId.optional(),
 });
 export type CapabilityMapping = z.infer<typeof mappingSchema>;
 export const bindingSchema = z.strictObject({
@@ -144,6 +158,70 @@ export const functionSchema = z.strictObject({
 	inputs: z.record(id, refSchema).default({}),
 	rules: z.array(ruleSchema).max(128).default([]),
 	parameters: z.record(id, z.number().finite()).default({}),
+	behavior: z
+		.strictObject({
+			continuityMs: z.number().int().min(1000).max(300000).default(30000),
+			manualOffQuietMs: z.number().int().min(1000).max(86400000).optional(),
+			awayOff: z.boolean().default(false),
+			welcomeHoldMs: z.number().int().min(1000).max(86400000).optional(),
+			sessionOffMs: z.number().int().min(1000).max(86400000).optional(),
+			manualSignals: z
+				.array(
+					z.strictObject({
+						input: id,
+						offValues: z.array(scalar).max(64),
+						useActuatorValue: z.boolean().optional(),
+					}),
+				)
+				.max(16)
+				.default([]),
+			manualSignatureInputs: z.array(id).max(16).default([]),
+		})
+		.optional(),
+	activation: z
+		.array(z.strictObject({ capability: id, value: scalar }))
+		.max(16)
+		.optional(),
+	climate: z
+		.strictObject({
+			comfortWindows: z.array(windowSchema).max(64).default([]),
+			preheatMs: z.number().int().min(0).max(14400000).default(0),
+			weatherBelow: z.number().finite().optional(),
+			usageHoldMs: z.number().int().min(1000).max(86400000).optional(),
+			deepIdle: z
+				.strictObject({
+					afterMs: z.number().int().min(60000).max(2592000000),
+					value: z.number().finite(),
+					maxHumidityAtTarget: z.number().min(1).max(100).default(60),
+				})
+				.optional(),
+			weekly: z
+				.array(z.strictObject({ window: windowSchema, value: z.number().finite() }))
+				.max(16)
+				.default([]),
+			thermalAssist: z
+				.strictObject({
+					stalledMs: z.number().int().min(60000).max(86400000),
+					stepMs: z.number().int().min(60000).max(86400000),
+					maxTrialMs: z.number().int().min(60000).max(86400000),
+					maxIncrease: z.number().min(0).max(5),
+					maxSetpoint: z.number().finite(),
+					minDeficit: z.number().positive(),
+					minProgress: z.number().positive(),
+					highValve: z.number().min(0).max(1),
+				})
+				.optional(),
+		})
+		.optional(),
+	nativeProgram: z
+		.strictObject({
+			profileId: id,
+			fallback: z.number().finite(),
+			maxHorizonMs: z.number().int().min(300000).max(86400000),
+			activationDelayMs: z.number().int().min(0).max(600000).default(120000),
+			backendContractVerified: z.boolean().default(false),
+		})
+		.optional(),
 	dependencies: z
 		.array(
 			z.strictObject({
@@ -258,6 +336,8 @@ export interface Intent extends CapabilityRef {
 	validFrom: number;
 	expiresAt: number;
 	planId?: string;
+	manualLeaseAt?: number;
+	guardInputs?: Record<string, { measuredAt: number; value: Scalar | null }>;
 }
 export type CommandPhase = 'requested' | 'validated' | 'accepted' | 'device_confirmed' | 'failed' | 'uncertain';
 export interface Command {
@@ -274,6 +354,8 @@ export interface Command {
 	deviceConfirmed: boolean;
 	uncertainty?: string;
 	sentAt: number;
+	effects?: { capability: string; targetPath: string; confirmId: string; value: Scalar; matched: boolean }[];
+	nativeProgram?: NativeHeatingProgram;
 }
 export interface DecisionTrace {
 	actual?: Observation;

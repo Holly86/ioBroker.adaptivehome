@@ -12,13 +12,22 @@ const point = (value: boolean | number, at: number, unit = ''): Observation => (
 	quality: 'valid',
 });
 describe('AP-07 optional context quality', () => {
+	it('does not count an old cached absence or an observation gap as continuously confirmed absence', () => {
+		const context = new PresenceContext();
+		assert.equal(context.evaluate('shared', point(false, 0), 1000000, 600000, 1).value, null);
+		context.evaluate('shared', point(false, 0), 1060000, 600000, 1);
+		context.evaluate('shared', { ...point(false, 0), quality: 'unavailable' }, 1100000, 600000, 1);
+		assert.equal(context.evaluate('shared', point(false, 0), 1600000, 600000, 1).value, null);
+		assert.equal(context.evaluate('shared', point(false, 0), 2200000, 600000, 1).value, null);
+	});
 	it('debounces absence, requires configurable independent confirmations and forgets changed sources', () => {
 		const context = new PresenceContext();
 		assert.equal(context.evaluate('room', point(true, 100), 100, 300, 2).value, null);
 		assert.equal(context.evaluate('room', point(true, 100), 100, 300, 2).value, null);
 		assert.equal(context.evaluate('room', point(true, 101), 101, 300, 2).value, true);
 		assert.equal(context.evaluate('room', point(false, 102), 200, 300, 2).value, true);
-		assert.equal(context.evaluate('room', point(false, 102), 402, 300, 2).value, false);
+		assert.equal(context.evaluate('room', point(false, 102), 499, 300, 2).value, true);
+		assert.equal(context.evaluate('room', point(false, 102), 500, 300, 2).value, false);
 		assert.equal(
 			context.evaluate('room', { ...point(false, 403), sourceId: 'other.0.input' }, 403, 300, 2).value,
 			null,

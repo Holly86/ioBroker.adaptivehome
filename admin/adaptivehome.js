@@ -69,6 +69,54 @@
 		enabled: ['Enabled', 'Aktiv'],
 		inputs: ['Selected sources', 'Gewählte Quellen'],
 		parameters: ['Everyday settings', 'Alltagseinstellungen'],
+		writeValues: ['Allowed command values (optional)', 'Erlaubte Schaltwerte (optional)'],
+		behavior: ['House and manual behavior', 'Hausregeln und Handbedienung'],
+		freshness: ['Device read evidence', 'Nachweis der Geräteabfrage'],
+		verifiedAtId: ['Successful device read timestamp', 'Zeitstempel der erfolgreichen Geräteabfrage'],
+		reachableId: ['Device reachability', 'Erreichbarkeit des Geräts'],
+		eventTimestampId: ['Separate event timestamp (optional)', 'Separater Ereigniszeitstempel (optional)'],
+		continuityMs: ['Maximum observation gap (ms)', 'Maximale Beobachtungslücke (ms)'],
+		manualOffQuietMs: ['Quiet required after manual OFF (ms)', 'Ruhe nach Hand-Aus (ms)'],
+		awayOff: ['Switch off on confirmed departure', 'Bei bestätigtem Verlassen ausschalten'],
+		welcomeHoldMs: ['Welcome hold (ms)', 'Heimkehr-Nachlauf (ms)'],
+		sessionOffMs: ['Timed manual session (ms)', 'Befristete manuelle Einschaltung (ms)'],
+		manualSignals: ['Manual event signals', 'Signale der Handbedienung'],
+		manualSignatureInputs: ['Adjustment signals', 'Signale für Helligkeit und Farbe'],
+		offValues: ['OFF event codes', 'Ereigniscodes für Aus'],
+		useActuatorValue: [
+			'Use current output for a physical input',
+			'Aktuellen Ausgangszustand für einen Geräteeingang verwenden',
+		],
+		activation: ['Activation appearance', 'Einschaltwerte für Licht und Farbe'],
+		comfortWindows: ['Comfort periods', 'Komfortzeiten'],
+		preheatMs: ['Preheat before start (ms)', 'Vorlauf vor Beginn (ms)'],
+		weatherBelow: ['Comfort below forecast temperature', 'Komfort unter Vorhersagetemperatur'],
+		usageHoldMs: ['Room use hold (ms)', 'Nachlauf der Raumnutzung (ms)'],
+		deepIdle: ['Long unused setback', 'Absenkung bei langer Nichtnutzung'],
+		thermalAssist: ['Bounded heating trial', 'Begrenzter Heizversuch'],
+		afterMs: ['After continuous idle (ms)', 'Nach ununterbrochener Nichtnutzung (ms)'],
+		maxHumidityAtTarget: [
+			'Maximum predicted humidity at target (%)',
+			'Maximale errechnete Feuchte am Zielwert (%)',
+		],
+		profileId: ['Selected native profile', 'Gewähltes natives Profil'],
+		fallback: ['Autonomous base target', 'Autonomer Basis-Sollwert'],
+		maxHorizonMs: ['Maximum native interval (ms)', 'Maximale native Zeitspanne (ms)'],
+		activationDelayMs: ['Delay before profile activation (ms)', 'Verzögerung bis zur Profilaktivierung (ms)'],
+		stalledMs: ['Observe insufficient warming for (ms)', 'Unzureichende Erwärmung beobachten für (ms)'],
+		stepMs: ['Trial step interval (ms)', 'Abstand der Versuchsschritte (ms)'],
+		maxTrialMs: ['Maximum total trial duration (ms)', 'Maximale gesamte Versuchsdauer (ms)'],
+		maxIncrease: ['Maximum trial increase (°C)', 'Maximale Versuchserhöhung (°C)'],
+		maxSetpoint: ['Maximum trial setpoint (°C)', 'Maximaler Versuchs-Sollwert (°C)'],
+		minDeficit: ['Minimum temperature deficit (°C)', 'Mindestabstand zum Temperaturziel (°C)'],
+		minProgress: ['Measured warming ends trial (°C)', 'Gemessene Erwärmung beendet den Versuch (°C)'],
+		highValve: ['Valve opening that prevents a trial (0–1)', 'Ventilöffnung, die den Versuch verhindert (0–1)'],
+		weekly: ['Additional weekly heating', 'Zusätzliche wöchentliche Heizzeit'],
+		nativeProgram: ['Native profile transport', 'Übertragung nativer Heizprofile'],
+		backendContractVerified: [
+			'Backend profile and expiry contract verified',
+			'Profilübernahme und Ablauf des Backends geprüft',
+		],
 		rules: ['Rules & schedules', 'Regeln & Zeitpläne'],
 		limits: ['Operating limits', 'Betriebsgrenzen'],
 		essential: ['Essential minimum service', 'Unverzichtbare Mindestfunktion'],
@@ -466,6 +514,14 @@
 				'airQuality',
 				'flow',
 				'filterLife',
+				'manualEvent',
+				'red',
+				'green',
+				'blue',
+				'white',
+				'humidity',
+				'valve',
+				'context',
 			],
 			readId: 'text',
 			writeId: 'text?',
@@ -482,7 +538,9 @@
 			confirmation: ['backend', 'device'],
 			sourceType: ['boolean', 'number', 'string'],
 			values: 'scalars',
-			codec: ['identity', 'hueLightLevel'],
+			writeValues: 'scalars',
+			codec: ['identity', 'hueLightLevel', 'nativeHeatingProgram'],
+			eventTimestampId: 'text?',
 		},
 		binding: {
 			id: 'text',
@@ -614,6 +672,27 @@
 				}
 				continue;
 			}
+			if (key === 'writeValues') {
+				field(cols, key, (obj[key] || []).join(','), v => {
+					if (!v.trim()) {
+						delete obj[key];
+					} else {
+						obj[key] = v
+							.split(',')
+							.filter(x => x.trim())
+							.map(x =>
+								x.trim() === 'true'
+									? true
+									: x.trim() === 'false'
+										? false
+										: Number.isFinite(Number(x))
+											? Number(x)
+											: x.trim(),
+							);
+					}
+				});
+				continue;
+			}
 			if (spec === 'days' || spec === 'strings' || spec === 'scalars') {
 				field(
 					cols,
@@ -657,6 +736,27 @@
 				kind,
 			);
 		}
+	}
+	function optionalSection(parent, obj, key, defaults, draw) {
+		const box = node('fieldset');
+		field(
+			box,
+			key,
+			!!obj[key],
+			enabled => {
+				if (enabled) {
+					obj[key] = structuredClone(defaults);
+				} else {
+					delete obj[key];
+				}
+				render();
+			},
+			'checkbox',
+		);
+		if (obj[key]) {
+			draw(box, obj[key]);
+		}
+		parent.append(box);
 	}
 	function repeat(parent, label, array, create, draw) {
 		const details = node('details');
@@ -845,6 +945,9 @@
 					}),
 					(box, m) => {
 						form(box, m, descriptors.mapping);
+						optionalSection(box, m, 'freshness', { verifiedAtId: '', maxAgeMs: 30000 }, (p, f) =>
+							form(p, f, { verifiedAtId: 'text', reachableId: 'text?', maxAgeMs: 'number' }),
+						);
 						const codes = document.createElement('details');
 						codes.append(node('summary', t('valueMap')));
 						for (const [raw, normalized] of Object.entries(m.valueMap || {})) {
@@ -1019,6 +1122,123 @@
 				}
 			});
 			p.append(node('h3', t('limits')));
+			if (['lighting', 'equipment'].includes(fn.kind)) {
+				optionalSection(
+					p,
+					fn,
+					'behavior',
+					{ continuityMs: 30000, awayOff: false, manualSignals: [], manualSignatureInputs: [] },
+					(box, b) => {
+						form(box, b, {
+							continuityMs: 'number',
+							manualOffQuietMs: 'number?',
+							awayOff: 'checkbox',
+							welcomeHoldMs: 'number?',
+							sessionOffMs: 'number?',
+							manualSignatureInputs: 'strings',
+						});
+						repeat(
+							box,
+							'manualSignals',
+							b.manualSignals,
+							() => ({ input: Object.keys(fn.inputs)[0] || '', offValues: [] }),
+							(p, s) =>
+								form(
+									p,
+									s,
+									{ input: 'inputRef', offValues: 'scalars', useActuatorValue: 'checkbox' },
+									fn,
+								),
+						);
+					},
+				);
+				fn.activation ??= [];
+				repeat(
+					p,
+					'activation',
+					fn.activation,
+					() => ({ capability: '', value: 0 }),
+					(box, e) => {
+						field(
+							box,
+							'capability',
+							e.capability,
+							v => (e.capability = v),
+							'text',
+							config.bindings
+								.find(b => b.id === fn.actuator.entityId)
+								?.capabilities.filter(m => m.writeId && m.capability !== fn.actuator.capability)
+								.map(m => m.capability) || [],
+						);
+						form(box, e, { value: 'scalar' });
+					},
+				);
+			}
+			if (fn.kind === 'climate') {
+				optionalSection(p, fn, 'climate', { comfortWindows: [], preheatMs: 0, weekly: [] }, (box, c) => {
+					form(box, c, { preheatMs: 'number', weatherBelow: 'number?', usageHoldMs: 'number?' });
+					repeat(
+						box,
+						'comfortWindows',
+						c.comfortWindows,
+						() => ({ days: [1, 2, 3, 4, 5], start: '07:00', end: '22:00' }),
+						(p, w) => form(p, w, descriptors.window),
+					);
+					repeat(
+						box,
+						'weekly',
+						c.weekly,
+						() => ({ window: { days: [0], start: '18:00', end: '22:00' }, value: 21 }),
+						(p, w) => {
+							form(p, w.window, descriptors.window);
+							form(p, w, { value: 'number' });
+						},
+					);
+					optionalSection(
+						box,
+						c,
+						'deepIdle',
+						{ afterMs: 172800000, value: 15, maxHumidityAtTarget: 60 },
+						(p, d) => form(p, d, { afterMs: 'number', value: 'number', maxHumidityAtTarget: 'number' }),
+					);
+					optionalSection(
+						box,
+						c,
+						'thermalAssist',
+						{
+							stalledMs: 2700000,
+							stepMs: 1800000,
+							maxTrialMs: 5400000,
+							maxIncrease: 2,
+							maxSetpoint: 23,
+							minDeficit: 1,
+							minProgress: 0.3,
+							highValve: 0.8,
+						},
+						(p, d) => form(p, d, Object.fromEntries(Object.keys(d).map(k => [k, 'number']))),
+					);
+				});
+				optionalSection(
+					p,
+					fn,
+					'nativeProgram',
+					{
+						profileId: '',
+						fallback: 17,
+						maxHorizonMs: 86400000,
+						activationDelayMs: 120000,
+						backendContractVerified: false,
+					},
+					(box, n) =>
+						form(box, n, {
+							profileId: 'text',
+							fallback: 'number',
+							maxHorizonMs: 'number',
+							activationDelayMs: 'number',
+							backendContractVerified: 'checkbox',
+						}),
+				);
+			}
 			form(p, fn.limits, descriptors.limits, fn);
 			fn.limits.allowedWindows ??= [];
 			repeat(

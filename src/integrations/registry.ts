@@ -1,4 +1,5 @@
 import type { CapabilityMapping, DeviceBinding, Observation, Scalar } from '../model/contracts';
+import { parseNativeHeatingReport } from './native-program';
 export interface StateValue {
 	val: unknown;
 	ts: number;
@@ -81,6 +82,17 @@ export class IntegrationRegistry {
 				throw new Error('unsupported_capability');
 			}
 			seen.add(mapping.capability);
+			for (const value of mapping.writeValues ?? []) {
+				if (
+					typeof value !== mapping.valueType ||
+					(mapping.values && !mapping.values.includes(value)) ||
+					(typeof value === 'number' &&
+						((mapping.min !== undefined && value < mapping.min) ||
+							(mapping.max !== undefined && value > mapping.max)))
+				) {
+					throw new Error('write_value_invalid');
+				}
+			}
 			if (units[mapping.capability] && !units[mapping.capability].includes(mapping.unit)) {
 				throw new Error('unit_mismatch');
 			}
@@ -98,6 +110,7 @@ export function normalize(
 	mapping: CapabilityMapping,
 	raw: StateValue | null,
 	now: number,
+	evidence?: { verifiedAt?: StateValue | null; reachable?: StateValue | null; event?: StateValue | null },
 ): Observation {
 	const result: Observation = {
 		entityId: binding.id,
@@ -113,7 +126,11 @@ export function normalize(
 	if (!raw) {
 		return result;
 	}
-	if (raw.q && raw.q !== 0) {
+	if (!Number.isFinite(raw.ts) || raw.ts < 0) {
+		result.quality = 'invalid';
+		return result;
+	}
+	if (raw.q !== undefined && raw.q !== 0) {
 		result.quality = 'invalid';
 		return result;
 	}
@@ -132,8 +149,37 @@ export function normalize(
 		result.quality = 'invalid';
 		return result;
 	}
-	const decoded = mapping.valueMap ? mapping.valueMap[String(raw.val)] : raw.val;
+	const report = mapping.codec === 'nativeHeatingProgram' ? parseNativeHeatingReport(raw.val) : null;
+	if (
+		mapping.codec === 'nativeHeatingProgram' &&
+		(!report ||
+			report.program.physicalId !== binding.physicalId ||
+			report.status !== 'applied' ||
+			!report.automatic ||
+			!report.fallbackVerified ||
+			!report.absoluteExpiryVerified ||
+			report.appOverride ||
+			report.devicePending ||
+			report.program.createdAt > now ||
+			report.program.activateAt >= report.program.expiresAt ||
+			report.effectiveTarget !==
+				(now >= report.program.activateAt && now < report.program.expiresAt
+					? report.program.target
+					: report.program.fallback))
+	) {
+		result.quality = 'unknown';
+		return result;
+	}
+	const decoded = report ? report.effectiveTarget : mapping.valueMap ? mapping.valueMap[String(raw.val)] : raw.val;
+	if (report && now < report.program.expiresAt) {
+		result.scheduledValue = report.program.target;
+		result.scheduledUntil = report.program.expiresAt;
+	}
 	if (decoded === undefined || typeof decoded !== mapping.valueType) {
+		result.quality = 'invalid';
+		return result;
+	}
+	if (typeof decoded === 'string' && decoded.length > 512) {
 		result.quality = 'invalid';
 		return result;
 	}
@@ -159,9 +205,110 @@ export function normalize(
 	}
 	result.value = value;
 	result.quality = raw.ts > now ? 'unknown' : now - raw.ts > mapping.maxAgeMs ? 'stale' : 'valid';
+	if (mapping.eventTimestampId) {
+		const event = evidence?.event;
+		const value = event?.val;
+		// Hue's zone-less ISO timestamps are UTC, independent of the controller locale.
+		const at =
+			typeof value === 'number'
+				? value
+				: typeof value === 'string' &&
+					  /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?(?:Z|[+-]\d\d:\d\d)?$/.test(value)
+					? Date.parse(/(?:Z|[+-]\d\d:\d\d)$/.test(value) ? value : `${value}Z`)
+					: NaN;
+		if (
+			event?.ack !== true ||
+			!Number.isFinite(event.ts) ||
+			(event.q !== undefined && event.q !== 0) ||
+			event.ts > now ||
+			!Number.isFinite(at) ||
+			at < 0 ||
+			at > now
+		) {
+			result.quality = 'unknown';
+			return result;
+		}
+		result.measuredAt = at;
+	}
+	if (mapping.freshness) {
+		const proof = evidence?.verifiedAt,
+			reachable = evidence?.reachable;
+		const at = proof?.val;
+		if (
+			proof?.ack !== true ||
+			!Number.isFinite(proof.ts) ||
+			(proof.q !== undefined && proof.q !== 0) ||
+			typeof at !== 'number' ||
+			!Number.isFinite(at) ||
+			at < raw.ts ||
+			at > now ||
+			proof.ts > now
+		) {
+			result.quality = 'unknown';
+			return result;
+		}
+		result.verifiedAt = at;
+		if (
+			mapping.freshness.reachableId &&
+			(reachable?.ack !== true ||
+				!Number.isFinite(reachable.ts) ||
+				(reachable.q !== undefined && reachable.q !== 0) ||
+				reachable.ts > now ||
+				reachable.val !== true)
+		) {
+			result.quality = reachable?.val === false ? 'unavailable' : 'unknown';
+			return result;
+		}
+		result.quality = now - at > mapping.freshness.maxAgeMs ? 'stale' : raw.ts > now ? 'unknown' : 'valid';
+	}
 	return result;
 }
+
+export function mappingReadIds(mapping: CapabilityMapping): string[] {
+	return [
+		...new Set(
+			[
+				mapping.readId,
+				mapping.writeId,
+				mapping.confirmId,
+				mapping.eventTimestampId,
+				mapping.freshness?.verifiedAtId,
+				mapping.freshness?.reachableId,
+			].filter((v): v is string => !!v),
+		),
+	];
+}
+/** Uses the same evidence contract for decisions, dependencies and final execution checks. */
+export async function readObservation(
+	binding: DeviceBinding,
+	mapping: CapabilityMapping,
+	read: (id: string) => Promise<StateValue | null>,
+	now: () => number,
+): Promise<Observation> {
+	const [raw, verifiedAt, reachable, event] = await Promise.all([
+		read(mapping.readId),
+		mapping.freshness ? read(mapping.freshness.verifiedAtId) : null,
+		mapping.freshness?.reachableId ? read(mapping.freshness.reachableId) : null,
+		mapping.eventTimestampId ? read(mapping.eventTimestampId) : null,
+	]);
+	return normalize(binding, mapping, raw, now(), { verifiedAt, reachable, event });
+}
 export function auditMapping(mapping: CapabilityMapping, metadata: Record<string, StateMetadata>): void {
+	for (const [point, type] of [
+		[mapping.freshness?.verifiedAtId, 'number'],
+		[mapping.freshness?.reachableId, 'boolean'],
+	] as const) {
+		if (point && (metadata[point]?.type !== type || metadata[point].read === false || point === mapping.writeId)) {
+			throw new Error('freshness_evidence_invalid');
+		}
+	}
+	if (
+		mapping.eventTimestampId &&
+		(!['number', 'string'].includes(metadata[mapping.eventTimestampId]?.type) ||
+			metadata[mapping.eventTimestampId].read === false)
+	) {
+		throw new Error('event_evidence_invalid');
+	}
 	for (const point of [mapping.readId, mapping.writeId, mapping.confirmId].filter((v): v is string => !!v)) {
 		const meta = metadata[point];
 		if (!meta || meta.type !== (mapping.sourceType ?? mapping.valueType)) {

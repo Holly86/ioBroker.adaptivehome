@@ -282,6 +282,74 @@ function defineControllerTests({ suite }) {
 			}
 		});
 	});
+	suite('Freshness and compound activation through actual controller states', getHarness => {
+		it('keeps an unchanged quiet event valid through device read evidence and confirms all activation components', async function () {
+			this.timeout(30000);
+			const harness = getHarness(),
+				config = referenceConfiguration('apartment');
+			config.functions = [config.functions[0]];
+			const fn = config.functions[0],
+				light = config.bindings.find(b => b.id === fn.actuator.entityId),
+				motion = config.bindings
+					.find(b => b.id === fn.inputs.motion.entityId)
+					.capabilities.find(m => m.capability === 'motion');
+			fn.parameters.holdMs = 3000;
+			motion.maxAgeMs = 1000;
+			motion.freshness = { verifiedAtId: 'fixture.0.motionCheckedAt', maxAgeMs: 2000 };
+			light.capabilities.push({
+				...light.capabilities[0],
+				capability: 'white',
+				valueType: 'number',
+				sourceType: 'number',
+				readId: 'fixture.0.white',
+				writeId: 'fixture.0.white',
+				confirmId: 'fixture.0.white',
+				min: 0,
+				max: 255,
+			});
+			fn.activation = [{ capability: 'white', value: 64 }];
+			await seed(harness, config);
+			await harness.objects.setObjectAsync('fixture.0.motionCheckedAt', {
+				type: 'state',
+				common: { name: 'Synthetic successful device read', type: 'number', read: true, write: false },
+				native: {},
+			});
+			const proof = () =>
+				harness.states.setStateAsync('fixture.0.motionCheckedAt', {
+					val: Date.now(),
+					ack: true,
+					ts: Date.now(),
+				});
+			await proof();
+			const timer = setInterval(() => void proof(), 300),
+				device = emulator(harness, config);
+			try {
+				await harness.startAdapterAndWait(true);
+				const rpc = await operator(harness),
+					applied = await rpc('applyConfiguration', envelope({ configuration: config }, 0));
+				assert.equal(applied.ok, true, JSON.stringify(applied));
+				await harness.states.setStateAsync(motion.readId, { val: true, ack: true, ts: Date.now() });
+				await until(() => device.writes.some(w => w.value === true), 'motion with verified read evidence');
+				assert.equal(device.writes[0].id, 'fixture.0.white');
+				await until(
+					async () =>
+						(await rpc('status')).result.commands.some(c => c.feedbackMatched && c.effects?.length === 2),
+					'compound feedback',
+				);
+				const quietAt = Date.now();
+				await harness.states.setStateAsync(motion.readId, { val: false, ack: true, ts: quietAt });
+				await until(
+					() => device.writes.some(w => w.id === light.capabilities[0].writeId && w.value === false),
+					'quiet off despite old event timestamp',
+				);
+				assert.ok(Date.now() - quietAt >= 3000);
+				assert.ok(Date.now() - (await harness.states.getStateAsync(motion.readId)).ts > motion.maxAgeMs);
+			} finally {
+				clearInterval(timer);
+				device.close();
+			}
+		});
+	});
 	suite('Independent controller reference 2', getHarness => {
 		let harness, rpc;
 		before(async () => {
@@ -343,6 +411,11 @@ function defineControllerTests({ suite }) {
 			const config = referenceConfiguration('apartment'),
 				air = referenceConfiguration('air');
 			config.functions = [config.functions[1], ...air.functions];
+			config.functions[0].climate = {
+				comfortWindows: [{ days: [0, 1, 2, 3, 4, 5, 6], start: '00:00', end: '00:00' }],
+				preheatMs: 0,
+				weekly: [],
+			};
 			config.bindings.push(...air.bindings);
 			await seed(harness, config);
 			const device = emulator(harness, config);
@@ -360,6 +433,7 @@ function defineControllerTests({ suite }) {
 				);
 				const status = (await rpc('status')).result;
 				assert.equal(status.traces.climate.inputs.temperature.value, 17);
+				assert.equal(status.traces.climate.reasonCode, 'climate_comfort');
 				assert.ok(status.traces.air);
 			} finally {
 				device.close();
@@ -583,6 +657,20 @@ function defineControllerTests({ suite }) {
 				await preconfigure(harness, config);
 				const device = emulator(harness, config),
 					rpc = await operator(harness);
+				// Simulate successful repeated device reports as well as command feedback.
+				// A cached actuator acknowledgement alone is not five minutes of reachability.
+				const heartbeat = setInterval(async () => {
+					const id = config.bindings[0].capabilities[0].readId;
+					const state = await harness.states.getStateAsync(id);
+					if (state?.ack) {
+						await harness.states.setStateAsync(id, {
+							val: state.val,
+							ack: true,
+							ts: Date.now(),
+							from: 'system.adapter.synthetic.0',
+						});
+					}
+				}, 1000);
 				try {
 					await harness.startAdapterAndWait(true);
 					await harness.states.setStateAsync('test.0.motion.motion', {
@@ -621,6 +709,7 @@ function defineControllerTests({ suite }) {
 						}),
 					);
 				} finally {
+					clearInterval(heartbeat);
 					device.close();
 				}
 			});

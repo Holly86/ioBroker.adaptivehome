@@ -9,9 +9,9 @@ import type {
 	DeviceBinding,
 } from '../model/contracts';
 import type { StateMetadata, StateValue } from '../integrations/registry';
-import { normalize } from '../integrations/registry';
+import { readObservation } from '../integrations/registry';
 import type { ExecutionJournal } from '../execution/executor';
-import { Executor } from '../execution/executor';
+import { Executor, manualActive } from '../execution/executor';
 import type { Clock } from './clock';
 import { deadline, systemClock } from './clock';
 import { Supervisor } from './supervisor';
@@ -20,6 +20,7 @@ import { History } from '../diagnostics/history';
 import type { PolicyDecision, PolicyMemory } from '../policies/policy';
 import { commonDecision, noAction } from '../policies/policy';
 import { lightingDecision } from '../policies/lighting';
+import { houseDecision } from '../policies/house';
 import { airDecision, climateDecision } from '../policies/climate';
 import { equipmentDecision } from '../policies/equipment';
 import { IncidentService } from '../diagnostics/incidents';
@@ -92,7 +93,12 @@ export class HomeRuntime {
 					mapping = binding?.capabilities.find(m => m.capability === ref.capability);
 				let observation =
 					binding && mapping
-						? normalize(binding, mapping, await this.port.read(mapping.readId), this.clock.now())
+						? await readObservation(
+								binding,
+								mapping,
+								id => this.port.read(id),
+								() => this.clock.now(),
+							)
 						: null;
 				if (observation && name === 'presence') {
 					observation = this.presence.evaluate(
@@ -109,6 +115,7 @@ export class HomeRuntime {
 				}
 			}),
 		);
+		await this.executor.observeManualInputs(fn, result);
 		return result;
 	}
 	async manual(functionId: string, value: Scalar, requestId: string, actor: string): Promise<unknown> {
@@ -170,6 +177,7 @@ export class HomeRuntime {
 						const fn = this.config().functions.find(f => f.id === intent.functionId)!;
 						if (
 							intent.reasonCode === 'motion_on' ||
+							intent.reasonCode === 'house_welcome_on' ||
 							(intent.planId &&
 								fn.kind === 'lighting' &&
 								intent.typedValue !== false &&
@@ -179,8 +187,17 @@ export class HomeRuntime {
 							this.memories[intent.functionId].ownerManualAt =
 								this.executor.journal.manual[command.physicalId]?.at ?? 0;
 						}
-						if (intent.reasonCode === 'motion_quiet_expired') {
+						if (
+							[
+								'motion_quiet_expired',
+								'house_welcome_expired',
+								'house_session_expired',
+								'house_away_off',
+							].includes(intent.reasonCode)
+						) {
 							delete this.memories[intent.functionId].commandId;
+							delete this.memories[intent.functionId].sessionUntil;
+							delete this.memories[intent.functionId].welcomeUntil;
 						}
 						this.history.event({
 							at: this.clock.now(),
@@ -226,11 +243,17 @@ export class HomeRuntime {
 	}
 	private async evaluate(fn: FunctionConfig, round: number): Promise<void> {
 		const config = this.config(),
-			now = this.clock.now(),
 			inputs = await this.inputs(fn),
 			binding = config.bindings.find(b => b.id === fn.actuator.entityId)!;
 		const mapping = binding.capabilities.find(c => c.capability === fn.actuator.capability)!;
-		const actual = normalize(binding, mapping, await this.port.read(mapping.readId), now);
+		const actual = await readObservation(
+			binding,
+			mapping,
+			id => this.port.read(id),
+			() => this.clock.now(),
+		);
+		await this.executor.observeActuator(fn, actual);
+		const now = this.clock.now();
 		this.history.observation(actual);
 		if (round !== this.round || config.revision !== this.config().revision) {
 			return;
@@ -252,7 +275,9 @@ export class HomeRuntime {
 			inputs,
 			actual,
 			owns,
-			manual: !!wish && wish.until > now,
+			manual: manualActive(wish, now),
+			manualAt: wish?.at,
+			manualValue: wish?.value,
 		};
 		const effective = this.adaptation.effective(fn, config, context.manual);
 		const baseDecision =
@@ -263,7 +288,12 @@ export class HomeRuntime {
 					: effective.kind === 'air'
 						? airDecision(effective, context, memory)
 						: equipmentDecision(effective, context);
-		let decision: PolicyDecision = commonDecision(effective, context) ?? baseDecision;
+		const house = houseDecision(effective, context, memory);
+		const common = commonDecision(effective, {
+			...context,
+			manual: context.manual && house?.manualLeaseAt === undefined,
+		});
+		let decision: PolicyDecision = common ?? house ?? baseDecision;
 		if (
 			effective !== fn &&
 			fn.kind === 'lighting' &&
@@ -300,7 +330,11 @@ export class HomeRuntime {
 		if (decision.value === undefined) {
 			return;
 		}
-		if (actual.quality === 'valid' && actual.value === decision.value) {
+		if (
+			actual.quality === 'valid' &&
+			(actual.value === decision.value ||
+				(actual.scheduledValue === decision.value && (actual.scheduledUntil ?? 0) > now))
+		) {
 			trace.nextStep = 'Already matches the requested value';
 			return;
 		}
@@ -318,6 +352,22 @@ export class HomeRuntime {
 			sourceSnapshotId: randomUUID(),
 			configRevision: config.revision,
 			priority: decision.priority,
+			manualLeaseAt: decision.manualLeaseAt,
+			guardInputs:
+				/^(motion_|house_)/.test(decision.reason) || fn.climate
+					? Object.fromEntries(
+							Object.entries(inputs)
+								.filter(
+									([name, observation]) =>
+										(fn.climate || ['motion', 'presence', 'inhibit'].includes(name)) &&
+										observation?.quality === 'valid',
+								)
+								.map(([name, observation]) => [
+									name,
+									{ measuredAt: observation!.measuredAt, value: observation!.value },
+								]),
+						)
+					: undefined,
 			validFrom: now,
 			expiresAt: Math.min(decision.expiresAt ?? now + 10000, now + 10000),
 		};

@@ -39,3 +39,15 @@ missing confirmations and out-of-backend paths are rejected. Migrate definitions
 explicitly for a new API major; v1 has no automatic permissive migration. A new
 capability must document unit/type/quality semantics and policies that can consume it.
 Do not reuse actual installation identifiers or publish raw evidence in fixtures.
+
+Post-Beta-3 additive v1 contracts are described in [policy-parity.md](policy-parity.md).
+Explicit mappings can select device-scoped read evidence and a separate event
+timestamp. `writeValues` limits commands without invalidating readable feedback.
+RGBW components have separate declared mappings and require all feedback.
+The SDK exports `nativeHeatingProgramSchema`, `nativeHeatingReportSchema`,
+`parseNativeHeatingReport`, `compileNativeHeatingProgram` and `NativeHeatingProgram`
+for the finite native-heating extension. A conforming backend must actually
+provide correlated full-content feedback, automatic activation and autonomous
+absolute expiry/fallback. These exports do not supply a vendor transport or
+establish standard hmip support. Never set backend verification from schema
+validation alone; keep unsupported configurations disabled.
