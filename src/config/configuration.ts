@@ -151,6 +151,16 @@ export function validateConfiguration(input: unknown, registry?: IntegrationRegi
 				mapping.max,
 				mapping.writeValues ?? mapping.values,
 			);
+			for (const fallback of fn.nativeProgram.fallbackValues ?? []) {
+				validateValue(
+					fn,
+					fallback,
+					mapping.valueType,
+					mapping.min,
+					mapping.max,
+					mapping.writeValues ?? mapping.values,
+				);
+			}
 			if (fn.enabled && !fn.nativeProgram.backendContractVerified) {
 				throw new Error('native_backend_unverified');
 			}

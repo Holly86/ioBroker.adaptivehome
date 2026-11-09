@@ -24,6 +24,7 @@ export const observationSchema = z.strictObject({
 	verifiedAt: z.number().finite().optional(),
 	scheduledValue: z.number().finite().optional(),
 	scheduledUntil: z.number().finite().optional(),
+	programCommandId: z.string().max(64).optional(),
 	quality,
 	sourceId: stateId,
 	observationId: z.string().optional(),
@@ -217,6 +218,7 @@ export const functionSchema = z.strictObject({
 		.strictObject({
 			profileId: id,
 			fallback: z.number().finite(),
+			fallbackValues: z.array(z.number().finite()).max(16).optional(),
 			maxHorizonMs: z.number().int().min(300000).max(86400000),
 			activationDelayMs: z.number().int().min(0).max(600000).default(120000),
 			backendContractVerified: z.boolean().default(false),
@@ -337,6 +339,7 @@ export interface Intent extends CapabilityRef {
 	expiresAt: number;
 	planId?: string;
 	manualLeaseAt?: number;
+	nativeFallback?: number;
 	guardInputs?: Record<string, { measuredAt: number; value: Scalar | null }>;
 }
 export type CommandPhase = 'requested' | 'validated' | 'accepted' | 'device_confirmed' | 'failed' | 'uncertain';

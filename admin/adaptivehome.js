@@ -101,6 +101,7 @@
 		],
 		profileId: ['Selected native profile', 'Gewähltes natives Profil'],
 		fallback: ['Autonomous base target', 'Autonomer Basis-Sollwert'],
+		fallbackValues: ['Additional permitted policy base targets', 'Weitere erlaubte Basis-Sollwerte der Regeln'],
 		maxHorizonMs: ['Maximum native interval (ms)', 'Maximale native Zeitspanne (ms)'],
 		activationDelayMs: ['Delay before profile activation (ms)', 'Verzögerung bis zur Profilaktivierung (ms)'],
 		stalledMs: ['Observe insufficient warming for (ms)', 'Unzureichende Erwärmung beobachten für (ms)'],
@@ -1233,6 +1234,7 @@
 						form(box, n, {
 							profileId: 'text',
 							fallback: 'number',
+							fallbackValues: 'scalars',
 							maxHorizonMs: 'number',
 							activationDelayMs: 'number',
 							backendContractVerified: 'checkbox',

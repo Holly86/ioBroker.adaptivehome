@@ -171,6 +171,9 @@ export function normalize(
 		return result;
 	}
 	const decoded = report ? report.effectiveTarget : mapping.valueMap ? mapping.valueMap[String(raw.val)] : raw.val;
+	if (report) {
+		result.programCommandId = report.program.commandId;
+	}
 	if (report && now < report.program.expiresAt) {
 		result.scheduledValue = report.program.target;
 		result.scheduledUntil = report.program.expiresAt;

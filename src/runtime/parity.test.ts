@@ -114,7 +114,16 @@ describe('Anonymized freshness and policy parity regressions', () => {
 				},
 			});
 		climateDecision(fn, make(1000), memory);
+		fn.nativeProgram = {
+			profileId: 'PROFILE_2',
+			fallback: 15,
+			fallbackValues: [13, 15],
+			maxHorizonMs: 86400000,
+			activationDelayMs: 120000,
+			backendContractVerified: false,
+		};
 		assert.equal(climateDecision(fn, make(61000), memory).value, 13);
+		assert.equal(climateDecision(fn, make(61000), memory).nativeFallback, 13);
 		assert.equal(climateDecision(fn, make(62000, 90), memory).value, 15);
 		delete fn.climate!.usageHoldMs;
 		delete fn.climate!.deepIdle;
@@ -425,11 +434,20 @@ describe('Anonymized freshness and policy parity regressions', () => {
 			});
 		const binding = cfg.bindings.find(b => b.id === fn.actuator.entityId)!;
 		const now = Date.parse('2026-01-05T21:00:00Z');
+		fn.limits.min = 12;
 		fn.climate = { comfortWindows: [{ days: [1], start: '18:00', end: '23:00' }], preheatMs: 0, weekly: [] };
 		const program = compileNativeHeatingProgram(fn, binding, 21, now, 'UTC', 'synthetic-command');
 		assert.equal(program.expiresAt, Date.parse('2026-01-05T23:00:00Z'));
 		assert.equal(program.days[1].periods[0].end, 1380);
 		assert.equal(program.days[2].base, 17);
+		fn.nativeProgram!.fallbackValues = [13];
+		const deep = compileNativeHeatingProgram(fn, binding, 21, now, 'UTC', 'deep-command', 13);
+		assert.equal(deep.fallback, 13);
+		assert.ok(deep.days.every(day => day.base === 13));
+		assert.throws(
+			() => compileNativeHeatingProgram(fn, binding, 21, now, 'UTC', 'invalid-fallback', 12),
+			/not_authorized/,
+		);
 		fn.nativeProgram!.backendContractVerified = false;
 		assert.throws(
 			() => compileNativeHeatingProgram(fn, binding, 21, now, 'UTC', 'synthetic-command'),

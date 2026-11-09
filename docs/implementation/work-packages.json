@@ -135,8 +135,8 @@
       ],
       "openChecks": [],
       "commit": "4b2fde448bbe458a6688c4a52fe0dcc5b6e0c42d",
-      "updatedAt": "2026-11-09T10:33:04.486Z",
-      "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries."
+      "updatedAt": "2026-11-09T10:42:18.160Z",
+      "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries. Explicit dynamic native fallback choices and correlated activation/expiry beyond command acknowledgement deadlines are contract-tested."
     },
     {
       "id": "AP-04",
@@ -196,8 +196,8 @@
       ],
       "openChecks": [],
       "commit": "21a15f6dedbb636270dd9be501bdb6e410e32f50",
-      "updatedAt": "2026-11-09T10:33:04.488Z",
-      "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries."
+      "updatedAt": "2026-11-09T10:42:18.161Z",
+      "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries. Explicit dynamic native fallback choices and correlated activation/expiry beyond command acknowledgement deadlines are contract-tested."
     },
     {
       "id": "AP-07",
@@ -440,8 +440,8 @@
         "The finite native-profile extension is contract-tested only. The standard hmip backend lacks this full-content/absolute-expiry transport; a real backend and autonomous device fallback remain unverified."
       ],
       "commit": "5f7fa170c777c21554263f217adc977e2040dfa8",
-      "updatedAt": "2026-11-09T10:33:04.488Z",
-      "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries."
+      "updatedAt": "2026-11-09T10:42:18.161Z",
+      "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries. Explicit dynamic native fallback choices and correlated activation/expiry beyond command acknowledgement deadlines are contract-tested."
     },
     {
       "id": "AP-17",
@@ -639,8 +639,8 @@
       ],
       "openChecks": [],
       "commit": "4ea2a2aeac20dae023676b4536df40965e95dbf9",
-      "updatedAt": "2026-11-09T10:33:04.488Z",
-      "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries."
+      "updatedAt": "2026-11-09T10:42:18.161Z",
+      "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries. Explicit dynamic native fallback choices and correlated activation/expiry beyond command acknowledgement deadlines are contract-tested."
     },
     {
       "id": "AP-25",

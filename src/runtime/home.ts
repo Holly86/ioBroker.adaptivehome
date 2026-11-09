@@ -353,6 +353,7 @@ export class HomeRuntime {
 			configRevision: config.revision,
 			priority: decision.priority,
 			manualLeaseAt: decision.manualLeaseAt,
+			nativeFallback: decision.nativeFallback,
 			guardInputs:
 				/^(motion_|house_)/.test(decision.reason) || fn.climate
 					? Object.fromEntries(

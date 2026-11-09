@@ -42,6 +42,7 @@ export interface PolicyDecision {
 	expiresAt?: number;
 	nextAt?: number;
 	manualLeaseAt?: number;
+	nativeFallback?: number;
 }
 export const noAction = (reason: string, text: string): PolicyDecision => ({ reason, text, priority: 0 });
 export function commonDecision(fn: FunctionConfig, ctx: PolicyContext): PolicyDecision | undefined {

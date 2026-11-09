@@ -137,10 +137,13 @@ export class Executor {
 		const own = this.journal.commands.some(
 			c =>
 				c.physicalId === binding.physicalId &&
-				c.generation === this.generation &&
 				c.sentAt <= observed.measuredAt &&
-				observed.measuredAt <= c.deadline &&
-				c.intent.typedValue === observed.value,
+				((c.nativeProgram &&
+					observed.programCommandId === c.commandId &&
+					(observed.value === c.nativeProgram.target || observed.value === c.nativeProgram.fallback)) ||
+					(c.generation === this.generation &&
+						observed.measuredAt <= c.deadline &&
+						c.intent.typedValue === observed.value)),
 		);
 		if (!own && (this.journal.manual[binding.physicalId]?.at ?? -1) < observed.measuredAt) {
 			await this.recordManual(fn, observed.value, 'observed_device_change');
@@ -573,6 +576,7 @@ export class Executor {
 							this.clock.now(),
 							config.timezone,
 							command.commandId,
+							intent.nativeFallback,
 						);
 						await this.persist();
 						if (
@@ -753,6 +757,25 @@ export class Executor {
 				state,
 				now,
 			);
+			if (
+				mapping.codec === 'nativeHeatingProgram' &&
+				state.ack &&
+				normalized.quality === 'valid' &&
+				normalized.value !== null
+			) {
+				const report = parseNativeHeatingReport(state.val);
+				const own = this.journal.commands.some(
+					c =>
+						c.physicalId === physicalId &&
+						c.nativeProgram &&
+						isDeepStrictEqual(c.nativeProgram, report?.program),
+				);
+				if (own) {
+					this.journal.transitions[physicalId] = { at: now, value: normalized.value };
+					await this.persist();
+					continue;
+				}
+			}
 			if (!state.ack && !ownDispatch && normalized.quality === 'valid' && normalized.value !== null) {
 				const value = normalized.value;
 				await this.recordManual(fn, value, 'external_state_command');

@@ -38,6 +38,11 @@ or existing house automation was changed by this work.
   fallback. Full content echo, automatic mode, no app override and no pending
   download are required. A scalar acknowledgement is insufficient. Ambiguous
   DST folds are refused. Unverified native transport cannot be enabled.
+  Explicit permitted fallback choices preserve the currently evaluated dynamic
+  base, including humidity-constrained deep idle, rather than always returning
+  to a fixed base. Unlisted fallback targets are rejected.
+  Delayed native activation and autonomous return are tested beyond the short
+  command deadline and do not create false human-priority records.
 - Admin exposes the additive schema-v1 fields through forms. Public reference
   configurations continue to work without selecting these optional modules.
 

@@ -153,6 +153,7 @@ export function configuredClimateDecision(
 	}
 	return {
 		value: target,
+		nativeFallback: fn.nativeProgram?.fallbackValues?.length ? base : undefined,
 		reason,
 		text: 'Configured room target; reported setpoint and physical warming are separate evidence',
 		priority: 20,

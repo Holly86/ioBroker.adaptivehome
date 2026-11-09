@@ -57,10 +57,20 @@ export function compileNativeHeatingProgram(
 	now: number,
 	timezone: string,
 	commandId: string,
+	fallbackValue?: number,
 ): NativeHeatingProgram {
 	const settings = fn.nativeProgram;
 	if (!settings?.backendContractVerified) {
 		throw new Error('native_backend_unverified');
+	}
+	const fallback = fallbackValue ?? settings.fallback;
+	if (
+		!Number.isFinite(fallback) ||
+		![settings.fallback, ...(settings.fallbackValues ?? [])].includes(fallback) ||
+		fallback < (fn.limits.min ?? -Infinity) ||
+		fallback > (fn.limits.max ?? Infinity)
+	) {
+		throw new Error('native_fallback_not_authorized');
 	}
 	let expiresAt = Math.floor((now + settings.maxHorizonMs) / 60000) * 60000;
 	const windows = [
@@ -81,7 +91,7 @@ export function compileNativeHeatingProgram(
 	}
 	const days = Array.from({ length: 7 }, (_, day) => ({
 		day,
-		base: settings.fallback,
+		base: fallback,
 		periods: [] as z.infer<typeof period>[],
 	}));
 	// Iterate absolute minutes: DST gaps/folds must not silently create a different target.
@@ -110,7 +120,7 @@ export function compileNativeHeatingProgram(
 		expiresAt,
 		timezone,
 		target,
-		fallback: settings.fallback,
+		fallback,
 		days,
 	});
 }

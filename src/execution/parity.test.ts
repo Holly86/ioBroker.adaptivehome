@@ -293,10 +293,12 @@ describe('Anonymized final execution parity', () => {
 		s.port.read = async () => ({ val: JSON.stringify(report), ts: s.clock.now(), ack: true });
 		s.port.metadata = async () => ({ type: 'string', write: true, unit: '' });
 		validateConfiguration(s.config);
-		const command = await s.executor.execute(s.intent(21));
+		s.fn.nativeProgram.fallbackValues = [13];
+		const command = await s.executor.execute({ ...s.intent(21), nativeFallback: 13 });
 		assert.equal(command.dispatchAccepted, true);
 		assert.equal(s.writes.length, 1);
 		const requested = JSON.parse(String(s.writes[0].value));
+		assert.equal(requested.fallback, 13);
 		await s.executor.feedback(mapping.confirmId!, {
 			val: JSON.stringify({ ...report, program: { ...requested, fallback: 10 } }),
 			ts: s.clock.now(),
@@ -304,12 +306,27 @@ describe('Anonymized final execution parity', () => {
 		});
 		assert.equal(s.executor.journal.commands[0].feedbackMatched, false);
 		await s.executor.feedback(mapping.confirmId!, {
-			val: JSON.stringify({ ...report, program: requested }),
+			val: JSON.stringify({ ...report, program: requested, effectiveTarget: 13 }),
 			ts: s.clock.now(),
 			ack: true,
 		});
 		assert.equal(s.executor.journal.commands[0].feedbackMatched, true);
 		assert.equal(s.executor.journal.commands[0].deviceConfirmed, false);
+		report.program = requested;
+		report.effectiveTarget = 13;
+		const observe = async () => {
+			const raw = { val: JSON.stringify(report), ts: s.clock.now(), ack: true };
+			await s.executor.observeActuator(s.fn, normalize(s.binding, mapping, raw, s.clock.now()));
+			await s.executor.feedback(mapping.confirmId!, raw);
+		};
+		await observe();
+		s.clock.advance(180000);
+		report.effectiveTarget = 21;
+		await observe();
+		s.clock.advance(requested.expiresAt - s.clock.now() + 1000);
+		report.effectiveTarget = 13;
+		await observe();
+		assert.equal(Object.keys(s.executor.journal.manual).length, 0);
 		report.appOverride = true;
 		s.clock.advance(1000);
 		const blocked = await s.executor.execute(s.intent(22));

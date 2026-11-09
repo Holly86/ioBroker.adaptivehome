@@ -129,6 +129,13 @@ configured schedule boundary or the bounded horizon, uses a delayed activation,
 and rejects an ambiguous DST fold. The backend must enforce absolute expiry
 and prevent a spent weekly interval from recurring after an outage.
 
+Optional `fallbackValues` enumerates additional permitted policy base targets.
+When selected, climate forwards its actually evaluated base (including a
+humidity-checked deep idle base) into the program. The compiler rejects any
+fallback outside the explicit choices or hard bounds. Otherwise `fallback`
+remains fixed. Thus a dynamic base is preserved during autonomous expiry
+without granting an arbitrary new fallback temperature.
+
 The report must echo the exact complete program and declare applied content,
 automatic mode, autonomous fallback/absolute-expiry verification, app override,
 download pending status and effective target. A matching scalar target alone is
@@ -137,6 +144,10 @@ content may precede delayed target activation; the runtime does not rewrite it
 every tick. Backend confirmation and physical device verification remain
 different levels. No party lease, new cloud session or installed driver patch
 is used as a fallback.
+
+Correlated native activation and autonomous fallback remain recognizable after
+the short command acknowledgement deadline and across restart; they are not
+mistaken for fresh human setpoint changes.
 
 This is an **extension contract**, not a claim that the standard Homematic IP
 adapter implements it. Its documented profile selection does not provide this
