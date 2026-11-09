@@ -31,8 +31,17 @@ readback/identity replacement and restart uncertainty. The real js-controller so
 case exercises projection, a synthetic lighting command and its declared backend-only feedback;
 it deliberately does not upgrade an acknowledgement into device certification.
 
-Final frozen development-package controller/browser/soak verification and cross-platform CI are
-being completed. Their final evidence is recorded here and in the sole implementation ledger.
+The final frozen development package passed **13 controller/browser/soak checks** in isolated
+js-controller 7.2.5/Admin 8.3.11. All **96** installed build/Admin files matched. The actual
+continuous quiet interval was **301,285 ms** before confirmed synthetic OFF. Three alternate
+timezone/device/backend configurations, English/German, keyboard and 1280/390 layouts passed
+without page errors, including imported/edited source and backend fields.
+[All seven Node/platform CI jobs passed](https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42623548818)
+for runtime source `3676191e44ee307fc483419ea771a432a31037dd`.
+Development archive SHA-256: `9a5b988c3235cd96291671e6e85060d9b818dd6fcfd6c6955ebf9a8aead4aecf`
+(119 files, 957,742 unpacked bytes). This archive was tested locally and was not published
+as a new beta release. Public files and archive passed the installation-identifier/secret review.
+
 Private configuration, operational maintenance, source snapshots and installation acceptance
 remain excluded from the public repository. A disabled draft is not a live handoff.
 

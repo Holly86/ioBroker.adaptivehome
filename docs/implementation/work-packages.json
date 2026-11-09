@@ -136,8 +136,8 @@
         "docs/verification/source-connections.md"
       ],
       "openChecks": [],
-      "commit": "577a660adb1f073e3e0d68c96e100635ddd0e0af",
-      "updatedAt": "2026-11-09T13:12:29.887Z",
+      "commit": "3676191e44ee307fc483419ea771a432a31037dd",
+      "updatedAt": "2026-11-09T13:21:30.007Z",
       "correctionSummary": "Published Beta 4: read-evidence freshness, continuous quiet/manual handling, configurable rule parity and bounded report-time corrections; exact artifact passed isolated tests. Physical/backend acceptance remains separate."
     },
     {
@@ -177,8 +177,8 @@
         "docs/verification/source-connections.md"
       ],
       "openChecks": [],
-      "commit": "b74df969f28c122898f990319f0acb4cdcb21a8b",
-      "updatedAt": "2026-11-09T13:12:29.887Z"
+      "commit": "3676191e44ee307fc483419ea771a432a31037dd",
+      "updatedAt": "2026-11-09T13:21:30.007Z"
     },
     {
       "id": "AP-06",
@@ -200,8 +200,8 @@
         "docs/verification/source-connections.md"
       ],
       "openChecks": [],
-      "commit": "577a660adb1f073e3e0d68c96e100635ddd0e0af",
-      "updatedAt": "2026-11-09T13:12:29.887Z",
+      "commit": "3676191e44ee307fc483419ea771a432a31037dd",
+      "updatedAt": "2026-11-09T13:21:30.007Z",
       "correctionSummary": "Published Beta 4: read-evidence freshness, continuous quiet/manual handling, configurable rule parity and bounded report-time corrections; exact artifact passed isolated tests. Physical/backend acceptance remains separate."
     },
     {
@@ -223,8 +223,8 @@
         "docs/verification/source-connections.md"
       ],
       "openChecks": [],
-      "commit": "167b2f8faeae931e868a615aa00a240ab5b7d36e",
-      "updatedAt": "2026-11-09T13:12:29.887Z",
+      "commit": "3676191e44ee307fc483419ea771a432a31037dd",
+      "updatedAt": "2026-11-09T13:21:30.007Z",
       "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries."
     },
     {
@@ -296,8 +296,8 @@
         "Public read/native extension is implemented and software-tested but not registered in the installed standard backend. Maintained backend integration and exact physical group/member acceptance remain pending.",
         "A real device/server absolute one-shot expiry facility is still required. The standard weekly recurrence is not this facility; no local timer or private installed-module patch substitutes for it."
       ],
-      "commit": "4b2fde448bbe458a6688c4a52fe0dcc5b6e0c42d",
-      "updatedAt": "2026-11-09T13:12:29.887Z"
+      "commit": "3676191e44ee307fc483419ea771a432a31037dd",
+      "updatedAt": "2026-11-09T13:21:30.007Z"
     },
     {
       "id": "AP-11",
@@ -449,8 +449,8 @@
       "openChecks": [
         "Backend-hosted full-profile transport is implemented with anonymous expiry simulation; maintained backend registration, real autonomous absolute expiry and physical acceptance remain unverified."
       ],
-      "commit": "5f7fa170c777c21554263f217adc977e2040dfa8",
-      "updatedAt": "2026-11-09T13:12:29.887Z",
+      "commit": "3676191e44ee307fc483419ea771a432a31037dd",
+      "updatedAt": "2026-11-09T13:21:30.007Z",
       "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries. Explicit dynamic native fallback choices and correlated activation/expiry beyond command acknowledgement deadlines are contract-tested."
     },
     {
@@ -650,8 +650,8 @@
         "docs/verification/source-connections.md"
       ],
       "openChecks": [],
-      "commit": "577a660adb1f073e3e0d68c96e100635ddd0e0af",
-      "updatedAt": "2026-11-09T13:12:29.887Z",
+      "commit": "3676191e44ee307fc483419ea771a432a31037dd",
+      "updatedAt": "2026-11-09T13:21:30.007Z",
       "correctionSummary": "Published Beta 4: read-evidence freshness, continuous quiet/manual handling, configurable rule parity and bounded report-time corrections; exact artifact passed isolated tests. Physical/backend acceptance remains separate."
     },
     {
@@ -710,8 +710,8 @@
         "Published Beta 4 read-only/shadow repeat completed with no device/configuration writes, runtime installation or restart; checked production settings unchanged.",
         "Before control takeover: supported installed platform, real device read-evidence producers, verified normalized sources, backend enrollment/availability, physical feedback, native full-profile/absolute-expiry transport, exclusive writer handoff, backup and rollback acceptance."
       ],
-      "commit": "577a660adb1f073e3e0d68c96e100635ddd0e0af",
-      "updatedAt": "2026-11-09T13:12:29.887Z",
+      "commit": "3676191e44ee307fc483419ea771a432a31037dd",
+      "updatedAt": "2026-11-09T13:21:30.007Z",
       "correctionSummary": "Published Beta 4: read-evidence freshness, continuous quiet/manual handling, configurable rule parity and bounded report-time corrections; exact artifact passed isolated tests. Physical/backend acceptance remains separate."
     },
     {
@@ -888,7 +888,7 @@
         "AP-26"
       ],
       "implementationStatus": "implemented",
-      "verificationStatus": "partial",
+      "verificationStatus": "passed",
       "evidence": "docs/verification/source-connections.md",
       "checks": {
         "build": true,
@@ -897,9 +897,14 @@
         "unitContractTests": 103,
         "packageChecks": 61,
         "targetedSourceControllerPassed": true,
-        "finalFrozenControllerBrowserSoak": "in_progress",
-        "crossPlatformCI": "not_yet_run",
-        "publicContentReview": true
+        "finalFrozenControllerBrowserSoak": true,
+        "crossPlatformCI": true,
+        "publicContentReview": true,
+        "controllerBrowserSoakTests": 13,
+        "installedRuntimeAdminFiles": 96,
+        "quietMs": 301285,
+        "alternateAdminConfigurations": 3,
+        "crossPlatformJobs": 7
       },
       "privateConfiguration": {
         "disabledDraftCompleted": true,
@@ -916,7 +921,9 @@
         "Verified source access and continued source operation after old writer handoff",
         "Exact physical feedback and scoped takeover/rollback"
       ],
-      "updatedAt": "2026-11-09T13:12:29.887Z"
+      "updatedAt": "2026-11-09T13:21:30.007Z",
+      "verificationScope": "software and synthetic controller only; exact hardware/native-expiry acceptance pending",
+      "sourceCommit": "3676191e44ee307fc483419ea771a432a31037dd"
     }
   ],
   "releaseHistory": [
@@ -969,7 +976,7 @@
   "developmentVerification": {
     "version": "0.1.0-beta.5-dev.0",
     "implementationStatus": "implemented",
-    "verificationStatus": "partial",
+    "verificationStatus": "passed",
     "evidence": "docs/verification/source-connections.md",
     "checks": {
       "build": true,
@@ -978,12 +985,21 @@
       "unitContractTests": 103,
       "packageChecks": 61,
       "targetedSourceControllerPassed": true,
-      "finalFrozenControllerBrowserSoak": "in_progress",
-      "crossPlatformCI": "not_yet_run",
-      "publicContentReview": true
+      "finalFrozenControllerBrowserSoak": true,
+      "crossPlatformCI": true,
+      "publicContentReview": true,
+      "controllerBrowserSoakTests": 13,
+      "installedRuntimeAdminFiles": 96,
+      "quietMs": 301285,
+      "alternateAdminConfigurations": 3,
+      "crossPlatformJobs": 7
     },
     "distribution": "source development only; no Beta 5 release; published Beta 4 unchanged",
     "productionControlTakeover": false,
-    "updatedAt": "2026-11-09T13:12:29.887Z"
+    "updatedAt": "2026-11-09T13:21:30.007Z",
+    "sourceCommit": "3676191e44ee307fc483419ea771a432a31037dd",
+    "verificationScope": "software and synthetic controller only; exact hardware/native-expiry acceptance pending",
+    "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42623548818",
+    "artifactSha256": "9a5b988c3235cd96291671e6e85060d9b818dd6fcfd6c6955ebf9a8aead4aecf"
   }
 }
