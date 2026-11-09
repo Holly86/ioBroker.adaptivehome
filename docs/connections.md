@@ -434,7 +434,11 @@ hash can retain the currently verified safe baseline and import current wishes
 before the old owner resumes; it does not grant physical acceptance.
 
 Restored coordinators never replay activation. Uncertain effects require explicit
-fresh reconciliation and do not trigger blind retries. A newly observed restart of
+fresh reconciliation and do not trigger blind retries. Reconciliation additionally
+requires the trusted provider's `reconcileQuiescent(actionId)` receipt that the
+original request has settled. A stopped process alone does not rule out a delayed
+start/stop arriving later. Without that proof the action remains uncertain and
+automatic progression stays blocked. A newly observed restart of
 the intended-to-be-stopped new owner permits a new journaled stop on an explicit
 rollback call; it never replays a start. Read-only inspect exposes the current review
 hash. `handleHandoffControl` binds activate/rollback/reconcile/inspect to the stored

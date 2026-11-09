@@ -31,6 +31,8 @@ export interface HandoffCoordinatorPort {
 	authorize(plan: HandoffPlan, cleanup: boolean): Promise<boolean>;
 	persist(journal: CoordinatorJournal): Promise<void>;
 	executor: RegisteredHandoffExecutor;
+	/** Positive receipt that the original provider request has settled; a stopped process alone is insufficient. */
+	reconcileQuiescent?(actionId: string): Promise<boolean>;
 }
 const wishSchema = z.strictObject({
 	at: z.number().finite(),
@@ -526,6 +528,9 @@ export class HandoffCoordinator {
 				a = this.journal.actions[actionId];
 			if (!a || a.phase === 'completed' || expectedReviewHash !== handoffReviewHash(o)) {
 				throw Error('handoff_reconcile_denied');
+			}
+			if (!this.port.reconcileQuiescent || !(await deadline(this.port.reconcileQuiescent(actionId), 15000))) {
+				throw Error('handoff_original_request_not_quiescent');
 			}
 			const restoreId = heatingFingerprint({
 				planHash: this.journal.planHash,

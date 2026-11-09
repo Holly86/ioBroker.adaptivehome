@@ -522,6 +522,7 @@ function coordinatorFixture() {
 	const port = {
 		observe,
 		authorize: async () => true,
+		reconcileQuiescent: async () => true,
 		executor,
 		persist: async (j: CoordinatorJournal) => {
 			if (failSave) {
@@ -773,6 +774,12 @@ describe('Real manual-wish journal transfer', () => {
 		f.o.writers[1].running = true;
 		const state = f.coordinator.state(),
 			start = Object.entries(state.actions).find(([, a]) => a.kind === 'start-new-writer')!;
+		f.port.reconcileQuiescent = async () => false;
+		await assert.rejects(
+			f.coordinator.reconcileLifecycle(start[0], handoffReviewHash(await f.observe())),
+			/not_quiescent/,
+		);
+		f.port.reconcileQuiescent = async () => true;
 		await f.coordinator.reconcileLifecycle(start[0], handoffReviewHash(await f.observe()));
 		const r = await f.coordinator.rollback();
 		assert.equal(r.journal.transition.phase, 'rolled-back');
