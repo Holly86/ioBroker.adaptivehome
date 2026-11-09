@@ -11,6 +11,7 @@ const { emptyConfiguration } = require('../build/config/configuration');
 const { operator, seed, preconfigure, envelope } = require('./controller-suite.cjs');
 
 function defineMaintenanceTests({ suite }) {
+	fs.mkdirSync(path.join(__dirname, '../.local/evidence/AP-26/manual-coordinator-20261110'), { recursive: true });
 	suite('Isolated manual commissioning through real controller messages', getHarness => {
 		it('executes only a granted step through Admin, adapter gateway and maintained backend', async function () {
 			this.timeout(40000);
