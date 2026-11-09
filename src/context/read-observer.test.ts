@@ -143,7 +143,12 @@ describe('Independent read-only source projections', () => {
 			});
 		await port.callRestApi('home/getCurrentState', {});
 		await port.callRestApi('group/heating/getProfile', {});
-		for (const endpoint of ['group/heating/updateProfile', 'device/setSwitchState', 'auth/requestToken']) {
+		for (const endpoint of [
+			'group/heating/updateProfile',
+			'group/heating/activatePartyMode',
+			'device/setSwitchState',
+			'auth/requestToken',
+		]) {
 			await assert.rejects(port.callRestApi(endpoint, {}), /read_only/);
 		}
 		assert.deepEqual(calls, ['home/getCurrentState', 'group/heating/getProfile']);

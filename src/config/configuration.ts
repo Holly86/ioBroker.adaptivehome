@@ -204,6 +204,22 @@ export function validateConfiguration(input: unknown, registry?: IntegrationRegi
 			}
 		}
 		if (fn.nativeProgram) {
+			const transport = config.nativeTransports.find(
+				t =>
+					mapping.writeId === `adaptivehome.0.native.${t.id}.command` ||
+					mapping.writeId?.endsWith(`.native.${t.id}.command`),
+			);
+			if (transport && (fn.nativeProgram.strategy ?? 'weekly-profile') !== transport.strategy) {
+				throw Error('native_transport_strategy_mismatch');
+			}
+			if (
+				fn.nativeProgram.strategy === 'timed-lease' &&
+				(fn.nativeProgram.activationDelayMs !== 0 ||
+					fn.nativeProgram.maxHorizonMs > 900000 ||
+					fn.nativeProgram.fallbackValues?.some(v => v !== fn.nativeProgram!.fallback))
+			) {
+				throw Error('native_timed_parameters_invalid');
+			}
 			if (
 				fn.kind !== 'climate' ||
 				mapping.codec !== 'nativeHeatingProgram' ||

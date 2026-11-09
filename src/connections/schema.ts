@@ -149,6 +149,7 @@ export const connectionSchema = z.discriminatedUnion('kind', [
 	z.strictObject({ ...common, kind: z.literal('http-json'), endpointKey: key }),
 ]);
 export const nativeTransportSchema = z.strictObject({
+	strategy: z.enum(['weekly-profile', 'timed-lease']).default('weekly-profile'),
 	profileMaxAgeMs: z.number().int().min(1000).max(3600000).default(300000),
 	id: key,
 	enabled: z.boolean().default(false),

@@ -25,6 +25,13 @@ export interface HmipProfile {
 }
 export interface HmipSnapshot {
 	at: number;
+	partyContext?: {
+		homeId: string;
+		complete: boolean;
+		endTime?: string;
+		absenceType?: string;
+		parties: { groupId: string; temperature: number; profileId: string }[];
+	};
 	group: {
 		id: string;
 		homeId: string;
@@ -36,6 +43,7 @@ export interface HmipSnapshot {
 		setPointTemperature: number;
 		profile: HmipProfile;
 		profileCheckedAt: number;
+		updatedAt?: number;
 	};
 	members: {
 		id: string;
@@ -44,6 +52,7 @@ export interface HmipSnapshot {
 		unreach: boolean;
 		lowBat: boolean;
 		setPointTemperature: number;
+		updatedAt?: number;
 	}[];
 }
 export interface ExpiryProof {
@@ -159,6 +168,9 @@ export class HmipNativeEndpoint {
 			if (request.operation === 'apply') {
 				if (!request.program) {
 					throw Error('native_program_missing');
+				}
+				if (request.program.strategy !== 'weekly-profile' || t.strategy !== 'weekly-profile') {
+					throw Error('native_transport_strategy_mismatch');
 				}
 				if (request.deadline === undefined) {
 					throw Error('native_dispatch_expired');
@@ -380,6 +392,7 @@ export class HmipNativeEndpoint {
 			const at = Math.floor(s.at / 60000) * 60000;
 			const program: NativeHeatingProgram = {
 				protocol: 'adaptivehome.native-heating.v1',
+				strategy: 'weekly-profile',
 				commandId: 'baseline',
 				physicalId: t.physicalId,
 				profileId: t.profileIndex,

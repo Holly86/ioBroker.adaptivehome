@@ -1,6 +1,7 @@
 import { HmipSessionSource, type ExistingHmipSession } from './hmip-session';
 import { HmipNativeEndpoint, type HeatingBackendPort, type HeatingTransportJournal } from './heating-backend';
 import { nativeTransportSchema, type NativeTransportConfig } from './schema';
+import { HmipTimedLeaseEndpoint, type TimedLeaseAcceptance, type TimedLeaseJournal } from './timed-lease';
 
 export interface BackendEnvelope {
 	command: string;
@@ -20,6 +21,9 @@ export interface HmipHostOptions {
 	persist?: HeatingBackendPort['persist'];
 	expiry?: HeatingBackendPort['expiry'];
 	saved?: HeatingTransportJournal;
+	timedAcceptance?: TimedLeaseAcceptance;
+	persistTimed?: (journal: TimedLeaseJournal) => Promise<void>;
+	savedTimed?: TimedLeaseJournal;
 }
 export interface HmipHostCapabilities {
 	protocol: string;
@@ -52,7 +56,33 @@ export function createHmipBackendHost(options: HmipHostOptions): HmipBackendHost
 	if (mode === 'control' && (!options.authorize || !options.persist)) {
 		throw Error('backend_control_ports_required');
 	}
+	if (mode === 'control' && targets.some(t => t.strategy === 'timed-lease') && !options.persistTimed) {
+		throw Error('backend_timed_journal_required');
+	}
 	const source = new HmipSessionSource(options.api, options.clientCharacteristics, now, options.cacheMs);
+	const timed = new HmipTimedLeaseEndpoint(
+		targets,
+		{
+			snapshot: (t, fresh) => source.snapshot(t, fresh),
+			authorize: async t => mode === 'control' && !!(await options.authorize?.(t)),
+			activate: async (group, temperature, end) => {
+				if (mode !== 'control') {
+					throw Error('backend_read_only');
+				}
+				await source.activateTimedLease(group, temperature, end);
+			},
+			persist: async j => {
+				if (mode !== 'control' || !options.persistTimed) {
+					throw Error('backend_read_only');
+				}
+				await options.persistTimed(j);
+			},
+		},
+		options.timedAcceptance,
+		now,
+		mode === 'control' ? options.savedTimed : undefined,
+		options.allowedSenders,
+	);
 	const native = new HmipNativeEndpoint(
 		targets,
 		{
@@ -122,7 +152,13 @@ export function createHmipBackendHost(options: HmipHostOptions): HmipBackendHost
 			if (mode === 'read-only' && message?.operation !== 'inspect') {
 				throw Error('backend_read_only');
 			}
-			return { handled: true, result: await native.handle(envelope.message, envelope.from) };
+			const strategy = targets.find(
+				t => t.id === (envelope.message as { targetId?: unknown })?.targetId,
+			)?.strategy;
+			return {
+				handled: true,
+				result: await (strategy === 'timed-lease' ? timed : native).handle(envelope.message, envelope.from),
+			};
 		},
 	};
 }

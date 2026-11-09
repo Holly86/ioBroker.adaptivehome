@@ -94,3 +94,12 @@ export { createHmipBackendHost, registerHmipBackendHost } from '../connections/h
 export type { HmipHostOptions, BackendEnvelope } from '../connections/hmip-host';
 export { readOnlyHmipPort } from '../connections/read-only-port';
 export { manualRequest, rgbHue, roomUsage, calendarAvailable, ReadPresence } from '../context/read-observer';
+export {
+	HmipTimedLeaseEndpoint,
+	timedLeaseEndTime,
+	heatingFingerprint,
+	constantHeatingFallback,
+} from '../connections/timed-lease';
+export type { TimedLeaseAcceptance, TimedLeaseJournal, TimedLeasePort } from '../connections/timed-lease';
+export { handoffPlanSchema, inspectHandoff, handoffTransition } from '../execution/handoff';
+export type { HandoffPlan, HandoffObservation, HandoffJournal, HandoffAction } from '../execution/handoff';

@@ -91,7 +91,12 @@ export class HmipSessionSource {
 		}
 		const document = {
 			at,
-			home: fields(home, ['id', 'connected']),
+			home: {
+				...fields(home, ['id', 'connected']),
+				climate: home.functionalHomes?.INDOOR_CLIMATE
+					? fields(home.functionalHomes.INDOOR_CLIMATE, ['absenceEndTime', 'absenceType'])
+					: undefined,
+			},
 			groups: Object.fromEntries(
 				Object.entries(groups).map(([id, g]) => [
 					id,
@@ -188,6 +193,19 @@ export class HmipSessionSource {
 		}
 		return {
 			at: data.at,
+			partyContext: {
+				homeId: data.home.id,
+				complete:
+					!!data.home.climate &&
+					Object.values(data.groups as Record<string, Data>)
+						.filter(g => g.type === 'HEATING')
+						.every(g => typeof g.partyMode === 'boolean'),
+				endTime: data.home.climate?.absenceEndTime,
+				absenceType: data.home.climate?.absenceType,
+				parties: Object.values(data.groups as Record<string, Data>)
+					.filter(g => g.type === 'HEATING' && g.partyMode === true)
+					.map(g => ({ groupId: g.id, temperature: g.setPointTemperature, profileId: g.activeProfile })),
+			},
 			group: {
 				id: group.id,
 				homeId: group.homeId,
@@ -199,6 +217,7 @@ export class HmipSessionSource {
 				setPointTemperature: group.setPointTemperature,
 				profile,
 				profileCheckedAt: this.profiles.get(t.groupId)!.checkedAt,
+				updatedAt: group.lastStatusUpdate,
 			},
 			members: members.map(d => {
 				const c0 = object(d.functionalChannels?.[0]),
@@ -206,6 +225,7 @@ export class HmipSessionSource {
 				return {
 					id: d.id,
 					checkedAt: data.at,
+					updatedAt: d.lastStatusUpdate,
 					configPending: c0.configPending,
 					unreach: c0.unreach,
 					lowBat: c0.lowBat,
@@ -216,6 +236,10 @@ export class HmipSessionSource {
 	}
 	invalidateProfile(groupId: string): void {
 		this.profiles.delete(groupId);
+	}
+	async activateTimedLease(groupId: string, temperature: number, endTime: string): Promise<void> {
+		await this.api.callRestApi('group/heating/activatePartyMode', { groupId, temperature, endTime });
+		this.cached = undefined;
 	}
 	async profileRequest(
 		endpoint: 'group/heating/getProfile' | 'group/heating/updateProfile',

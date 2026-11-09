@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "adaptivehome",
-    "version": "0.1.0-beta.6-dev.0",
+    "version": "0.1.0-beta.6-dev.1",
     "news": {
+      "0.1.0-beta.6-dev.1": {
+        "en": "Unreleased native dated heating leases with shared-deadline and app priority guards; prepared handoff and rollback contracts.",
+        "de": "Unveröffentlichte native Heizfristen mit gemeinsamer Endzeit und App-Vorrang; vorbereitete Übergabe- und Rückwegverträge."
+      },
       "0.1.0-beta.6-dev.0": {
         "en": "Unreleased source credential references, independent forecast input and maintained read-only HmIP backend registration.",
         "de": "Unveröffentlichte Zugangsdatenverweise, unabhängige Wetterquelle und reine Lese-Registrierung für bestehende HmIP-Anbindungen."

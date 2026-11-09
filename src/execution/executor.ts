@@ -567,6 +567,7 @@ export class Executor {
 							!current ||
 							current.program.physicalId !== binding.physicalId ||
 							current.program.profileId !== fn.nativeProgram?.profileId ||
+							current.program.strategy !== (fn.nativeProgram?.strategy ?? 'weekly-profile') ||
 							!current.automatic ||
 							current.appOverride ||
 							current.devicePending ||
@@ -584,6 +585,19 @@ export class Executor {
 							command.commandId,
 							intent.nativeFallback,
 						);
+						if (
+							command.nativeProgram.strategy === 'timed-lease' &&
+							current.sharedDeadlineAt !== undefined
+						) {
+							if (
+								current.sharedDeadlineAt <= this.clock.now() + 60000 ||
+								current.sharedDeadlineAt % 300000 ||
+								command.nativeProgram.expiresAt < current.sharedDeadlineAt
+							) {
+								throw Error('native_shared_deadline_conflict');
+							}
+							command.nativeProgram.expiresAt = current.sharedDeadlineAt;
+						}
 						await this.persist();
 						if (
 							this.blocksManual(fn, intent) ||

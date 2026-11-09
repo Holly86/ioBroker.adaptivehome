@@ -9,6 +9,7 @@ const period = z.strictObject({
 });
 export const nativeHeatingProgramSchema = z.strictObject({
 	protocol: z.literal('adaptivehome.native-heating.v1'),
+	strategy: z.enum(['weekly-profile', 'timed-lease']).default('weekly-profile'),
 	commandId: z.string().min(1).max(64),
 	physicalId: z.string().min(1).max(256),
 	profileId: z.string().min(1).max(64),
@@ -31,6 +32,7 @@ export const nativeHeatingProgramSchema = z.strictObject({
 export type NativeHeatingProgram = z.infer<typeof nativeHeatingProgramSchema>;
 export const nativeHeatingReportSchema = z.strictObject({
 	program: nativeHeatingProgramSchema,
+	sharedDeadlineAt: z.number().finite().optional(),
 	status: z.enum(['applied', 'pending', 'rejected']),
 	automatic: z.boolean(),
 	fallbackVerified: z.boolean(),
@@ -85,7 +87,16 @@ export function compileNativeHeatingProgram(
 			break;
 		}
 	}
-	const activateAt = Math.ceil((now + settings.activationDelayMs) / 60000) * 60000;
+	const timed = settings.strategy === 'timed-lease';
+	if (timed) {
+		expiresAt = Math.floor(Math.min(expiresAt, now + 900000) / 300000) * 300000;
+		if (expiresAt <= now + 60000) {
+			throw Error('native_timed_horizon_too_short');
+		}
+	}
+	const activateAt = timed
+		? Math.floor(now / 60000) * 60000
+		: Math.ceil((now + settings.activationDelayMs) / 60000) * 60000;
 	if (activateAt >= expiresAt) {
 		throw new Error('native_horizon_too_short');
 	}
@@ -95,7 +106,7 @@ export function compileNativeHeatingProgram(
 		periods: [] as z.infer<typeof period>[],
 	}));
 	// Iterate absolute minutes: DST gaps/folds must not silently create a different target.
-	for (let at = activateAt; at < expiresAt; at += 60000) {
+	for (let at = activateAt; !timed && at < expiresAt; at += 60000) {
 		const local = localTime(at, timezone),
 			periods = days[local.day].periods;
 		const previous = periods.at(-1);
@@ -112,6 +123,7 @@ export function compileNativeHeatingProgram(
 	}
 	return nativeHeatingProgramSchema.parse({
 		protocol: 'adaptivehome.native-heating.v1',
+		strategy: settings.strategy,
 		commandId,
 		physicalId: binding.physicalId,
 		profileId: settings.profileId,

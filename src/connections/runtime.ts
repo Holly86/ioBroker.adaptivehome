@@ -58,6 +58,9 @@ export class NativeConnections {
 			throw Error('native_transport_disabled');
 		}
 		const program = nativeHeatingProgramSchema.parse(JSON.parse(value));
+		if (program.strategy !== t.strategy) {
+			throw Error('native_transport_strategy_mismatch');
+		}
 		if (program.physicalId !== t.physicalId || program.profileId !== t.profileIndex) {
 			throw Error('native_transport_scope');
 		}

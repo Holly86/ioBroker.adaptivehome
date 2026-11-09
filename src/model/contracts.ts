@@ -219,6 +219,7 @@ export const functionSchema = z.strictObject({
 		.optional(),
 	nativeProgram: z
 		.strictObject({
+			strategy: z.enum(['weekly-profile', 'timed-lease']).optional(),
 			profileId: id,
 			fallback: z.number().finite(),
 			fallbackValues: z.array(z.number().finite()).max(16).optional(),

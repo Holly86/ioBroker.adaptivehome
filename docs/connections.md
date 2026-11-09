@@ -276,3 +276,54 @@ files and existing configuration, derive filesystem ownership from the real runt
 test loading under that user before restarting, and keep a scoped rollback. Scanner
 evidence must cover the installation's actual probe method; an absent ARP scanner or a
 failed ping must never be reported as a successful negative device observation.
+
+### Native dated leases (development contract)
+
+A function's nativeProgram and its nativeTransports entry must both select strategy
+`timed-lease`. The function uses activationDelayMs 0, a maximum horizon of 900000 ms
+and a fixed commissioned fallback. Elevated targets are sent only through Executor,
+the configured native transport and HmipTimedLeaseEndpoint on the existing authenticated
+backend API. The endpoint uses group/heating/activatePartyMode with an absolute local
+endTime; it never edits a weekly profile, queues a future activation or starts an expiry
+timer. End dates round down to five-minute boundaries. DST transitions are refused.
+
+Every selected profile must already be a verified constant fallback, including every
+member. A target-specific TimedLeaseAcceptance binds home identity, profile fingerprint,
+membership, expiry of the acceptance and separately recorded evidence for internet loss,
+access-point restart, shared deadline, app priority, windows and cloud traffic. Register
+persistTimed as a durable journal. Missing physical acceptance remains a blocking
+condition; an installed read-only host still refuses every apply request unconditionally.
+The original weekly-profile strategy still requires an independent real expiry provider.
+
+The cloud exposes a shared party deadline. Additional automatic rooms can join only at
+that exact deadline: this interface never lengthens or shortens another room's lease.
+A live owned lease is not overwritten. An app party, manual/boost mode, vacation, unknown
+owner or changed shared deadline prevents automatic writes. App changes to the common
+deadline can affect all active party rooms; they are treated as human overrides, never
+corrected by silently cancelling or changing another room. This tradeoff must be selected
+explicitly before commissioning. After restart, active old leases are not adopted for
+new writes. The native end remains in place; no old command queue is replayed.
+
+The full profile and shared end date are read back. Individual post-dispatch device
+timestamps and configPending values determine devicePending separately from server
+acceptance. An uncertain write is journaled and blocks blind retries. Once the native
+end passes, fresh group/member fallback feedback is required; the unchanged constant
+profile has no elevated period that could recur next week. No offline hardware claim
+is implied by simulator evidence.
+
+The SDK also exports inspectHandoff and handoffTransition. These are pure proposal
+functions with no lifecycle or actuator port. Their finite plan binds package/configuration
+hashes, target scope, native/physical evidence, fallback fingerprints and manual revisions.
+Old-writer scope must be covered completely. Stop the old writer and positively verify
+its stop before proposing the new start. Persist each transition before acting. Rollback
+first stops and verifies the new writer; baseline restoration must use Executor with
+the proposed compare-and-swap/manual guards. Changed manual wishes or profiles require
+review and must not be overwritten by an old backup. Only then may the former writer
+resume while adopting current manual wishes. No proposal or shadow result is a live
+activation permission.
+
+The [manufacturer user manual, section Partymodus](https://homematic-ip.com/sites/default/files/downloads/Homematic_IP-Anwenderhandbuch.pdf) describes return to the previously selected profile when the party period ends. That product behavior motivates the constant fallback; it does not certify an installation's offline behavior, shared deadline, API route or firmware. Those checks remain explicit commissioning evidence.
+
+Timed acceptance also binds the home's validated timezone, and must remain valid through the requested end. The backend reports an existing owned sharedDeadlineAt; Executor clamps joining-room plans to that deadline and refuses an incompatible earlier room cutoff. A reservation that fails before any vendor invocation is recorded as not-sent, distinct from an uncertain vendor result. Neither path replays the failed command.
+
+Rollback proposals wait for the native lease to expire and for fresh fallback feedback; they do not cancel the shared party slot. Stopping an adapter is not treated as expiry. A newer manual/profile revision blocks automatic restoration and requires an explicit baseline review preserving the current human wish.
