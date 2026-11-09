@@ -392,8 +392,9 @@ class Adaptivehome extends utils.Adapter {
 						!this.guard.isAdmin(obj.from) ||
 						this.config.commissioningEnabled !== true ||
 						!/^hmip\.\d+$/.test(this.config.commissioningBackend ?? '')
-					)
+					) {
 						throw Error('commissioning_disabled');
+					}
 					result = await deadline(
 						new Promise(resolve =>
 							this.sendTo(
@@ -405,8 +406,9 @@ class Adaptivehome extends utils.Adapter {
 						),
 						15000,
 					);
-					if (!result || typeof result !== 'object' || 'error' in result)
+					if (!result || typeof result !== 'object' || 'error' in result) {
 						throw Error('maintenance_backend_rejected');
+					}
 					break;
 				}
 				case 'health':

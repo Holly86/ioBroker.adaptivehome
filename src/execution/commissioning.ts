@@ -92,8 +92,9 @@ export class CommissioningExecutor {
 		private senders: string[] = [],
 		private timeoutMs = 15000,
 	) {
-		if (!Number.isInteger(timeoutMs) || timeoutMs < 10 || timeoutMs > 15000)
+		if (!Number.isInteger(timeoutMs) || timeoutMs < 10 || timeoutMs > 15000) {
 			throw Error('commission_timeout_invalid');
+		}
 		this.grant = commissioningGrantSchema.parse(raw);
 		const g = this.grant;
 		if (
@@ -124,12 +125,19 @@ export class CommissioningExecutor {
 		this.journal = structuredClone(
 			saved ?? { grantHash: heatingFingerprint(g), steps: {}, leases: { commands: {} } },
 		);
-		if (this.journal.grantHash !== heatingFingerprint(g) || Object.keys(this.journal.steps).length > g.maxCommands)
+		if (
+			this.journal.grantHash !== heatingFingerprint(g) ||
+			Object.keys(this.journal.steps).length > g.maxCommands
+		) {
 			throw Error('commission_journal_scope');
+		}
 		if (saved) {
 			this.restored = true;
-			for (const step of Object.values(this.journal.steps))
-				if (step.phase === 'reserved') step.phase = 'uncertain';
+			for (const step of Object.values(this.journal.steps)) {
+				if (step.phase === 'reserved') {
+					step.phase = 'uncertain';
+				}
+			}
 		}
 		this.engine = new HmipTimedLeaseEndpoint(
 			targets,
@@ -184,17 +192,22 @@ export class CommissioningExecutor {
 			!Number.isFinite(a.at) ||
 			a.at > this.now() ||
 			this.now() - a.at > 30000
-		)
+		) {
 			throw Error('commission_authority_denied');
+		}
 	}
 	async handle(input: unknown, sender: string): Promise<unknown> {
-		if (!this.senders.includes(sender) || !/^system\.adapter\.adaptivehome\.\d+$/.test(sender))
+		if (!this.senders.includes(sender) || !/^system\.adapter\.adaptivehome\.\d+$/.test(sender)) {
 			throw Error('commission_sender_denied');
+		}
 		const r = requestSchema.parse(input),
 			g = this.grant;
-		if (r.grantId !== g.id || r.operator !== g.operator || !g.targets.some(t => t.targetId === r.targetId))
+		if (r.grantId !== g.id || r.operator !== g.operator || !g.targets.some(t => t.targetId === r.targetId)) {
 			throw Error('commission_scope_denied');
-		if (this.busy) throw Error('commission_busy');
+		}
+		if (this.busy) {
+			throw Error('commission_busy');
+		}
 		this.busy = true;
 		try {
 			if (r.operation === 'step') {
@@ -205,19 +218,22 @@ export class CommissioningExecutor {
 					!g.steps.includes(r.stepId) ||
 					!r.program ||
 					r.deadline === undefined
-				)
+				) {
 					throw Error('commission_step_denied');
+				}
 				const requestHash = heatingFingerprint(r),
 					previous = this.journal.steps[r.stepId];
 				if (previous) {
-					if (previous.requestHash !== requestHash || previous.phase !== 'accepted')
+					if (previous.requestHash !== requestHash || previous.phase !== 'accepted') {
 						throw Error('commission_replay_denied');
+					}
 				} else {
 					if (
 						Object.values(this.journal.steps).some(s => s.phase !== 'accepted') ||
 						Object.keys(this.journal.steps).length >= g.maxCommands
-					)
+					) {
 						throw Error('commission_budget_or_uncertainty');
+					}
 					this.journal.steps[r.stepId] = { requestHash, phase: 'reserved' };
 					await this.persist();
 					try {

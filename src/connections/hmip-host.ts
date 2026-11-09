@@ -75,8 +75,9 @@ export function createHmipBackendHost(options: HmipHostOptions): HmipBackendHost
 		throw Error('backend_timed_journal_required');
 	}
 	const source = new HmipSessionSource(options.api, options.clientCharacteristics, now, options.cacheMs);
-	if (mode === 'commission' && (!options.commissioning || !options.authorize))
+	if (mode === 'commission' && (!options.commissioning || !options.authorize)) {
 		throw Error('backend_commission_ports_required');
+	}
 	const commissioning =
 		mode === 'commission'
 			? new CommissioningExecutor(
@@ -167,11 +168,15 @@ export function createHmipBackendHost(options: HmipHostOptions): HmipBackendHost
 				throw Error('backend_sender_denied');
 			}
 			if (envelope.command === 'adaptivehomeCommission') {
-				if (!commissioning) throw Error('backend_commission_disabled');
+				if (!commissioning) {
+					throw Error('backend_commission_disabled');
+				}
 				return { handled: true, result: await commissioning.handle(envelope.message, envelope.from) };
 			}
 			if (envelope.command === 'adaptivehomeHandoff') {
-				if (mode !== 'control' || !options.handoff) throw Error('backend_handoff_disabled');
+				if (mode !== 'control' || !options.handoff) {
+					throw Error('backend_handoff_disabled');
+				}
 				return {
 					handled: true,
 					result: await handleHandoffControl(

@@ -27,8 +27,9 @@ export function constantProfileRestoreRecipe(
 		profile.type !== 'HEATING_COOLING' ||
 		profile.groupId !== target.groupId ||
 		profile.index !== target.profileIndex
-	)
+	) {
 		throw Error('handoff_constant_restore_only');
+	}
 	return {
 		physicalId: target.physicalId,
 		profileHash: heatingFingerprint(profile),
@@ -68,16 +69,18 @@ export function constantProfileRestoreRecipe(
 				) ||
 				!(await port.writersStopped()) ||
 				(await port.manualRevision()) !== guard.manualRevision
-			)
+			) {
 				throw Error('handoff_restore_guard_changed');
+			}
 			const sentAt = now(),
 				changed = guard.expectedProfileHash !== guard.restoreProfileHash;
-			if (changed)
+			if (changed) {
 				await port.profileRequest('group/heating/updateProfile', {
 					groupId: target.groupId,
 					profileIndex: target.profileIndex,
 					profile,
 				});
+			}
 			const after = await port.snapshot(target, true);
 			if (
 				heatingFingerprint(after.group.profile) !== guard.restoreProfileHash ||
@@ -93,8 +96,9 @@ export function constantProfileRestoreRecipe(
 						))) ||
 				!(await port.writersStopped()) ||
 				(await port.manualRevision()) !== guard.manualRevision
-			)
+			) {
 				throw Error('handoff_restore_unconfirmed');
+			}
 		},
 	};
 }

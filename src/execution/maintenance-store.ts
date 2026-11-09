@@ -13,9 +13,13 @@ export class MaintenanceStore<T> {
 		directory: string,
 		recovery?: { expectedLockHash: string; previousOwnerStopped(): Promise<boolean> },
 	): Promise<MaintenanceStore<T>> {
-		if (!path.isAbsolute(directory)) throw Error('maintenance_absolute_directory_required');
+		if (!path.isAbsolute(directory)) {
+			throw Error('maintenance_absolute_directory_required');
+		}
 		await fs.mkdir(directory, { recursive: true, mode: 0o700 });
-		if ((await fs.lstat(directory)).isSymbolicLink()) throw Error('maintenance_symlink_denied');
+		if ((await fs.lstat(directory)).isSymbolicLink()) {
+			throw Error('maintenance_symlink_denied');
+		}
 		const lock = path.join(directory, 'owner.lock');
 		if (recovery) {
 			const previous = await fs.readFile(lock);
@@ -23,8 +27,9 @@ export class MaintenanceStore<T> {
 				createHash('sha256').update(previous).digest('hex') !== recovery.expectedLockHash ||
 				!(await recovery.previousOwnerStopped()) ||
 				!(await fs.readFile(lock)).equals(previous)
-			)
+			) {
 				throw Error('maintenance_recovery_denied');
+			}
 			await fs.rename(lock, path.join(directory, `retired-${randomUUID()}.lock`));
 		}
 		const owner = randomUUID(),
@@ -41,16 +46,21 @@ export class MaintenanceStore<T> {
 		await this.fence();
 		try {
 			const data = await fs.readFile(path.join(this.directory, 'journal.json'));
-			if (data.length > 4 * 1024 * 1024) throw Error('maintenance_journal_too_large');
+			if (data.length > 4 * 1024 * 1024) {
+				throw Error('maintenance_journal_too_large');
+			}
 			return JSON.parse(data.toString('utf8')) as T;
 		} catch (e) {
-			if ((e as NodeJS.ErrnoException).code === 'ENOENT') return undefined;
+			if ((e as NodeJS.ErrnoException).code === 'ENOENT') {
+				return undefined;
+			}
 			throw e;
 		}
 	}
 	async fence(): Promise<void> {
-		if ((await fs.readFile(path.join(this.directory, 'owner.lock'), 'utf8')) !== this.owner)
+		if ((await fs.readFile(path.join(this.directory, 'owner.lock'), 'utf8')) !== this.owner) {
 			throw Error('maintenance_owner_lost');
+		}
 	}
 	async save(value: T): Promise<void> {
 		const copy = structuredClone(value);
@@ -71,7 +81,9 @@ export class MaintenanceStore<T> {
 	private async write(value: T): Promise<void> {
 		await this.fence();
 		const data = JSON.stringify(value);
-		if (Buffer.byteLength(data) > 4 * 1024 * 1024) throw Error('maintenance_journal_too_large');
+		if (Buffer.byteLength(data) > 4 * 1024 * 1024) {
+			throw Error('maintenance_journal_too_large');
+		}
 		const temp = path.join(this.directory, `journal-${randomUUID()}.tmp`),
 			fd = await fs.open(temp, 'wx', 0o600);
 		try {

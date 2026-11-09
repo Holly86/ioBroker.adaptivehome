@@ -132,7 +132,7 @@ function defineMaintenanceTests({ suite }) {
 						api: {
 							callRestApi: async (endpoint, body) => {
 								calls.push(endpoint);
-								if (endpoint === 'home/getCurrentState')
+								if (endpoint === 'home/getCurrentState') {
 									return {
 										home: {
 											id: profile.homeId,
@@ -142,7 +142,10 @@ function defineMaintenanceTests({ suite }) {
 										groups: { [group.id]: group },
 										devices: { [member.id]: member },
 									};
-								if (endpoint === 'group/heating/getProfile') return profile;
+								}
+								if (endpoint === 'group/heating/getProfile') {
+									return profile;
+								}
 								if (endpoint === 'group/heating/activatePartyMode') {
 									group.partyMode = true;
 									group.setPointTemperature = body.temperature;
@@ -165,7 +168,9 @@ function defineMaintenanceTests({ suite }) {
 			});
 			await h.states.subscribeMessage(backend);
 			const listener = (id, msg) => {
-				if (id === 'messagebox.' + backend && msg) events.emit('message', msg);
+				if (id === `messagebox.${backend}` && msg) {
+					events.emit('message', msg);
+				}
 			};
 			h.on('stateChange', listener);
 			await seed(h, cfg);
@@ -357,13 +362,13 @@ function defineMaintenanceTests({ suite }) {
 				...lifecycle[id],
 				importManualWishes: async wishes => {
 					imported[id] = wishes;
-					await h.states.setStateAsync('adaptivehome.0.maintenanceFixture.' + id, {
+					await h.states.setStateAsync(`adaptivehome.0.maintenanceFixture.${id}`, {
 						val: JSON.stringify(wishes),
 						ack: true,
 					});
 				},
 				readManualWishes: async () => {
-					const s = await h.states.getStateAsync('adaptivehome.0.maintenanceFixture.' + id);
+					const s = await h.states.getStateAsync(`adaptivehome.0.maintenanceFixture.${id}`);
 					return s ? JSON.parse(s.val) : { p: null };
 				},
 			}));
@@ -422,12 +427,13 @@ function defineMaintenanceTests({ suite }) {
 				);
 			} finally {
 				await store.close();
-				for (const child of Object.values(children))
+				for (const child of Object.values(children)) {
 					if (child.exitCode === null && child.signalCode === null) {
 						const exit = once(child, 'exit');
 						child.kill();
 						await exit;
 					}
+				}
 				await new Promise(r => server.close(r));
 			}
 		});

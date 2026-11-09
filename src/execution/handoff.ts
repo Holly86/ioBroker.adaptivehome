@@ -71,8 +71,9 @@ export function inspectHandoff(
 		observation.targets.length !== plan.targets.length ||
 		new Set(observation.targets.map(t => t.physicalId)).size !== observation.targets.length ||
 		new Set(observation.writers.map(w => w.id)).size !== observation.writers.length
-	)
+	) {
 		blockers.push('handoff_observation_scope_invalid');
+	}
 	if (
 		plan.createdAt > now ||
 		plan.expiresAt <= now ||
@@ -119,8 +120,9 @@ export function inspectHandoff(
 	for (const id of new Set(plan.targets.map(t => t.newWriter))) {
 		const w = observation.writers.find(w => w.id === id),
 			scope = plan.targets.filter(t => t.newWriter === id).map(t => t.physicalId);
-		if (!w || w.physicalIds.length !== scope.length || w.physicalIds.some(p => !scope.includes(p)))
+		if (!w || w.physicalIds.length !== scope.length || w.physicalIds.some(p => !scope.includes(p))) {
 			blockers.push(`handoff_new_writer_scope_unverified:${id}`);
+		}
 		if (observation.writers.find(w => w.id === id)?.running !== false) {
 			blockers.push(`handoff_new_writer_not_stopped:${id}`);
 		}
@@ -205,8 +207,9 @@ export function handoffTransition(
 	if (!fresh) {
 		return result(undefined, ['handoff_evidence_expired']);
 	}
-	if (event !== 'rollback' && checked.blockers.includes('handoff_observation_scope_invalid'))
+	if (event !== 'rollback' && checked.blockers.includes('handoff_observation_scope_invalid')) {
 		return result(undefined, ['handoff_observation_scope_invalid']);
+	}
 	if (event === 'prepare' && j.phase === 'prepared') {
 		return checked.blockers.length ? result(undefined, checked.blockers) : result('stop-old-writers');
 	}
@@ -231,7 +234,9 @@ export function handoffTransition(
 			return result(undefined, ['handoff_wait_native_expiry']);
 		}
 		j.phase = 'new-stopped';
-		if (!configMatches) return result(undefined, ['handoff_recovery_configuration_changed']);
+		if (!configMatches) {
+			return result(undefined, ['handoff_recovery_configuration_changed']);
+		}
 		return j.manualChanges.length
 			? result(undefined, ['handoff_preserve_new_manual_wishes'])
 			: result('restore-reviewed-baseline-through-executor');

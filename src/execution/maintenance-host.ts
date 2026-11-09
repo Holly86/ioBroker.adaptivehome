@@ -28,12 +28,21 @@ export async function handleHandoffControl(
 		r.planHash !== heatingFingerprint(coordinator.plan) ||
 		r.deadline <= now ||
 		r.deadline > now + 30000
-	)
+	) {
 		throw Error('handoff_request_denied');
-	if (r.operation === 'activate') return coordinator.activate(r.deadline);
-	if (r.operation === 'inspect') return coordinator.inspect();
-	if (r.operation === 'rollback') return coordinator.rollback(r.reviewHash, r.deadline);
-	if (!r.actionId || !r.reviewHash) throw Error('handoff_reconcile_denied');
+	}
+	if (r.operation === 'activate') {
+		return coordinator.activate(r.deadline);
+	}
+	if (r.operation === 'inspect') {
+		return coordinator.inspect();
+	}
+	if (r.operation === 'rollback') {
+		return coordinator.rollback(r.reviewHash, r.deadline);
+	}
+	if (!r.actionId || !r.reviewHash) {
+		throw Error('handoff_reconcile_denied');
+	}
 	await coordinator.reconcileLifecycle(r.actionId, r.reviewHash);
 	return coordinator.state();
 }

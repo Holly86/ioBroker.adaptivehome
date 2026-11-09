@@ -2,7 +2,6 @@ import { strict as assert } from 'node:assert';
 import {
 	HmipTimedLeaseEndpoint,
 	heatingFingerprint,
-	timedLeaseEndTime,
 	type TimedLeaseAcceptance,
 	type TimedLeaseJournal,
 	type TimedLeasePort,
@@ -12,10 +11,6 @@ import { nativeTransportSchema } from '../connections/schema';
 import { compileNativeHeatingProgram } from '../integrations/native-program';
 import { referenceConfiguration } from '../config/examples';
 import { createHmipBackendHost } from '../connections/hmip-host';
-import { NativeConnections } from '../connections/runtime';
-import { mappingSchema } from '../model/contracts';
-import { Executor } from './executor';
-import { validateConfiguration } from '../config/configuration';
 import { CommissioningExecutor, type CommissioningGrant, type CommissioningJournal } from './commissioning';
 import {
 	HandoffCoordinator,
@@ -275,7 +270,9 @@ function commissioningFixture() {
 		...f.port,
 		authority: async () => ({ ...authority }),
 		persist: async (j: CommissioningJournal) => {
-			if (failPersist) throw Error('disk');
+			if (failPersist) {
+				throw Error('disk');
+			}
 			saved = structuredClone(j);
 		},
 	};
@@ -289,7 +286,7 @@ function commissioningFixture() {
 			grantId: grant.id,
 			stepId,
 			targetId,
-			program: f.program(targetId, 'manual-' + stepId),
+			program: f.program(targetId, `manual-${stepId}`),
 			deadline: f.time() + 10000,
 		});
 	return {
@@ -488,17 +485,19 @@ function coordinatorFixture() {
 		id,
 		physicalIds: ['p'],
 		start: async () => {
-			events.push('start:' + id);
-			if (failStart && id === 'next') throw Error('start lost');
+			events.push(`start:${id}`);
+			if (failStart && id === 'next') {
+				throw Error('start lost');
+			}
 			assert.ok(!o.writers.find(w => w.id !== id)!.running);
 			o.writers.find(w => w.id === id)!.running = true;
 		},
 		stop: async () => {
-			events.push('stop:' + id);
+			events.push(`stop:${id}`);
 			o.writers.find(w => w.id === id)!.running = false;
 		},
 		importManualWishes: async w => {
-			events.push('manual:' + id);
+			events.push(`manual:${id}`);
 			imports[id] = structuredClone(w);
 		},
 		readManualWishes: async () => structuredClone(imports[id]),
@@ -525,7 +524,9 @@ function coordinatorFixture() {
 		authorize: async () => true,
 		executor,
 		persist: async (j: CoordinatorJournal) => {
-			if (failSave) throw Error('disk');
+			if (failSave) {
+				throw Error('disk');
+			}
 			saved = structuredClone(j);
 		},
 	};
@@ -720,7 +721,9 @@ describe('Maintenance late-response and bounded-authority regressions', () => {
 		const save = f.port.persist;
 		f.port.persist = async j => {
 			await save(j);
-			if (Object.values(j.actions).some(a => a.phase === 'reserved')) permitted = false;
+			if (Object.values(j.actions).some(a => a.phase === 'reserved')) {
+				permitted = false;
+			}
 		};
 		await assert.rejects(f.coordinator.activate());
 		assert.equal(f.events.length, 0);
@@ -784,7 +787,9 @@ describe('Native constant-profile recovery executor', () => {
 			t = f.targets[0],
 			old = structuredClone(f.states.a.group.profile),
 			desired = structuredClone(old);
-		for (const d of Object.values(desired.profileDays)) d.baseValue = 18;
+		for (const d of Object.values(desired.profileDays)) {
+			d.baseValue = 18;
+		}
 		const calls: string[] = [];
 		let revision = 'manual-1';
 		const port = {

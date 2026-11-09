@@ -41,16 +41,24 @@ const wishSchema = z.strictObject({
 	quietSince: z.number().finite().optional(),
 });
 export function manualWishRevision(wish: ManualWish | null): string {
-	if (!wish) return heatingFingerprint(null);
+	if (!wish) {
+		return heatingFingerprint(null);
+	}
 	const { quietSince: _progress, ...humanWish } = wish;
 	return heatingFingerprint(humanWish);
 }
 export function mergeManualWishes(a: ManualWish | null, b: ManualWish | null): ManualWish | null {
-	if (!a) return b ? wishSchema.parse(b) : null;
-	if (!b) return wishSchema.parse(a);
+	if (!a) {
+		return b ? wishSchema.parse(b) : null;
+	}
+	if (!b) {
+		return wishSchema.parse(a);
+	}
 	wishSchema.parse(a);
 	wishSchema.parse(b);
-	if (a.at === b.at && manualWishRevision(a) !== manualWishRevision(b)) throw Error('handoff_manual_conflict');
+	if (a.at === b.at && manualWishRevision(a) !== manualWishRevision(b)) {
+		throw Error('handoff_manual_conflict');
+	}
 	return structuredClone(a.at >= b.at ? a : b);
 }
 export function checkedHandoffObservation(plan: HandoffPlan, o: CoordinatorObservation, now: number): void {
@@ -62,26 +70,32 @@ export function checkedHandoffObservation(plan: HandoffPlan, o: CoordinatorObser
 		new Set(o.targets.map(t => t.physicalId)).size !== o.targets.length ||
 		new Set(o.writers.map(w => w.id)).size !== o.writers.length ||
 		plan.targets.some(t => !o.targets.some(x => x.physicalId === t.physicalId))
-	)
+	) {
 		throw Error('handoff_observation_invalid');
+	}
 	for (const t of o.targets) {
 		if (
 			!/^[a-f0-9]{64}$/.test(t.profileHash) ||
 			[t.nativeExpiryVerified, t.fallbackVerified, t.feedbackVerified, t.nativeLeaseActive].some(
 				v => typeof v !== 'boolean',
 			)
-		)
+		) {
 			throw Error('handoff_target_evidence_invalid');
+		}
 		const wish = o.manualWishes[t.physicalId];
-		if (wish === undefined || t.manualRevision !== manualWishRevision(wish))
+		if (wish === undefined || t.manualRevision !== manualWishRevision(wish)) {
 			throw Error('handoff_manual_revision_invalid');
+		}
 		if (wish) {
 			wishSchema.parse(wish);
-			if (wish.at > now || wish.until < wish.at) throw Error('handoff_manual_time_invalid');
+			if (wish.at > now || wish.until < wish.at) {
+				throw Error('handoff_manual_time_invalid');
+			}
 		}
 	}
-	if (o.writers.some(w => typeof w.running !== 'boolean' || new Set(w.physicalIds).size !== w.physicalIds.length))
+	if (o.writers.some(w => typeof w.running !== 'boolean' || new Set(w.physicalIds).size !== w.physicalIds.length)) {
 		throw Error('handoff_writer_evidence_invalid');
+	}
 }
 /** Static, trusted providers. User plans cannot supply commands, scripts, paths or implementations. */
 export interface RegisteredWriter {
@@ -113,8 +127,9 @@ export class RegisteredHandoffExecutor {
 		if (
 			new Set(writers.map(w => w.id)).size !== writers.length ||
 			new Set(recipes.map(r => r.physicalId)).size !== recipes.length
-		)
+		) {
 			throw Error('handoff_registry_duplicate');
+		}
 	}
 	private async current(
 		plan: HandoffPlan,
@@ -131,8 +146,9 @@ export class RegisteredHandoffExecutor {
 					const e = expected.targets.find(x => x.physicalId === t.physicalId);
 					return !e || t.manualRevision !== e.manualRevision || t.profileHash !== e.profileHash;
 				}))
-		)
+		) {
 			throw Error('handoff_execution_preflight_changed');
+		}
 		return o;
 	}
 	async execute(
@@ -140,12 +156,16 @@ export class RegisteredHandoffExecutor {
 		action: HandoffAction,
 		expected: CoordinatorObservation,
 		signal?: AbortSignal,
-		authorize: () => Promise<boolean> = async () => false,
+		authorize: () => Promise<boolean> = () => Promise.resolve(false),
 	): Promise<void> {
 		const live = async (): Promise<void> => {
-			if (signal?.aborted) throw Error('handoff_action_cancelled_or_revoked');
+			if (signal?.aborted) {
+				throw Error('handoff_action_cancelled_or_revoked');
+			}
 			const allowed = await authorize();
-			if (signal?.aborted || !allowed) throw Error('handoff_action_cancelled_or_revoked');
+			if (signal?.aborted || !allowed) {
+				throw Error('handoff_action_cancelled_or_revoked');
+			}
 		};
 		await live();
 		const stopping = action.kind.startsWith('stop-');
@@ -159,21 +179,24 @@ export class RegisteredHandoffExecutor {
 					) ||
 					o.targets.some(t => !t.feedbackVerified || !t.fallbackVerified) ||
 					o.targets.some(t => t.nativeLeaseActive)
-				)
+				) {
 					throw Error('handoff_restore_not_quiet');
+				}
 				const recipe = this.recipes.find(r => r.physicalId === guard.physicalId);
 				if (
 					!recipe ||
 					recipe.profileHash !== guard.restoreProfileHash ||
 					recipe.validUntil <= this.now() ||
 					recipe.validUntil > this.now() + 300000
-				)
+				) {
 					throw Error('handoff_restore_recipe_expired_or_changed');
+				}
 				if (
 					o.targets.find(t => t.physicalId === guard.physicalId)?.manualRevision !== guard.manualRevision ||
 					o.targets.find(t => t.physicalId === guard.physicalId)?.profileHash !== guard.expectedProfileHash
-				)
+				) {
 					throw Error('handoff_restore_guard_changed');
+				}
 				await live();
 				await recipe.apply(guard);
 				// Subsequent targets compare against positively observed restoration, never stale expected hashes.
@@ -186,8 +209,9 @@ export class RegisteredHandoffExecutor {
 							!t.feedbackVerified ||
 							t.manualRevision !== o.targets.find(x => x.physicalId === t.physicalId)?.manualRevision,
 					)
-				)
+				) {
 					throw Error('handoff_restore_unconfirmed');
+				}
 				expected = after;
 			}
 			return;
@@ -202,19 +226,27 @@ export class RegisteredHandoffExecutor {
 							: t.newWriter === id,
 					)
 					.map(t => t.physicalId);
-			if (!writer || heatingFingerprint([...writer.physicalIds].sort()) !== heatingFingerprint([...scope].sort()))
+			if (
+				!writer ||
+				heatingFingerprint([...writer.physicalIds].sort()) !== heatingFingerprint([...scope].sort())
+			) {
 				throw Error('handoff_writer_registry_scope');
+			}
 			o = await this.current(plan, expected, stopping);
 			const state = o.writers.find(w => w.id === id);
-			if (!state || heatingFingerprint([...state.physicalIds].sort()) !== heatingFingerprint([...scope].sort()))
+			if (!state || heatingFingerprint([...state.physicalIds].sort()) !== heatingFingerprint([...scope].sort())) {
 				throw Error('handoff_writer_identity_changed');
+			}
 			if (stopping) {
 				await live();
-				if (state.running) await writer.stop();
+				if (state.running) {
+					await writer.stop();
+				}
 				continue;
 			}
-			if (state.running || o.writers.some(w => w.running && w.physicalIds.some(p => scope.includes(p))))
+			if (state.running || o.writers.some(w => w.running && w.physicalIds.some(p => scope.includes(p)))) {
 				throw Error('handoff_writer_overlap');
+			}
 			const wishes = Object.fromEntries(scope.map(p => [p, o.manualWishes[p]]));
 			const previous = await writer.readManualWishes();
 			if (
@@ -223,13 +255,15 @@ export class RegisteredHandoffExecutor {
 						manualWishRevision(mergeManualWishes(wishes[p], previous[p] ?? null)) !==
 						manualWishRevision(wishes[p]),
 				)
-			)
+			) {
 				throw Error('handoff_destination_has_newer_wish');
+			}
 			await live();
 			await writer.importManualWishes(structuredClone(wishes), action.id, heatingFingerprint(previous));
 			const imported = await writer.readManualWishes();
-			if (scope.some(p => manualWishRevision(imported[p] ?? null) !== manualWishRevision(wishes[p])))
+			if (scope.some(p => manualWishRevision(imported[p] ?? null) !== manualWishRevision(wishes[p]))) {
 				throw Error('handoff_manual_import_unconfirmed');
+			}
 			const last = await this.current(plan, expected);
 			if (
 				action.kind === 'start-new-writer' &&
@@ -242,10 +276,12 @@ export class RegisteredHandoffExecutor {
 							(plan.targets.find(x => x.physicalId === t.physicalId)!.requiresNativeExpiry &&
 								!t.nativeExpiryVerified),
 					))
-			)
+			) {
 				throw Error('handoff_start_gate_changed');
-			if (last.writers.some(w => w.running && w.physicalIds.some(p => scope.includes(p))))
+			}
+			if (last.writers.some(w => w.running && w.physicalIds.some(p => scope.includes(p)))) {
 				throw Error('handoff_writer_restarted');
+			}
 			await live();
 			await writer.start();
 		}
@@ -278,8 +314,9 @@ export class HandoffCoordinator {
 			this.journal.planHash !== heatingFingerprint(this.plan) ||
 			this.journal.transition.planHash !== this.journal.planHash ||
 			Object.keys(this.journal.actions).length > 128
-		)
+		) {
 			throw Error('handoff_saved_journal_invalid');
+		}
 		if (
 			!Number.isFinite(this.journal.lastAt) ||
 			![
@@ -305,11 +342,16 @@ export class HandoffCoordinator {
 						'resume-old-writers-with-current-manual-wishes',
 					].includes(a.kind),
 			)
-		)
+		) {
 			throw Error('handoff_saved_journal_invalid');
+		}
 		if (saved) {
 			this.recovered = true;
-			for (const a of Object.values(this.journal.actions)) if (a.phase === 'reserved') a.phase = 'uncertain';
+			for (const a of Object.values(this.journal.actions)) {
+				if (a.phase === 'reserved') {
+					a.phase = 'uncertain';
+				}
+			}
 		}
 	}
 	state(): CoordinatorJournal {
@@ -328,13 +370,16 @@ export class HandoffCoordinator {
 		}
 	}
 	private async observe(cleanup = false): Promise<CoordinatorObservation> {
-		if (heatingFingerprint(this.plan) !== this.journal.planHash) throw Error('handoff_plan_changed');
+		if (heatingFingerprint(this.plan) !== this.journal.planHash) {
+			throw Error('handoff_plan_changed');
+		}
 		if (
 			this.poisoned ||
 			this.now() < this.journal.lastAt ||
 			!(await deadline(this.port.authorize(this.plan, cleanup), 15000))
-		)
+		) {
 			throw Error('handoff_authority_denied');
+		}
 		const o = await deadline(this.port.observe(), 15000);
 		checkedHandoffObservation(this.plan, o, this.now());
 		this.journal.lastAt = this.now();
@@ -355,10 +400,14 @@ export class HandoffCoordinator {
 		const hash = heatingFingerprint({ action, wishes: action.kind.startsWith('stop-') ? null : o.manualWishes }),
 			prev = this.journal.actions[action.id];
 		if (prev) {
-			if (prev.hash !== hash || prev.phase !== 'completed') throw Error('handoff_action_uncertain_or_changed');
+			if (prev.hash !== hash || prev.phase !== 'completed') {
+				throw Error('handoff_action_uncertain_or_changed');
+			}
 			return;
 		}
-		if (Object.keys(this.journal.actions).length >= 128) throw Error('handoff_action_budget');
+		if (Object.keys(this.journal.actions).length >= 128) {
+			throw Error('handoff_action_budget');
+		}
 		this.journal.actions[action.id] = { hash, phase: 'reserved', kind: action.kind };
 		await this.persist();
 		const controller = new AbortController();
@@ -372,8 +421,9 @@ export class HandoffCoordinator {
 				action.writerIds.some(
 					id => after.writers.find(w => w.id === id)?.running !== !action.kind.startsWith('stop-'),
 				)
-			)
+			) {
 				throw Error('handoff_lifecycle_unconfirmed');
+			}
 			this.journal.actions[action.id].phase = 'completed';
 			await this.persist();
 		} catch (e) {
@@ -388,7 +438,9 @@ export class HandoffCoordinator {
 			result = handoffTransition(this.plan, this.journal.transition, event, o, this.now());
 		this.journal.transition = result.journal;
 		await this.persist();
-		if (result.proposal) await this.perform(result.proposal, o);
+		if (result.proposal) {
+			await this.perform(result.proposal, o);
+		}
 		return result.blockers;
 	}
 	private async authorizeEffect(action: HandoffAction): Promise<boolean> {
@@ -397,16 +449,26 @@ export class HandoffCoordinator {
 	}
 	async activate(operationDeadline = this.now() + 30000): Promise<CoordinatorJournal> {
 		return this.exclusive(async () => {
-			if (operationDeadline <= this.now() || operationDeadline > this.now() + 30000)
+			if (operationDeadline <= this.now() || operationDeadline > this.now() + 30000) {
 				throw Error('handoff_request_expired');
+			}
 			this.operationDeadline = operationDeadline;
-			if (this.recovered || Object.values(this.journal.actions).some(a => a.phase !== 'completed'))
+			if (this.recovered || Object.values(this.journal.actions).some(a => a.phase !== 'completed')) {
 				throw Error('handoff_restart_or_uncertainty_requires_rollback');
-			if (this.journal.transition.phase === 'new-active') return this.state();
+			}
+			if (this.journal.transition.phase === 'new-active') {
+				return this.state();
+			}
 			let blockers = await this.transition('prepare');
-			if (!blockers.length) blockers = await this.transition('old-stopped');
-			if (!blockers.length) blockers = await this.transition('new-ready');
-			if (blockers.length) throw Error(blockers[0]);
+			if (!blockers.length) {
+				blockers = await this.transition('old-stopped');
+			}
+			if (!blockers.length) {
+				blockers = await this.transition('new-ready');
+			}
+			if (blockers.length) {
+				throw Error(blockers[0]);
+			}
 			return this.state();
 		});
 	}
@@ -416,14 +478,18 @@ export class HandoffCoordinator {
 		operationDeadline = this.now() + 30000,
 	): Promise<{ journal: CoordinatorJournal; blockers: string[] }> {
 		return this.exclusive(async () => {
-			if (operationDeadline <= this.now() || operationDeadline > this.now() + 30000)
+			if (operationDeadline <= this.now() || operationDeadline > this.now() + 30000) {
 				throw Error('handoff_request_expired');
+			}
 			this.operationDeadline = operationDeadline;
-			if (this.journal.transition.phase === 'rolled-back') return { journal: this.state(), blockers: [] };
+			if (this.journal.transition.phase === 'rolled-back') {
+				return { journal: this.state(), blockers: [] };
+			}
 			await this.transition('rollback', true);
 			let o = await this.observe(true);
-			if (Object.values(this.journal.actions).some(a => a.phase === 'uncertain' || a.phase === 'reserved'))
+			if (Object.values(this.journal.actions).some(a => a.phase === 'uncertain' || a.phase === 'reserved')) {
 				return { journal: this.state(), blockers: ['handoff_uncertain_action_requires_review'] };
+			}
 			if (
 				reviewHash === handoffReviewHash(o) &&
 				o.configurationHash === this.plan.configurationHash &&
@@ -439,11 +505,17 @@ export class HandoffCoordinator {
 			let blockers = await this.transition('new-stopped', true);
 			if (blockers.includes('handoff_preserve_new_manual_wishes')) {
 				o = await this.observe(true);
-				if (reviewHash !== handoffReviewHash(o)) return { journal: this.state(), blockers };
+				if (reviewHash !== handoffReviewHash(o)) {
+					return { journal: this.state(), blockers };
+				}
 				blockers = [];
 			}
-			if (!blockers.length) blockers = await this.transition('baseline-reviewed', true);
-			if (!blockers.length) blockers = await this.transition('old-resumed', true);
+			if (!blockers.length) {
+				blockers = await this.transition('baseline-reviewed', true);
+			}
+			if (!blockers.length) {
+				blockers = await this.transition('old-resumed', true);
+			}
 			return { journal: this.state(), blockers };
 		});
 	}
@@ -452,8 +524,9 @@ export class HandoffCoordinator {
 		await this.exclusive(async () => {
 			const o = await this.observe(true),
 				a = this.journal.actions[actionId];
-			if (!a || a.phase === 'completed' || expectedReviewHash !== handoffReviewHash(o))
+			if (!a || a.phase === 'completed' || expectedReviewHash !== handoffReviewHash(o)) {
 				throw Error('handoff_reconcile_denied');
+			}
 			const restoreId = heatingFingerprint({
 				planHash: this.journal.planHash,
 				kind: 'restore-reviewed-baseline-through-executor',
@@ -472,8 +545,9 @@ export class HandoffCoordinator {
 								(this.plan.targets.find(p => p.physicalId === t.physicalId)!.rollbackProfileHash ??
 									this.plan.targets.find(p => p.physicalId === t.physicalId)!.baselineHash),
 					)
-				)
+				) {
 					throw Error('handoff_restore_not_confirmed');
+				}
 				a.phase = 'completed';
 				await this.persist();
 				return;
@@ -487,17 +561,22 @@ export class HandoffCoordinator {
 			const kind =
 				kinds.find(kind => heatingFingerprint({ planHash: this.journal.planHash, kind }) === actionId) ??
 				(a.kind === 'stop-new-writer' ? 'stop-new-writer' : undefined);
-			if (!kind) throw Error('handoff_restore_requires_manual_recovery');
+			if (!kind) {
+				throw Error('handoff_restore_requires_manual_recovery');
+			}
 			const old = kind === 'stop-old-writers' || kind === 'resume-old-writers-with-current-manual-wishes',
 				ids = [...new Set(this.plan.targets.map(t => (old ? t.oldWriter : t.newWriter)))];
-			if (ids.some(id => o.writers.find(w => w.id === id)?.running !== !kind.startsWith('stop-')))
+			if (ids.some(id => o.writers.find(w => w.id === id)?.running !== !kind.startsWith('stop-'))) {
 				throw Error('handoff_reconcile_not_confirmed');
+			}
 			a.phase = 'completed';
 			await this.persist();
 		});
 	}
 	private async exclusive<T>(work: () => Promise<T>): Promise<T> {
-		if (this.busy) throw Error('handoff_coordinator_busy');
+		if (this.busy) {
+			throw Error('handoff_coordinator_busy');
+		}
 		this.busy = true;
 		try {
 			return await work();
