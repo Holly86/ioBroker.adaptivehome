@@ -53,6 +53,8 @@ export class HomeRuntime {
 	private proposals: Intent[] = [];
 	private ticking = false;
 	private round = 0;
+	private sourceSupervisor = new Supervisor();
+	readonly sourceObservations: Record<string, Observation> = {};
 	constructor(
 		private config: () => Configuration,
 		private port: HomePort,
@@ -77,10 +79,48 @@ export class HomeRuntime {
 	}
 	configure(): void {
 		this.supervisor.close();
+		this.sourceSupervisor.close();
+		this.sourceSupervisor = new Supervisor();
 		this.supervisor = new Supervisor();
 		this.executor.invalidateAudit();
 		this.memories = {};
 		this.round++;
+		for (const key of Object.keys(this.sourceObservations)) {
+			delete this.sourceObservations[key];
+		}
+		const sourceRound = this.round;
+		for (const source of this.config().sources) {
+			if (!source.enabled) {
+				continue;
+			}
+			this.sourceSupervisor.register(source.id, async () => {
+				const binding = this.config().bindings.find(b => b.id === source.ref.entityId),
+					mapping = binding?.capabilities.find(m => m.capability === source.ref.capability);
+				if (!binding || !mapping) {
+					return;
+				}
+				let observation = await readObservation(
+					binding,
+					mapping,
+					id => this.port.read(id),
+					() => this.clock.now(),
+				);
+				if (source.kind === 'presence') {
+					observation = this.presence.evaluate(
+						`source:${source.id}`,
+						observation,
+						this.clock.now(),
+						source.absenceConfirmMs,
+						source.presenceConfirmations,
+					);
+				}
+				if (sourceRound !== this.round) {
+					return;
+				}
+				this.sourceObservations[source.id] = observation;
+				this.history.observation(observation);
+			});
+		}
 		for (const fn of this.config().functions) {
 			this.supervisor.register(fn.id, async () => {
 				await this.evaluate(fn, this.round);
@@ -166,7 +206,7 @@ export class HomeRuntime {
 			} catch {
 				/* Classical control remains available on adaptation storage failure. */
 			}
-			await this.supervisor.tick();
+			await Promise.all([this.supervisor.tick(), this.sourceSupervisor.tick()]);
 			const decisions = arbitrate(this.proposals, this.config());
 			await Promise.all(
 				decisions.accepted.map(async intent => {
@@ -393,6 +433,7 @@ export class HomeRuntime {
 	}
 	status(): unknown {
 		return {
+			sources: this.sourceObservations,
 			functions: Object.fromEntries(this.supervisor.status),
 			traces: this.traces,
 			commands: this.executor.journal.commands.slice(-50),
@@ -414,6 +455,7 @@ export class HomeRuntime {
 	}
 	close(): void {
 		this.supervisor.close();
+		this.sourceSupervisor.close();
 		this.learning.close();
 	}
 }

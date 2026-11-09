@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { FUNCTION_KINDS, LEARNING_MODES, OPERATING_MODES } from './product';
 import type { NativeHeatingProgram } from '../integrations/native-program';
 import { connectionSchema, nativeTransportSchema } from '../connections/schema';
+import { sqlLoggingSchema } from '../diagnostics/sql-logging';
 export const id = z
 	.string()
 	.regex(/^[a-zA-Z0-9_-]{1,64}$/)
@@ -51,6 +52,7 @@ export const mappingSchema = z.strictObject({
 	maxAgeMs: z.number().int().min(1000).max(86400000).default(300000),
 	tolerance: z.number().nonnegative().default(0),
 	confirmation: z.enum(['device', 'backend', 'none']).default('backend'),
+	requireAck: z.boolean().default(false),
 	// A device-scoped successful read timestamp, never process uptime or value lc.
 	freshness: z
 		.strictObject({
@@ -297,6 +299,7 @@ export const configSchema = z.strictObject({
 	bindings: z.array(bindingSchema).max(512),
 	connections: z.array(connectionSchema).max(128).default([]),
 	nativeTransports: z.array(nativeTransportSchema).max(64).default([]),
+	logging: sqlLoggingSchema,
 	functions: z.array(functionSchema).max(256),
 	scenes: z
 		.array(
@@ -315,6 +318,7 @@ export const configSchema = z.strictObject({
 		.array(
 			z.strictObject({
 				id,
+				enabled: z.boolean().default(true),
 				kind: z.enum(['weather', 'calendar', 'presence', 'usage', 'energy', 'generic']),
 				ref: refSchema,
 				absenceConfirmMs: z.number().int().nonnegative().max(86400000).default(300000),

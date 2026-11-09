@@ -1,7 +1,6 @@
-# Read sources and native heating transport (development version)
+# Read sources, optional data profiles and native heating transport
 
-These additions are in 0.1.0-beta.5-dev.0 source. The immutable published Beta 4 package
-does not contain them. No production installation or actuator transfer is automatic.
+These additions are included in 0.1.0-beta.5. No production installation or actuator transfer is automatic.
 
 ## Read connections
 
@@ -101,3 +100,72 @@ Physical acceptance must verify actual download, delayed activation, app interve
 no recurrence the following week and operation after controller loss. A source draft and
 successful anonymous tests do not complete those checks. During migration, shared read sources
 must survive stopping old writers; access/mount changes and the writer handoff are separate work.
+
+## Optional cache-only adapter profiles (Beta 5)
+
+Select discovery candidates for `mihome-vacuum`, `radar2`, `solarmanpv`,
+`openweathermap`, `nina`, `harmony` and `alexa2`. These profiles read existing
+ioBroker states only; they never start a device session, poll a cloud service,
+run a command or obtain credentials. Instance numbers are discovered dynamically.
+
+| Profile | Selected observations |
+| --- | --- |
+| mihome-vacuum | Battery, state/error, charging, cleaned area/time |
+| radar2 | Individual device presence and last-seen feedback |
+| solarmanpv | Power, daily/total energy and temperature with exact units |
+| openweathermap | Current/forecast temperature, humidity, wind, pressure, precipitation and validity time |
+| nina | Warning counts, severity and selected warning text |
+| harmony | Hub connection/block status and current activity feedback |
+| alexa2 | Online and selected player/media feedback |
+
+Read-only mappings reject write paths. Discovery excludes button controls, commands,
+authentication data, maps, routines and voice history. A writable metadata flag on a
+feedback state does not grant writes. Values require `ack:true`; missing/null values,
+wrong units/types, poor quality and expired timestamps remain unavailable/unknown or
+stale. A fresh cache read does not manufacture a fresh physical measurement.
+Weather defaults to a two-hour age bound, other new profiles to five minutes; review
+these bounds against the selected backend's actual reporting schedule.
+
+Add an enabled `sources` entry referencing a selected binding/capability to process
+and display its observations without an actuator function. This also supplies local
+history/learning input and optional SQL export. Explicitly map suitable observations
+into a function's supported input if it should affect a rule. Media activity and
+radar device presence do not automatically establish household occupancy. Forecast
+points retain their forecast validity; they are not current temperature measurements.
+NINA is supplementary information and does not replace an official warning channel.
+
+### SQL logging / SQL-Protokollierung
+
+SQL is the optional external history backend. Install/configure `iobroker.sql`
+separately, then select its exact instance under Import & channels → Logging.
+The adapter starts with `logging.enabled:false`. No database access is required
+for classical control, local history or the new read profiles. Influx is not a
+second implemented backend in this release.
+
+```json
+{"logging":{"enabled":false,"adapter":"sql.0","observations":true,"events":true,"maxQueued":1000,"batchSize":25,"flushIntervalMs":5000}}
+```
+
+The adapter sends generated observation/event JSON through SQL's `storeState` API,
+only for its own `adaptivehome.<instance>.telemetry.*` string datapoints. It does
+not enable foreign history settings or accept arbitrary SQL. Original timestamps,
+quality and source remain in the JSON; SQL row timestamps are unique ingestion times.
+SQL 3.0.1 with SQLite is tested against an actual isolated database. Other SQL
+dialects follow the same backend API but have not received database integration tests.
+
+A bounded queue and journal retain temporary offline data. Admin status exposes
+queued/uncertain/dropped counts. There is no claim of lossless or exactly-once
+storage: a full queue drops new rows visibly, and a process crash before the next
+journal flush may lose recent rows. An ambiguous/partial SQL acknowledgement blocks
+replay across restart (`reconciliation_required`). Preserve the journal and compare
+its IDs/timestamps with the SQL history before administrator reconciliation; do not
+blindly replay or delete it. Changing the destination while records are queued also
+blocks automatic rerouting. Disabling logging stops export, without deleting history.
+Retention and database backups are managed in the SQL installation.
+
+Die neuen Profile lesen ausschließlich ausgewählte vorhandene Zustände. Unter
+„Import & Kanäle“ werden Quellen und die optionale SQL-Instanz eingerichtet.
+Ohne aktiviertes Logging erfolgen keine Datenbanknachrichten. Geräteanwesenheit,
+Wettervorhersage und Medienstatus werden erst durch ausdrückliche Zuordnung zu
+passenden Regeleingängen steuerungsrelevant. Im Lese-/Shadow-Pilot bleiben
+Aktorfunktionen und SQL-Export deaktiviert.

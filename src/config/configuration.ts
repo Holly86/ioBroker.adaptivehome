@@ -19,6 +19,15 @@ export function validateConfiguration(input: unknown, registry?: IntegrationRegi
 		}
 	}
 	const outputs = new Set<string>();
+	for (const source of config.sources) {
+		if (
+			!config.bindings.some(
+				b => b.id === source.ref.entityId && b.capabilities.some(m => m.capability === source.ref.capability),
+			)
+		) {
+			throw Error('source_reference_missing');
+		}
+	}
 	for (const c of config.connections) {
 		if (c.outputs.some(o => o.transform === 'cases' && (!o.cases || o.defaultValue === undefined))) {
 			throw Error('source_cases_incomplete');

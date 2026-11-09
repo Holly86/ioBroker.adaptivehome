@@ -1,11 +1,11 @@
 {
   "common": {
     "name": "adaptivehome",
-    "version": "0.1.0-beta.5-dev.0",
+    "version": "0.1.0-beta.5",
     "news": {
-      "0.1.0-beta.5-dev.0": {
-        "en": "Unreleased source connections, read receipts and shared-session native transport",
-        "de": "Unveröffentlichte Quellenanschlüsse, Lesenachweise und nativer Transport über bestehende Sitzung"
+      "0.1.0-beta.5": {
+        "en": "Read evidence and native transport, seven optional read-only data connectors and bounded SQL telemetry logging.",
+        "de": "Frischenachweise und nativer Transport, sieben optionale Lese-Connectoren und begrenztes SQL-Telemetrielogging."
       },
       "0.1.0-beta.4": {
         "en": "Separate event/read freshness, continuous quiet and manual/house rules; add bounded climate and native profile extension contracts with explicit connection limits.",

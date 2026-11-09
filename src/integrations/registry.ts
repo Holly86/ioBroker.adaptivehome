@@ -28,6 +28,7 @@ export interface DiscoveryContext {
 	resources: Record<string, ResourceMetadata>;
 }
 export interface IntegrationManifest {
+	readOnly?: boolean;
 	apiVersion: 1;
 	id: string;
 	name: string;
@@ -67,6 +68,9 @@ export class IntegrationRegistry {
 		}
 		const seen = new Set<string>();
 		for (const mapping of binding.capabilities) {
+			if (manifest.readOnly && mapping.writeId) {
+				throw Error('integration_read_only');
+			}
 			for (const path of [mapping.readId, mapping.writeId, mapping.confirmId].filter((v): v is string => !!v)) {
 				if (
 					binding.integrationId !== 'generic' &&
@@ -147,6 +151,10 @@ export function normalize(
 	}
 	if (raw.q !== undefined && raw.q !== 0) {
 		result.quality = 'invalid';
+		return result;
+	}
+	if (mapping.requireAck && raw.ack !== true) {
+		result.quality = 'unknown';
 		return result;
 	}
 	if (raw.val === null || raw.val === undefined) {

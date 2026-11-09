@@ -96,3 +96,14 @@ extension contract, **not implemented by the standard hmip backend** and not
 physically verified here. Keep affected functions disabled until a real backend
 and autonomous expiry/fallback pass acceptance. Normal setpoint/profile-choice
 support in the table does not imply this extended capability.
+
+## Additional read-only data profiles in Beta 5
+
+`mihome-vacuum`, `radar2`, `solarmanpv`, `openweathermap`, `nina`, `harmony` and
+`alexa2` have anonymized discovery/normalization contracts. They expose selected
+existing cache states only, with exact types/units and acknowledgement/age checks.
+They have no actuator capabilities and do not constitute physical model certification.
+See [data selection and SQL logging](connections.md#optional-cache-only-adapter-profiles-beta-5).
+SQL 3.0.1 / SQLite integration is tested using a real isolated database; other SQL
+dialects remain API-compatible but database-unverified. Private cache observations
+are separate evidence and contain no production actuation or writer transfer.

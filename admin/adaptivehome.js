@@ -186,6 +186,12 @@
 		topics: ['Topics', 'Themen'],
 		quiet: ['Quiet windows', 'Ruhezeiten'],
 		sources: ['Optional context sources', 'Optionale Kontextquellen'],
+		logging: ['SQL data logging', 'SQL-Datenprotokollierung'],
+		observations: ['Store selected observations', 'Gewählte Beobachtungen speichern'],
+		events: ['Store generated events', 'Erzeugte Ereignisse speichern'],
+		maxQueued: ['Maximum pending records', 'Höchstzahl wartender Datensätze'],
+		batchSize: ['Records per batch', 'Datensätze pro Übertragung'],
+		flushIntervalMs: ['Transfer interval (ms)', 'Übertragungsintervall (ms)'],
 		ref: ['Source capability', 'Quellenfähigkeit'],
 		discover: ['Discover candidates', 'Gerätevorschläge suchen'],
 		discoveryNote: [
@@ -544,6 +550,35 @@
 				'humidity',
 				'valve',
 				'context',
+				'online',
+				'batteryLevel',
+				'vacuumState',
+				'errorCode',
+				'charging',
+				'cleanedArea',
+				'cleanedMinutes',
+				'devicePresence',
+				'presenceLastSeen',
+				'dailyEnergy',
+				'pressure',
+				'windSpeed',
+				'precipitation',
+				'cloudCover',
+				'forecastAt',
+				'weatherState',
+				'warningCount',
+				'alertSeverity',
+				'alertText',
+				'hubBlocked',
+				'currentActivity',
+				'mediaPlaying',
+				'mediaState',
+				'mediaTitle',
+				'mediaArtist',
+				'mediaAlbum',
+				'mediaProgress',
+				'mediaDuration',
+				'volume',
 			],
 			readId: 'text',
 			writeId: 'text?',
@@ -557,7 +592,8 @@
 			max: 'number?',
 			maxAgeMs: 'number',
 			tolerance: 'number',
-			confirmation: ['backend', 'device'],
+			confirmation: ['none', 'backend', 'device'],
+			requireAck: 'checkbox',
 			sourceType: ['boolean', 'number', 'string'],
 			values: 'scalars',
 			writeValues: 'scalars',
@@ -618,7 +654,13 @@
 			repeatMs: 'number',
 			maxAttempts: 'number',
 		},
-		source: { id: 'text', kind: ['weather', 'calendar', 'presence', 'usage', 'energy', 'generic'] },
+		source: {
+			id: 'text',
+			enabled: 'checkbox',
+			kind: ['weather', 'calendar', 'presence', 'usage', 'energy', 'generic'],
+			absenceConfirmMs: 'number',
+			presenceConfirmations: 'number',
+		},
 	};
 	function form(parent, obj, descriptor, fn) {
 		const cols = grid(parent);
@@ -836,7 +878,26 @@
 			});
 		}
 		root.append(node('p', `${t('revision')}: ${revision}`));
-		if (!config.functions.length) {
+		for (const source of config.sources || []) {
+			const observation = live.sources?.[source.id],
+				card = node('article');
+			card.append(
+				node('h3', source.id),
+				node('p', `${t(source.kind)} · ${t(observation?.quality || 'unknown')}`),
+				node('p', `${observation?.value ?? t('unknown')} ${observation?.unit || ''}`),
+			);
+			root.append(card);
+		}
+		if (config.logging?.enabled) {
+			const status = live.logging || {};
+			root.append(
+				node(
+					'p',
+					`${t('logging')}: ${status.status || t('unknown')} · ${status.queued ?? 0} / ${status.uncertain ?? 0}`,
+				),
+			);
+		}
+		if (!config.functions.length && !config.sources.length) {
 			root.append(node('p', t('empty')));
 			button(root, 'setup', () => {
 				page = 'setup';
@@ -1524,13 +1585,41 @@
 			root,
 			'sources',
 			config.sources,
-			() => ({ id: uid('source'), kind: 'generic', ref: { entityId: '', capability: '' } }),
+			() => ({
+				id: uid('source'),
+				enabled: true,
+				kind: 'generic',
+				ref: { entityId: '', capability: '' },
+				absenceConfirmMs: 300000,
+				presenceConfirmations: 1,
+			}),
 			(p, s) => {
 				form(p, s, descriptors.source);
 				field(p, 'ref', refValue(s.ref), v => (s.ref = parseRef(v)), 'text', refOptions(false));
 			},
 		);
 		root.append(node('p', t('connectionNotice')));
+		config.logging ??= {
+			enabled: false,
+			adapter: 'sql.0',
+			observations: true,
+			events: true,
+			maxQueued: 1000,
+			batchSize: 25,
+			flushIntervalMs: 5000,
+		};
+		const logBox = node('fieldset');
+		logBox.append(node('legend', t('logging')));
+		form(logBox, config.logging, {
+			enabled: 'checkbox',
+			adapter: 'text',
+			observations: 'checkbox',
+			events: 'checkbox',
+			maxQueued: 'number',
+			batchSize: 'number',
+			flushIntervalMs: 'number',
+		});
+		root.append(logBox);
 		config.connections ??= [];
 		config.nativeTransports ??= [];
 		repeat(

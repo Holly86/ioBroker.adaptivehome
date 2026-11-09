@@ -133,12 +133,13 @@
         "docs/verification/discovery-corrections.md",
         "docs/verification/policy-parity-corrections.md",
         "docs/verification/beta4-release.md",
-        "docs/verification/source-connections.md"
+        "docs/verification/source-connections.md",
+        "docs/verification/beta5-release.md"
       ],
       "openChecks": [],
       "commit": "3676191e44ee307fc483419ea771a432a31037dd",
-      "updatedAt": "2026-11-09T13:21:30.007Z",
-      "correctionSummary": "Published Beta 4: read-evidence freshness, continuous quiet/manual handling, configurable rule parity and bounded report-time corrections; exact artifact passed isolated tests. Physical/backend acceptance remains separate."
+      "updatedAt": "2026-11-09T14:25:02.302Z",
+      "correctionSummary": "Beta 5 software: seven optional cache-only data profiles, selected-source processing and bounded SQL telemetry export; actual isolated SQLite persistence verified. No production activation."
     },
     {
       "id": "AP-04",
@@ -174,11 +175,13 @@
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-05.md",
-        "docs/verification/source-connections.md"
+        "docs/verification/source-connections.md",
+        "docs/verification/beta5-release.md"
       ],
       "openChecks": [],
       "commit": "3676191e44ee307fc483419ea771a432a31037dd",
-      "updatedAt": "2026-11-09T13:21:30.007Z"
+      "updatedAt": "2026-11-09T14:25:02.302Z",
+      "correctionSummary": "Beta 5 software: seven optional cache-only data profiles, selected-source processing and bounded SQL telemetry export; actual isolated SQLite persistence verified. No production activation."
     },
     {
       "id": "AP-06",
@@ -241,11 +244,13 @@
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
-        "docs/verification/AP-08.md"
+        "docs/verification/AP-08.md",
+        "docs/verification/beta5-release.md"
       ],
       "openChecks": [],
       "commit": "beacb7d767f7fe1f3a6006f680053b10d8eae1ed",
-      "updatedAt": "2026-11-08T16:05:32.715Z"
+      "updatedAt": "2026-11-09T14:25:02.302Z",
+      "correctionSummary": "Beta 5 software: seven optional cache-only data profiles, selected-source processing and bounded SQL telemetry export; actual isolated SQLite persistence verified. No production activation."
     },
     {
       "id": "AP-09",
@@ -391,11 +396,13 @@
       "evidence": [
         "docs/verification/AP-14.md",
         "docs/verification/discovery-corrections.md",
-        "docs/verification/policy-parity-corrections.md"
+        "docs/verification/policy-parity-corrections.md",
+        "docs/verification/beta5-release.md"
       ],
       "openChecks": [],
       "commit": "4b2fde448bbe458a6688c4a52fe0dcc5b6e0c42d",
-      "updatedAt": "2026-11-09T10:34:11.230Z"
+      "updatedAt": "2026-11-09T14:25:02.302Z",
+      "correctionSummary": "Beta 5 software: seven optional cache-only data profiles, selected-source processing and bounded SQL telemetry export; actual isolated SQLite persistence verified. No production activation."
     },
     {
       "id": "AP-15",
@@ -647,12 +654,13 @@
         "docs/verification/discovery-corrections.md",
         "docs/verification/policy-parity-corrections.md",
         "docs/verification/beta4-release.md",
-        "docs/verification/source-connections.md"
+        "docs/verification/source-connections.md",
+        "docs/verification/beta5-release.md"
       ],
       "openChecks": [],
       "commit": "3676191e44ee307fc483419ea771a432a31037dd",
-      "updatedAt": "2026-11-09T13:21:30.007Z",
-      "correctionSummary": "Published Beta 4: read-evidence freshness, continuous quiet/manual handling, configurable rule parity and bounded report-time corrections; exact artifact passed isolated tests. Physical/backend acceptance remains separate."
+      "updatedAt": "2026-11-09T14:25:02.302Z",
+      "correctionSummary": "Beta 5 software: seven optional cache-only data profiles, selected-source processing and bounded SQL telemetry export; actual isolated SQLite persistence verified. No production activation."
     },
     {
       "id": "AP-25",
@@ -673,14 +681,15 @@
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-25.md",
-        "docs/verification/beta4-release.md"
+        "docs/verification/beta4-release.md",
+        "docs/verification/beta5-release.md"
       ],
       "openChecks": [
         "npm needs authenticated publishing rights; ioBroker package co-ownership and latest/stable acceptance remain external."
       ],
       "commit": "577a660adb1f073e3e0d68c96e100635ddd0e0af",
-      "updatedAt": "2026-11-09T11:52:19.845Z",
-      "correctionSummary": "Published Beta 4: read-evidence freshness, continuous quiet/manual handling, configurable rule parity and bounded report-time corrections; exact artifact passed isolated tests. Physical/backend acceptance remains separate."
+      "updatedAt": "2026-11-09T14:25:02.302Z",
+      "correctionSummary": "Beta 5 software: seven optional cache-only data profiles, selected-source processing and bounded SQL telemetry export; actual isolated SQLite persistence verified. No production activation."
     },
     {
       "id": "AP-26",
@@ -704,15 +713,16 @@
         "docs/verification/discovery-corrections.md",
         "docs/verification/policy-parity-corrections.md",
         "docs/verification/beta4-release.md",
-        "docs/verification/source-connections.md"
+        "docs/verification/source-connections.md",
+        "docs/verification/beta5-release.md"
       ],
       "openChecks": [
         "Published Beta 4 read-only/shadow repeat completed with no device/configuration writes, runtime installation or restart; checked production settings unchanged.",
         "Before control takeover: supported installed platform, real device read-evidence producers, verified normalized sources, backend enrollment/availability, physical feedback, native full-profile/absolute-expiry transport, exclusive writer handoff, backup and rollback acceptance."
       ],
       "commit": "3676191e44ee307fc483419ea771a432a31037dd",
-      "updatedAt": "2026-11-09T13:21:30.007Z",
-      "correctionSummary": "Published Beta 4: read-evidence freshness, continuous quiet/manual handling, configurable rule parity and bounded report-time corrections; exact artifact passed isolated tests. Physical/backend acceptance remains separate."
+      "updatedAt": "2026-11-09T14:25:02.302Z",
+      "correctionSummary": "Beta 5 software: seven optional cache-only data profiles, selected-source processing and bounded SQL telemetry export; actual isolated SQLite persistence verified. No production activation."
     },
     {
       "id": "AP-27",
@@ -924,6 +934,47 @@
       "updatedAt": "2026-11-09T13:21:30.007Z",
       "verificationScope": "software and synthetic controller only; exact hardware/native-expiry acceptance pending",
       "sourceCommit": "3676191e44ee307fc483419ea771a432a31037dd"
+    },
+    {
+      "id": "beta5-data-connectors-sql-2026-11-09",
+      "affectedPackages": [
+        "AP-03",
+        "AP-05",
+        "AP-08",
+        "AP-14",
+        "AP-24",
+        "AP-25",
+        "AP-26"
+      ],
+      "implementationStatus": "implemented",
+      "verificationStatus": "passed",
+      "evidence": "docs/verification/beta5-release.md",
+      "checks": {
+        "typecheck": true,
+        "build": true,
+        "lint": true,
+        "unitContractTests": 116,
+        "packageChecks": 61,
+        "controllerBrowserSoakTests": 14,
+        "realSqlAdapter": "3.0.1",
+        "actualSQLitePersistenceVerified": true,
+        "frozenPackageFiles": 123,
+        "installedRuntimeAdminFiles": 100,
+        "publicContentReview": true
+      },
+      "candidate": {
+        "version": "0.1.0-beta.5",
+        "sha256": "b95ea53fdcc074face97b9686eb2f910e70317cdc7948f06cad97baba8ca9ddc",
+        "publication": "pending CI and immutable release",
+        "privatePilot": "pending published package download"
+      },
+      "remainingGates": [
+        "Exact physical/backend acceptance remains separate",
+        "Native shared-session registration and real absolute-expiry support",
+        "Scoped source access independent of prior writers",
+        "Exclusive writer handoff and rollback not performed"
+      ],
+      "updatedAt": "2026-11-09T14:25:02.302Z"
     }
   ],
   "releaseHistory": [
@@ -972,34 +1023,48 @@
     "privateReadOnlyPilotPerformedSeparately": true,
     "updatedAt": "2026-11-09T11:52:19.845Z"
   },
-  "developmentVersion": "0.1.0-beta.5-dev.0",
+  "developmentVersion": "0.1.0-beta.5",
   "developmentVerification": {
-    "version": "0.1.0-beta.5-dev.0",
+    "id": "beta5-data-connectors-sql-2026-11-09",
+    "affectedPackages": [
+      "AP-03",
+      "AP-05",
+      "AP-08",
+      "AP-14",
+      "AP-24",
+      "AP-25",
+      "AP-26"
+    ],
     "implementationStatus": "implemented",
     "verificationStatus": "passed",
-    "evidence": "docs/verification/source-connections.md",
+    "evidence": "docs/verification/beta5-release.md",
     "checks": {
-      "build": true,
       "typecheck": true,
+      "build": true,
       "lint": true,
-      "unitContractTests": 103,
+      "unitContractTests": 116,
       "packageChecks": 61,
-      "targetedSourceControllerPassed": true,
-      "finalFrozenControllerBrowserSoak": true,
-      "crossPlatformCI": true,
-      "publicContentReview": true,
-      "controllerBrowserSoakTests": 13,
-      "installedRuntimeAdminFiles": 96,
-      "quietMs": 301285,
-      "alternateAdminConfigurations": 3,
-      "crossPlatformJobs": 7
+      "controllerBrowserSoakTests": 14,
+      "realSqlAdapter": "3.0.1",
+      "actualSQLitePersistenceVerified": true,
+      "frozenPackageFiles": 123,
+      "installedRuntimeAdminFiles": 100,
+      "publicContentReview": true
     },
-    "distribution": "source development only; no Beta 5 release; published Beta 4 unchanged",
-    "productionControlTakeover": false,
-    "updatedAt": "2026-11-09T13:21:30.007Z",
-    "sourceCommit": "3676191e44ee307fc483419ea771a432a31037dd",
-    "verificationScope": "software and synthetic controller only; exact hardware/native-expiry acceptance pending",
-    "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42623548818",
-    "artifactSha256": "9a5b988c3235cd96291671e6e85060d9b818dd6fcfd6c6955ebf9a8aead4aecf"
+    "candidate": {
+      "version": "0.1.0-beta.5",
+      "sha256": "b95ea53fdcc074face97b9686eb2f910e70317cdc7948f06cad97baba8ca9ddc",
+      "publication": "pending CI and immutable release",
+      "privatePilot": "pending published package download"
+    },
+    "remainingGates": [
+      "Exact physical/backend acceptance remains separate",
+      "Native shared-session registration and real absolute-expiry support",
+      "Scoped source access independent of prior writers",
+      "Exclusive writer handoff and rollback not performed"
+    ],
+    "updatedAt": "2026-11-09T14:25:02.302Z",
+    "version": "0.1.0-beta.5",
+    "distribution": "frozen candidate; GitHub publication pending CI"
   }
 }

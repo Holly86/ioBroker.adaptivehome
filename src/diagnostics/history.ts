@@ -19,6 +19,7 @@ export interface HistoryRecord {
 	events: HistoryEvent[];
 }
 export class History {
+	onRecord?: (kind: 'observation' | 'event', row: Observation | HistoryEvent) => void;
 	record: HistoryRecord = { version: 1, observations: [], events: [] };
 	dropped = 0;
 	storageError = false;
@@ -58,12 +59,18 @@ export class History {
 	}
 	observation(observation: Observation): void {
 		const key = `${observation.entityId}:${observation.capability}`;
-		const fingerprint = JSON.stringify([observation.measuredAt, observation.value, observation.quality]);
+		const fingerprint = JSON.stringify([
+			observation.measuredAt,
+			observation.verifiedAt,
+			observation.value,
+			observation.quality,
+		]);
 		if (this.fingerprints.get(key) === fingerprint) {
 			return;
 		}
 		this.fingerprints.set(key, fingerprint);
 		this.record.observations.push(structuredClone(observation));
+		this.onRecord?.('observation', observation);
 		if (this.record.observations.length > this.maxRows) {
 			this.record.observations.splice(0, this.record.observations.length - this.maxRows);
 		}
@@ -81,6 +88,7 @@ export class History {
 			return;
 		}
 		this.record.events.push(historyEventSchema.parse(event));
+		this.onRecord?.('event', event);
 		if (this.record.events.length > this.maxRows) {
 			this.record.events.shift();
 		}

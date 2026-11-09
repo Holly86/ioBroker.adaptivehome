@@ -3,6 +3,7 @@ import type { CapabilityMapping, DeviceBinding } from '../model/contracts';
 import { bindingSchema, mappingSchema } from '../model/contracts';
 import type { DiscoveryContext, IntegrationManifest, ResourceMetadata, StateMetadata } from './registry';
 import { IntegrationRegistry } from './registry';
+import { contextProfiles } from './context-profiles';
 export interface DetectionRule {
 	capability: string;
 	suffix: RegExp;
@@ -401,6 +402,34 @@ export const genericProfile: IntegrationManifest = {
 		'humidity',
 		'valve',
 		'context',
+		'batteryLevel',
+		'vacuumState',
+		'errorCode',
+		'cleanedArea',
+		'cleanedMinutes',
+		'charging',
+		'devicePresence',
+		'presenceLastSeen',
+		'dailyEnergy',
+		'forecastAt',
+		'weatherState',
+		'pressure',
+		'windSpeed',
+		'precipitation',
+		'cloudCover',
+		'warningCount',
+		'alertSeverity',
+		'alertText',
+		'mediaPlaying',
+		'mediaState',
+		'mediaTitle',
+		'mediaArtist',
+		'mediaAlbum',
+		'mediaProgress',
+		'mediaDuration',
+		'volume',
+		'currentActivity',
+		'hubBlocked',
 	],
 	discover: () => [],
 };
@@ -416,6 +445,7 @@ export function builtInRegistry(): IntegrationRegistry {
 		ikeaTradfriProfile,
 		ikeaMatterProfile,
 		ikeaZigbeeProfile,
+		...contextProfiles(),
 	]) {
 		registry.register(profile);
 	}

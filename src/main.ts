@@ -15,6 +15,7 @@ import { SourceConnections } from './connections/sources';
 import type { SourceDocument } from './connections/sources';
 import { getSourceJSON, readSourceFile, resolveSourceEndpoint } from './connections/io';
 import { NativeConnections } from './connections/runtime';
+import { SqlLogging } from './diagnostics/sql-logging';
 class Adaptivehome extends utils.Adapter {
 	private registry: IntegrationRegistry = builtInRegistry();
 	private runtime!: HomeRuntime;
@@ -53,6 +54,24 @@ class Adaptivehome extends utils.Adapter {
 		send: (backend, command, payload) => new Promise(resolve => this.sendTo(backend, command, payload, resolve)),
 	});
 	private connectionRound = false;
+	private sqlLogging = new SqlLogging(this.namespace, {
+		persist: record => this.persistJournal('sqlLogging', record),
+		ready: async adapter => {
+			const s = await this.getForeignStateAsync(`${adapter}.info.connection`);
+			return s?.val === true && s.ack === true && !s.q;
+		},
+		ensureOwnState: async id => {
+			if (!id.startsWith(`${this.namespace}.telemetry.`)) {
+				throw Error('logging_scope');
+			}
+			await this.setObjectNotExistsAsync(id.slice(this.namespace.length + 1), {
+				type: 'state',
+				common: { name: 'Generated adapter telemetry', type: 'string', role: 'json', read: true, write: false },
+				native: {},
+			});
+		},
+		send: (adapter, command, rows) => new Promise(resolve => this.sendTo(adapter, command, rows, resolve)),
+	});
 	private configuration = new ConfigurationStore(
 		{
 			read: async () => {
@@ -224,6 +243,16 @@ class Adaptivehome extends utils.Adapter {
 			}
 		}
 		await this.subscriptions();
+		const sqlJournal = await this.getStateAsync('journal.sqlLogging');
+		if (typeof sqlJournal?.val === 'string') {
+			try {
+				this.sqlLogging.restore(JSON.parse(sqlJournal.val));
+			} catch {
+				this.sqlLogging.restore(null);
+			}
+		}
+		this.runtime.history.onRecord = (kind, row) =>
+			this.sqlLogging.enqueue(kind, row, this.configuration.record.active.logging);
 		await this.configuration.applied(this.configuration.record.active.revision);
 		await this.setObjectNotExistsAsync('info.connection', {
 			type: 'state',
@@ -255,6 +284,7 @@ class Adaptivehome extends utils.Adapter {
 				return;
 			}
 			await this.runtime.tick();
+			void this.sqlLogging.flush(c.logging).catch(() => undefined);
 		} finally {
 			this.connectionRound = false;
 		}
@@ -361,6 +391,7 @@ class Adaptivehome extends utils.Adapter {
 				case 'status': {
 					result = this.runtime.status();
 					Object.assign(result as object, {
+						logging: this.sqlLogging.state(),
 						connections: { sources: this.sourceConnections.errors, native: this.nativeConnections.errors },
 					});
 					if (remoteScope) {
