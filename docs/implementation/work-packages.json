@@ -136,12 +136,13 @@
         "docs/verification/source-connections.md",
         "docs/verification/beta5-release.md",
         "docs/verification/readiness-connections.md",
-        "docs/verification/read-only-host-context.md"
+        "docs/verification/read-only-host-context.md",
+        "docs/verification/timed-lease-handoff.md"
       ],
       "openChecks": [],
-      "commit": "ff1857fdeb97354d3ddb964a498f558a54553a0d",
-      "updatedAt": "2026-11-09T17:58:26.035Z",
-      "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
+      "commit": "26a150358f2ea116da2c8ddf23f4407893a42bb6",
+      "updatedAt": "2026-11-09T19:06:01.258Z",
+      "correctionSummary": "Unreleased timed native leases with shared deadlines and App priority; guarded pure handoff/rollback contracts, exact artifact and read-only shadow verified. No production control change. Physical commissioning remains separate."
     },
     {
       "id": "AP-04",
@@ -204,12 +205,13 @@
         "docs/verification/policy-parity-corrections.md",
         "docs/verification/beta4-release.md",
         "docs/verification/source-connections.md",
-        "docs/verification/readiness-connections.md"
+        "docs/verification/readiness-connections.md",
+        "docs/verification/timed-lease-handoff.md"
       ],
       "openChecks": [],
-      "commit": "6cc2a82e2dfc066a53ae28cac35aeb2e2891b2d9",
-      "updatedAt": "2026-11-09T16:21:53.322Z",
-      "correctionSummary": "Published Beta 4: read-evidence freshness, continuous quiet/manual handling, configurable rule parity and bounded report-time corrections; exact artifact passed isolated tests. Physical/backend acceptance remains separate."
+      "commit": "26a150358f2ea116da2c8ddf23f4407893a42bb6",
+      "updatedAt": "2026-11-09T19:06:01.258Z",
+      "correctionSummary": "Unreleased timed native leases with shared deadlines and App priority; guarded pure handoff/rollback contracts, exact artifact and read-only shadow verified. No production control change. Physical commissioning remains separate."
     },
     {
       "id": "AP-07",
@@ -303,14 +305,17 @@
         "docs/verification/discovery-corrections.md",
         "docs/verification/source-connections.md",
         "docs/verification/readiness-connections.md",
-        "docs/verification/read-only-host-context.md"
+        "docs/verification/read-only-host-context.md",
+        "docs/verification/timed-lease-handoff.md"
       ],
       "openChecks": [
-        "Backend-host registration is implemented and actual controller-message tested but not installed in the running backend; a maintained integration/lifecycle change is separate from read-only work.",
-        "Actual independent server/device absolute one-shot expiry, physical feedback and ownership/handoff remain unverified."
+        "Commission constant fallback profiles under exclusive ownership and obtain target/profile/member/timezone-bound physical expiry, shared deadline, App priority, window, failure and cloud-traffic acceptance.",
+        "Deploy the new control host only within separately authorized commissioning; current production host remains read-only.",
+        "Accept actual device feedback, exclusive writer handoff, current manual wishes and rollback before enabling control."
       ],
-      "commit": "ff1857fdeb97354d3ddb964a498f558a54553a0d",
-      "updatedAt": "2026-11-09T17:58:26.035Z"
+      "commit": "26a150358f2ea116da2c8ddf23f4407893a42bb6",
+      "updatedAt": "2026-11-09T19:06:01.258Z",
+      "correctionSummary": "Unreleased timed native leases with shared deadlines and App priority; guarded pure handoff/rollback contracts, exact artifact and read-only shadow verified. No production control change. Physical commissioning remains separate."
     },
     {
       "id": "AP-11",
@@ -407,12 +412,13 @@
         "docs/verification/policy-parity-corrections.md",
         "docs/verification/beta5-release.md",
         "docs/verification/readiness-connections.md",
-        "docs/verification/read-only-host-context.md"
+        "docs/verification/read-only-host-context.md",
+        "docs/verification/timed-lease-handoff.md"
       ],
       "openChecks": [],
-      "commit": "ff1857fdeb97354d3ddb964a498f558a54553a0d",
-      "updatedAt": "2026-11-09T17:58:26.035Z",
-      "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
+      "commit": "26a150358f2ea116da2c8ddf23f4407893a42bb6",
+      "updatedAt": "2026-11-09T19:06:01.258Z",
+      "correctionSummary": "Unreleased timed native leases with shared deadlines and App priority; guarded pure handoff/rollback contracts, exact artifact and read-only shadow verified. No production control change. Physical commissioning remains separate."
     },
     {
       "id": "AP-15",
@@ -667,12 +673,13 @@
         "docs/verification/source-connections.md",
         "docs/verification/beta5-release.md",
         "docs/verification/readiness-connections.md",
-        "docs/verification/read-only-host-context.md"
+        "docs/verification/read-only-host-context.md",
+        "docs/verification/timed-lease-handoff.md"
       ],
       "openChecks": [],
-      "commit": "ff1857fdeb97354d3ddb964a498f558a54553a0d",
-      "updatedAt": "2026-11-09T17:58:26.035Z",
-      "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
+      "commit": "26a150358f2ea116da2c8ddf23f4407893a42bb6",
+      "updatedAt": "2026-11-09T19:06:01.258Z",
+      "correctionSummary": "Unreleased timed native leases with shared deadlines and App priority; guarded pure handoff/rollback contracts, exact artifact and read-only shadow verified. No production control change. Physical commissioning remains separate."
     },
     {
       "id": "AP-25",
@@ -728,16 +735,17 @@
         "docs/verification/source-connections.md",
         "docs/verification/beta5-release.md",
         "docs/verification/readiness-connections.md",
-        "docs/verification/read-only-host-context.md"
+        "docs/verification/read-only-host-context.md",
+        "docs/verification/timed-lease-handoff.md"
       ],
       "openChecks": [
-        "Authorized read-only host/context installation and final shadow repeat passed; no actuator write or handoff.",
-        "Real device/server absolute expiry proof for new heating programs",
-        "Physical feedback, manual-wish and exclusive writer handoff, rollback acceptance"
+        "Commission constant fallback profiles under exclusive ownership and obtain target/profile/member/timezone-bound physical expiry, shared deadline, App priority, window, failure and cloud-traffic acceptance.",
+        "Deploy the new control host only within separately authorized commissioning; current production host remains read-only.",
+        "Accept actual device feedback, exclusive writer handoff, current manual wishes and rollback before enabling control."
       ],
-      "commit": "ff1857fdeb97354d3ddb964a498f558a54553a0d",
-      "updatedAt": "2026-11-09T17:58:26.035Z",
-      "correctionSummary": "Independent original-store context and per-device receipts; guarded existing-session full-profile reads installed under scoped lifecycle authorization. Exact frozen package and private shadow passed. Native expiry and physical handoff remain separate."
+      "commit": "26a150358f2ea116da2c8ddf23f4407893a42bb6",
+      "updatedAt": "2026-11-09T19:06:01.258Z",
+      "correctionSummary": "Unreleased timed native leases with shared deadlines and App priority; guarded pure handoff/rollback contracts, exact artifact and read-only shadow verified. No production control change. Physical commissioning remains separate."
     },
     {
       "id": "AP-27",
@@ -1126,6 +1134,71 @@
       "updatedAt": "2026-11-09T17:58:26.035Z",
       "sourceCommit": "ff1857fdeb97354d3ddb964a498f558a54553a0d",
       "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42668381006"
+    },
+    {
+      "id": "timed-lease-handoff-2026-11-09",
+      "affectedPackages": [
+        "AP-03",
+        "AP-06",
+        "AP-10",
+        "AP-14",
+        "AP-24",
+        "AP-26"
+      ],
+      "implementationStatus": "implemented",
+      "verificationStatus": "passed",
+      "verificationScope": "anonymous contracts and native simulation, exact frozen package/controller, private read-only shadow and pure handoff preparation; scoped physical acceptance remains open",
+      "evidence": "docs/verification/timed-lease-handoff.md",
+      "updatedAt": "2026-11-09T19:06:01.258Z",
+      "sourceCommit": "26a150358f2ea116da2c8ddf23f4407893a42bb6",
+      "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42678889167",
+      "version": "0.1.0-beta.6-dev.1",
+      "artifactSha256": "7e977373d526c940815ebb0786a32715fc1675cd6b3286d8a80f641ca3432eab",
+      "distribution": "unreleased frozen development candidate; published Beta 5 unchanged",
+      "checks": {
+        "typecheck": true,
+        "build": true,
+        "lint": true,
+        "unitContractTests": 153,
+        "packageChecks": 61,
+        "controllerBrowserSoakTests": 15,
+        "installedRuntimeAdminFiles": 110,
+        "actualSqlSQLiteVerified": true,
+        "publicContentReview": true,
+        "crossPlatformCI": true,
+        "crossPlatformJobs": 7
+      },
+      "privateConfiguration": {
+        "disabledDraftCompleted": true,
+        "schemaAndMetadataAuditsPassed": true,
+        "independentContextHandoffComplete": true,
+        "fullConfiguredProfilesRead": true,
+        "timedLeaseAndSharedDeadlinePrepared": true,
+        "appPriorityPrepared": true,
+        "constantFallbackPreviewsAndOriginalBackupsPrepared": true,
+        "scopedHandoffAndRollbackPrepared": true,
+        "activationBlocked": true,
+        "backendMode": "read-only",
+        "newControlTransportInstalled": false,
+        "existingVendorFilesUnchanged": true,
+        "existingHousePoliciesFlowsAndRuntimeUnchanged": true,
+        "existingWriterProcessesUnchanged": true,
+        "actuatorWrites": 0,
+        "configurationWrites": 0,
+        "productionRestarts": 0,
+        "SQLMessages": 0,
+        "physicalExpiryAcceptance": false,
+        "physicalFeedbackAcceptance": false,
+        "exclusiveWriterHandoffPerformed": false,
+        "rollbackExecuted": false,
+        "readyForCutover": false,
+        "rawEvidence": "ignored local evidence only"
+      },
+      "remainingGates": [
+        "Commission constant fallback profiles under exclusive ownership and obtain target/profile/member/timezone-bound physical expiry, shared deadline, App priority, window, failure and cloud-traffic acceptance.",
+        "Deploy the new control host only within separately authorized commissioning; current production host remains read-only.",
+        "Accept actual device feedback, exclusive writer handoff, current manual wishes and rollback before enabling control."
+      ]
     }
   ],
   "releaseHistory": [
@@ -1189,12 +1262,12 @@
     "SQLMessages": 0,
     "updatedAt": "2026-11-09T14:38:17.825Z"
   },
-  "developmentVersion": "0.1.0-beta.6-dev.0",
+  "developmentVersion": "0.1.0-beta.6-dev.1",
   "developmentVerification": {
-    "id": "read-only-host-context-2026-11-09",
+    "id": "timed-lease-handoff-2026-11-09",
     "affectedPackages": [
       "AP-03",
-      "AP-07",
+      "AP-06",
       "AP-10",
       "AP-14",
       "AP-24",
@@ -1202,18 +1275,23 @@
     ],
     "implementationStatus": "implemented",
     "verificationStatus": "passed",
-    "verificationScope": "anonymous contracts, exact frozen package/controller, scoped private read-only deployment and shadow; physical control acceptance remains open",
-    "evidence": "docs/verification/read-only-host-context.md",
+    "verificationScope": "anonymous contracts and native simulation, exact frozen package/controller, private read-only shadow and pure handoff preparation; scoped physical acceptance remains open",
+    "evidence": "docs/verification/timed-lease-handoff.md",
+    "updatedAt": "2026-11-09T19:06:01.258Z",
+    "sourceCommit": "26a150358f2ea116da2c8ddf23f4407893a42bb6",
+    "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42678889167",
+    "version": "0.1.0-beta.6-dev.1",
+    "artifactSha256": "7e977373d526c940815ebb0786a32715fc1675cd6b3286d8a80f641ca3432eab",
+    "distribution": "unreleased frozen development candidate; published Beta 5 unchanged",
     "checks": {
       "typecheck": true,
       "build": true,
       "lint": true,
-      "unitContractTests": 138,
+      "unitContractTests": 153,
       "packageChecks": 61,
       "controllerBrowserSoakTests": 15,
-      "installedRuntimeAdminFiles": 106,
+      "installedRuntimeAdminFiles": 110,
       "actualSqlSQLiteVerified": true,
-      "readOnlyHostActualMessageboxVerified": true,
       "publicContentReview": true,
       "crossPlatformCI": true,
       "crossPlatformJobs": 7
@@ -1222,37 +1300,32 @@
       "disabledDraftCompleted": true,
       "schemaAndMetadataAuditsPassed": true,
       "independentContextHandoffComplete": true,
-      "legacyReportDependenciesRemoved": true,
-      "backendRegistrationInstalled": true,
-      "backendMode": "read-only",
       "fullConfiguredProfilesRead": true,
-      "separateFreshServerProfilePassVerified": true,
-      "originalSourceStoresMountedReadOnly": true,
+      "timedLeaseAndSharedDeadlinePrepared": true,
+      "appPriorityPrepared": true,
+      "constantFallbackPreviewsAndOriginalBackupsPrepared": true,
+      "scopedHandoffAndRollbackPrepared": true,
+      "activationBlocked": true,
+      "backendMode": "read-only",
+      "newControlTransportInstalled": false,
       "existingVendorFilesUnchanged": true,
-      "existingNativeBackendConfigurationUnchanged": true,
       "existingHousePoliciesFlowsAndRuntimeUnchanged": true,
-      "authorizedScopedBackendLifecyclePerformed": true,
+      "existingWriterProcessesUnchanged": true,
       "actuatorWrites": 0,
-      "configurationWritesDuringFinalPilot": 0,
-      "backendRestartsDuringFinalPilot": 0,
+      "configurationWrites": 0,
+      "productionRestarts": 0,
       "SQLMessages": 0,
-      "physicalAbsenceTestPerformed": false,
-      "absoluteExpiryVerified": false,
+      "physicalExpiryAcceptance": false,
+      "physicalFeedbackAcceptance": false,
       "exclusiveWriterHandoffPerformed": false,
-      "rollbackPrepared": true,
       "rollbackExecuted": false,
       "readyForCutover": false,
       "rawEvidence": "ignored local evidence only"
     },
     "remainingGates": [
-      "Real device/server absolute expiry proof for new heating programs",
-      "Physical feedback, manual-wish and exclusive writer handoff, rollback acceptance"
-    ],
-    "updatedAt": "2026-11-09T17:58:26.035Z",
-    "sourceCommit": "ff1857fdeb97354d3ddb964a498f558a54553a0d",
-    "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42668381006",
-    "version": "0.1.0-beta.6-dev.0",
-    "artifactSha256": "7b74797bb370a9c5bc3502064d93c3a424297a6e119987caaf466e9c1fd86b67",
-    "distribution": "unreleased development source and exact locally frozen candidate; published Beta 5 unchanged"
+      "Commission constant fallback profiles under exclusive ownership and obtain target/profile/member/timezone-bound physical expiry, shared deadline, App priority, window, failure and cloud-traffic acceptance.",
+      "Deploy the new control host only within separately authorized commissioning; current production host remains read-only.",
+      "Accept actual device feedback, exclusive writer handoff, current manual wishes and rollback before enabling control."
+    ]
   }
 }
