@@ -138,8 +138,8 @@
         "docs/verification/readiness-connections.md"
       ],
       "openChecks": [],
-      "commit": "a8cdae6a3e85876781f3ec4888af17505cd8d10c",
-      "updatedAt": "2026-11-09T16:10:33.566Z",
+      "commit": "6cc2a82e2dfc066a53ae28cac35aeb2e2891b2d9",
+      "updatedAt": "2026-11-09T16:21:53.322Z",
       "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
     },
     {
@@ -181,8 +181,8 @@
         "docs/verification/readiness-connections.md"
       ],
       "openChecks": [],
-      "commit": "a8cdae6a3e85876781f3ec4888af17505cd8d10c",
-      "updatedAt": "2026-11-09T16:10:33.566Z",
+      "commit": "6cc2a82e2dfc066a53ae28cac35aeb2e2891b2d9",
+      "updatedAt": "2026-11-09T16:21:53.322Z",
       "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
     },
     {
@@ -206,8 +206,8 @@
         "docs/verification/readiness-connections.md"
       ],
       "openChecks": [],
-      "commit": "3676191e44ee307fc483419ea771a432a31037dd",
-      "updatedAt": "2026-11-09T16:10:33.566Z",
+      "commit": "6cc2a82e2dfc066a53ae28cac35aeb2e2891b2d9",
+      "updatedAt": "2026-11-09T16:21:53.322Z",
       "correctionSummary": "Published Beta 4: read-evidence freshness, continuous quiet/manual handling, configurable rule parity and bounded report-time corrections; exact artifact passed isolated tests. Physical/backend acceptance remains separate."
     },
     {
@@ -230,8 +230,8 @@
         "docs/verification/readiness-connections.md"
       ],
       "openChecks": [],
-      "commit": "3676191e44ee307fc483419ea771a432a31037dd",
-      "updatedAt": "2026-11-09T16:10:33.566Z",
+      "commit": "6cc2a82e2dfc066a53ae28cac35aeb2e2891b2d9",
+      "updatedAt": "2026-11-09T16:21:53.322Z",
       "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries."
     },
     {
@@ -306,8 +306,8 @@
         "Backend-host registration is implemented and actual controller-message tested but not installed in the running backend; a maintained integration/lifecycle change is separate from read-only work.",
         "Actual independent server/device absolute one-shot expiry, physical feedback and ownership/handoff remain unverified."
       ],
-      "commit": "3676191e44ee307fc483419ea771a432a31037dd",
-      "updatedAt": "2026-11-09T16:10:33.566Z"
+      "commit": "6cc2a82e2dfc066a53ae28cac35aeb2e2891b2d9",
+      "updatedAt": "2026-11-09T16:21:53.322Z"
     },
     {
       "id": "AP-11",
@@ -406,8 +406,8 @@
         "docs/verification/readiness-connections.md"
       ],
       "openChecks": [],
-      "commit": "a8cdae6a3e85876781f3ec4888af17505cd8d10c",
-      "updatedAt": "2026-11-09T16:10:33.566Z",
+      "commit": "6cc2a82e2dfc066a53ae28cac35aeb2e2891b2d9",
+      "updatedAt": "2026-11-09T16:21:53.322Z",
       "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
     },
     {
@@ -665,8 +665,8 @@
         "docs/verification/readiness-connections.md"
       ],
       "openChecks": [],
-      "commit": "a8cdae6a3e85876781f3ec4888af17505cd8d10c",
-      "updatedAt": "2026-11-09T16:10:33.566Z",
+      "commit": "6cc2a82e2dfc066a53ae28cac35aeb2e2891b2d9",
+      "updatedAt": "2026-11-09T16:21:53.322Z",
       "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
     },
     {
@@ -728,8 +728,8 @@
         "Published Beta 4 read-only/shadow repeat completed with no device/configuration writes, runtime installation or restart; checked production settings unchanged.",
         "Before control takeover: supported installed platform, real device read-evidence producers, verified normalized sources, backend enrollment/availability, physical feedback, native full-profile/absolute-expiry transport, exclusive writer handoff, backup and rollback acceptance."
       ],
-      "commit": "a8cdae6a3e85876781f3ec4888af17505cd8d10c",
-      "updatedAt": "2026-11-09T16:10:33.566Z",
+      "commit": "6cc2a82e2dfc066a53ae28cac35aeb2e2891b2d9",
+      "updatedAt": "2026-11-09T16:21:53.322Z",
       "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
     },
     {
@@ -1029,7 +1029,8 @@
         "actualSqlSQLiteVerified": true,
         "readOnlyHostActualMessageboxVerified": true,
         "publicContentReview": true,
-        "crossPlatformCI": "pending"
+        "crossPlatformCI": true,
+        "crossPlatformJobs": 7
       },
       "privateConfiguration": {
         "disabledDraftCompleted": true,
@@ -1053,7 +1054,9 @@
         "Real device/server absolute expiry proof",
         "Physical feedback, exclusive writer handoff and rollback acceptance"
       ],
-      "updatedAt": "2026-11-09T16:10:33.566Z"
+      "updatedAt": "2026-11-09T16:21:53.321Z",
+      "sourceCommit": "6cc2a82e2dfc066a53ae28cac35aeb2e2891b2d9",
+      "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42652481987"
     }
   ],
   "releaseHistory": [
@@ -1145,7 +1148,8 @@
       "actualSqlSQLiteVerified": true,
       "readOnlyHostActualMessageboxVerified": true,
       "publicContentReview": true,
-      "crossPlatformCI": "pending"
+      "crossPlatformCI": true,
+      "crossPlatformJobs": 7
     },
     "privateConfiguration": {
       "disabledDraftCompleted": true,
@@ -1169,9 +1173,11 @@
       "Real device/server absolute expiry proof",
       "Physical feedback, exclusive writer handoff and rollback acceptance"
     ],
-    "updatedAt": "2026-11-09T16:10:33.566Z",
+    "updatedAt": "2026-11-09T16:21:53.322Z",
     "version": "0.1.0-beta.6-dev.0",
     "artifactSha256": "07b30dc4e585c3e0c257b16a5f355763350cddcea151597fd21b512ea10cbd6f",
-    "distribution": "unreleased development source and locally frozen candidate; published Beta 5 unchanged"
+    "distribution": "unreleased development source and locally frozen candidate; published Beta 5 unchanged",
+    "sourceCommit": "6cc2a82e2dfc066a53ae28cac35aeb2e2891b2d9",
+    "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42652481987"
   }
 }

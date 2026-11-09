@@ -59,3 +59,9 @@ still has no proven real device/server one-shot absolute expiry. No process time
 weekly end time or cached successful profile read substitutes for that capability.
 Physical feedback, manual-wish handoff, exclusive ownership and rollback remain open.
 The current configuration is therefore not approved for takeover.
+
+All seven source CI jobs passed on Node 22/24 across Linux, Windows and macOS:
+[actual source CI run](https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42652481987). Source commit: `6cc2a82e2dfc066a53ae28cac35aeb2e2891b2d9`.
+The frozen package remains byte-identical after the source commit. The completed
+private draft is based on the again-read active policies; no source times, physical
+expiry evidence or production permissions were invented to close the remaining gates.
