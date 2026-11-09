@@ -76,3 +76,11 @@ this beta. See [operations](operations.md) for private data, diagnostics, update
 Beta 2 requires exactly one function per physical output, including disabled aliases. Combine schedules, conditions and hard limits within that function. Before upgrading beta 1, export/backup and remove overlapping function aliases using its Admin. Ambiguous saved configurations are rejected; restore a valid private configuration rather than allowing an automatic guess about ownership.
 
 Beta 3 separates thermostat targets from measured temperatures and rejects ambiguous Hue actuator aliases, sensor-enable controls and automatic aggregate proposals. Source units must match the declared conversion; Wh energy is normalized to kWh. Legacy Air cx power/fan-percent paths are read-only. Discovery does not rewrite already saved bindings: review existing mappings, physical identities and freshness before activation. Learning Observe does not stop configured classical rules; a strictly read-only shadow pilot must run without an actuator write port.
+
+Beta 4 adds separate event/read evidence, continuous quiet timers, quiet-based
+manual OFF rearm, house behavior and bounded climate conditions. Optional
+settings are editable in Admin. A readable ON remains valid for an OFF-only
+output. Missing device read proof or normalized context sources are not created
+by selecting these options. The native heating extension still needs a real
+supported backend transport; ordinary setpoints or profile selection do not
+supply it. See [policy contracts and connection limits](policy-parity.md).

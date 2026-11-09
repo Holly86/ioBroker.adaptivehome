@@ -104,3 +104,12 @@ Details: [Betrieb](operations.md), [Kompatibilität](compatibility.md), [Prüfun
 Beta 2 erlaubt genau eine Funktion pro physischem Ausgang, auch bei deaktivierten Aliasfunktionen. Zeitpläne, Bedingungen und harte Grenzen in dieser Funktion zusammenführen. Vor dem Update von Beta 1 sichern/exportieren und überlappende Aliasfunktionen im Admin entfernen. Mehrdeutige gespeicherte Konfigurationen werden abgelehnt; eine gültige private Konfiguration wiederherstellen, statt Zuständigkeit automatisch zu raten.
 
 Beta 3 trennt Soll- und Messtemperaturen und schließt mehrdeutige Hue-Aktoraliase, Sensorfreigaben und automatische Gruppenvorschläge aus. Quelleinheiten müssen zur Umrechnung passen; Wh werden nach kWh normalisiert. Ältere Air-cx-Ein/Aus-/Lüfterprozent-Pfade bleiben lesend. Die Erkennung schreibt gespeicherte Bindungen nicht automatisch um: Zuordnungen, physische Identität und Datenalter vor Aktivierung prüfen. Der Lernmodus Beobachten stoppt klassische Regeln nicht; ein rein lesender Shadow-Pilot benötigt eine Laufzeit ohne Aktorschreibschnittstelle.
+
+Beta 4 ergänzt getrennte Ereignis-/Abfragezeiten, kontinuierlichen Nachlauf,
+Hand-Aus bis zur bestätigten Ruhe, Hausregeln und begrenzte Heizbedingungen.
+Die optionalen Einstellungen werden direkt im Admin bearbeitet. Ein lesbarer
+EIN-Zustand bleibt auch bei ausschließlich erlaubtem AUS gültig. Fehlende
+Geräte-Frischenachweise und Kontextquellen werden nicht erfunden. Die native
+Heizprofil-Erweiterung benötigt weiterhin einen tatsächlich unterstützten
+Backend-Weg; ein normaler Sollwert oder eine Profilwahl reicht nicht aus.
+Details und Anschlussgrenzen: [Regelverträge](policy-parity.md).

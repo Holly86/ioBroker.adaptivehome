@@ -5,7 +5,7 @@ air quality, scheduled equipment and continuous minimum service. Start with one 
 learning up to an automatic observe → learn → plan → execute → check effect → rollback cycle.
 No language model, notification account, Node-RED or separate web app is required.
 
-**0.1.0-beta.3:** implemented and tested on a real js-controller with synthetic devices.
+**0.1.0-beta.4:** implemented and tested on a real js-controller with synthetic devices.
 Physical devices and cloud accounts have not been certified. See [compatibility](docs/compatibility.md).
 
 [Deutsche Anleitung](docs/guide.de.md) · [English guide](docs/guide.en.md) ·
@@ -19,7 +19,7 @@ Tested locally: Node 24.22.1, controller 7.2.5, Admin 8.3.11 on Windows.
 Download the release's `.tgz` and `SHA256SUMS.txt`. Verify its checksum, then run in the ioBroker directory:
 
 ```sh
-npm install ./iobroker.adaptivehome-0.1.0-beta.3.tgz
+npm install ./iobroker.adaptivehome-0.1.0-beta.4.tgz
 iobroker upload adaptivehome
 iobroker add adaptivehome --enabled
 ```
@@ -27,6 +27,12 @@ iobroker add adaptivehome --enabled
 Open Adaptive Home in Admin's tab menu. Use the built `.tgz`; the source archive needs a development
 build. GitHub beta, npm publication and ioBroker latest/stable inclusion are separate statuses.
 This beta does not claim catalog inclusion.
+
+Beta 4 includes the [freshness and policy corrections](docs/policy-parity.md).
+Device read-evidence and normalized context sources must actually be connected.
+The native heating profile extension is contract-tested; the standard hmip backend
+does not provide its full-profile/absolute-expiry transport. Keep unsupported
+functions disabled. Beta 4 does not authorize a production handoff.
 
 ## Configure
 
@@ -90,6 +96,14 @@ Meter readings, power integration and estimates have distinct labels and coverag
 household energy-saving claim is made.
 
 ## Changelog
+
+### 0.1.0-beta.4
+
+* Separate device read evidence from event time; support continuous twenty-minute quiet without replaying old movement.
+* Add quiet-based manual OFF rearm, manual input/signature handling, departure/welcome/session rules and confirmed compound light activation.
+* Restrict command values independently of readable feedback, including OFF-only outputs that are currently ON.
+* Add context-aware climate and a finite native-profile SDK contract with explicit dynamic fallback choices and correlated delayed activation/expiry.
+* Expose the optional settings in Admin and add anonymized regression tests. Real source connections, native backend transport and hardware acceptance remain separate prerequisites.
 
 ### 0.1.0-beta.3
 

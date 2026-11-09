@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "adaptivehome",
-    "version": "0.1.0-beta.3",
+    "version": "0.1.0-beta.4",
     "news": {
+      "0.1.0-beta.4": {
+        "en": "Separate event/read freshness, continuous quiet and manual/house rules; add bounded climate and native profile extension contracts with explicit connection limits.",
+        "de": "Ereignis-/Abfragefrische getrennt, kontinuierliche Ruhe und Hand-/Hausregeln ergänzt; begrenzte Klimaregeln und native Profilverträge mit ausdrücklichen Anschlussgrenzen."
+      },
       "0.1.0-beta.3": {
         "en": "Correct temperature/control discovery, classify Hue resources and quarantine aliases, validate source units and add read-only legacy Air telemetry.",
         "de": "Temperatur-/Steuererkennung korrigiert, Hue-Ressourcen klassifiziert und mehrdeutige Aliase gesperrt, Quelleinheiten geprüft und ältere Air-Telemetrie nur lesend ergänzt."

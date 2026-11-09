@@ -88,7 +88,7 @@ read/command/feedback paths; observe manual input, successful report, timeout, d
 reconnect and unchanged measurements. Keep raw reports private. An actuator write requires
 specific pilot authorization; hardware availability does not imply switching permission.
 
-Post-Beta-3 source adds explicit device read evidence, manual quiet rearm,
+Beta 4 adds explicit device read evidence, manual quiet rearm,
 compound appearance, edge-based house rules and context-aware climate.
 See [policy contracts and limits](policy-parity.md). A cached connected flag is
 not a successful device read. The native full-profile transport is an SDK

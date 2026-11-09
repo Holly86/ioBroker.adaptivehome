@@ -1,6 +1,6 @@
 # Device freshness and configurable policy behavior
 
-These additive schema-v1 features are in the source after Beta 3. The immutable
+These additive schema-v1 features ship in Beta 4. The immutable
 `v0.1.0-beta.3` package does not contain them. Contract tests and controller
 emulators do not establish physical hardware support.
 

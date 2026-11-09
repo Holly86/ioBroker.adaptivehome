@@ -40,7 +40,7 @@ explicitly for a new API major; v1 has no automatic permissive migration. A new
 capability must document unit/type/quality semantics and policies that can consume it.
 Do not reuse actual installation identifiers or publish raw evidence in fixtures.
 
-Post-Beta-3 additive v1 contracts are described in [policy-parity.md](policy-parity.md).
+Beta-4 additive v1 contracts are described in [policy-parity.md](policy-parity.md).
 Explicit mappings can select device-scoped read evidence and a separate event
 timestamp. `writeValues` limits commands without invalidating readable feedback.
 RGBW components have separate declared mappings and require all feedback.
