@@ -105,6 +105,13 @@ export class IntegrationRegistry {
 		}
 	}
 }
+function timestampValue(value: unknown): number {
+	return typeof value === 'number'
+		? value
+		: typeof value === 'string' && /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?(?:Z|[+-]\d\d:\d\d)?$/.test(value)
+			? Date.parse(/(?:Z|[+-]\d\d:\d\d)$/.test(value) ? value : `${value}Z`)
+			: NaN;
+}
 export function normalize(
 	binding: DeviceBinding,
 	mapping: CapabilityMapping,
@@ -210,15 +217,8 @@ export function normalize(
 	result.quality = raw.ts > now ? 'unknown' : now - raw.ts > mapping.maxAgeMs ? 'stale' : 'valid';
 	if (mapping.eventTimestampId) {
 		const event = evidence?.event;
-		const value = event?.val;
 		// Hue's zone-less ISO timestamps are UTC, independent of the controller locale.
-		const at =
-			typeof value === 'number'
-				? value
-				: typeof value === 'string' &&
-					  /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?(?:Z|[+-]\d\d:\d\d)?$/.test(value)
-					? Date.parse(/(?:Z|[+-]\d\d:\d\d)$/.test(value) ? value : `${value}Z`)
-					: NaN;
+		const at = timestampValue(event?.val);
 		if (
 			event?.ack !== true ||
 			!Number.isFinite(event.ts) ||
@@ -294,7 +294,24 @@ export async function readObservation(
 		mapping.freshness?.reachableId ? read(mapping.freshness.reachableId) : null,
 		mapping.eventTimestampId ? read(mapping.eventTimestampId) : null,
 	]);
-	return normalize(binding, mapping, raw, now(), { verifiedAt, reachable, event });
+	const at = now(),
+		evidence = { verifiedAt, reachable, event };
+	let result = normalize(binding, mapping, raw, at, evidence);
+	// Resolve tiny cross-process clock jitter by waiting for real time, never by changing report timestamps.
+	const timestamps = [
+		raw?.ts,
+		verifiedAt?.ts,
+		reachable?.ts,
+		event?.ts,
+		timestampValue(verifiedAt?.val),
+		timestampValue(event?.val),
+	].filter((value): value is number => typeof value === 'number' && Number.isFinite(value));
+	const ahead = Math.max(at, ...timestamps) - at;
+	if (result.quality === 'unknown' && result.value !== null && ahead > 0 && ahead <= 20) {
+		await new Promise(resolve => setTimeout(resolve, Math.ceil(ahead) + 1));
+		result = normalize(binding, mapping, raw, now(), evidence);
+	}
+	return result;
 }
 export function auditMapping(mapping: CapabilityMapping, metadata: Record<string, StateMetadata>): void {
 	for (const [point, type] of [

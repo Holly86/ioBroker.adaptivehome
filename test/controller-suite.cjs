@@ -106,30 +106,34 @@ async function seed(harness, config, overrides = {}) {
 function emulator(harness, config, heartbeatMs = 0) {
 	const outputs = new Set(config.bindings.flatMap(b => b.capabilities.map(c => c.writeId).filter(Boolean))),
 		writes = [],
-		reported = new Map();
+		reported = new Map(),
+		pending = new Set();
+	const report = (id, value) => {
+		const measuredAt = Date.now();
+		const timer = setTimeout(() => {
+			pending.delete(timer);
+			void harness.states.setStateAsync(id, {
+				val: value,
+				ack: true,
+				ts: measuredAt,
+				from: 'system.adapter.synthetic.0',
+			});
+		}, 100);
+		pending.add(timer);
+	};
 	const listener = (id, state) => {
 		if (!outputs.has(id) || !state || state.ack || !state.from?.startsWith('system.adapter.adaptivehome.')) {
 			return;
 		}
 		writes.push({ id, value: state.val, at: Date.now() });
 		reported.set(id, state.val);
-		void harness.states.setStateAsync(id, {
-			val: state.val,
-			ack: true,
-			ts: Date.now(),
-			from: 'system.adapter.synthetic.0',
-		});
+		report(id, state.val);
 	};
 	harness.on('stateChange', listener);
 	const heartbeat = heartbeatMs
 		? setInterval(() => {
 				for (const [id, value] of reported) {
-					void harness.states.setStateAsync(id, {
-						val: value,
-						ack: true,
-						ts: Date.now(),
-						from: 'system.adapter.synthetic.0',
-					});
+					report(id, value);
 				}
 			}, heartbeatMs)
 		: undefined;
@@ -137,6 +141,9 @@ function emulator(harness, config, heartbeatMs = 0) {
 		writes,
 		close: () => {
 			clearInterval(heartbeat);
+			for (const timer of pending) {
+				clearTimeout(timer);
+			}
 			harness.removeListener('stateChange', listener);
 		},
 	};
@@ -693,7 +700,27 @@ function defineControllerTests({ suite }) {
 						ts: quietAt,
 						from: 'system.adapter.synthetic.0',
 					});
-					await until(() => device.writes.some(w => w.value === false), 'five-minute quiet off', 315000);
+					let inspected = 0;
+					await until(
+						async () => {
+							if (Date.now() - inspected >= 1000) {
+								inspected = Date.now();
+								const status = (await rpc('status')).result,
+									trace = status.traces.light;
+								if (
+									Date.now() - quietAt > 5000 &&
+									['actuator_unavailable', 'motion_unavailable', 'no_new_motion'].includes(
+										trace?.reasonCode,
+									)
+								) {
+									throw Error(`Quiet continuity lost: ${JSON.stringify(trace)}`);
+								}
+							}
+							return device.writes.some(w => w.value === false);
+						},
+						'five-minute quiet off',
+						315000,
+					);
 					const off = device.writes.find(w => w.value === false);
 					assert.ok(off.at - quietAt >= 300000);
 					await until(

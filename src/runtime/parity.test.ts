@@ -35,6 +35,60 @@ const context = (now: number): PolicyContext => ({
 });
 
 describe('Anonymized freshness and policy parity regressions', () => {
+	it('waits for millisecond report time to become eligible without rewriting it or accepting a larger future timestamp', async () => {
+		const binding = referenceConfiguration('apartment').bindings[0],
+			mapping = mappingSchema.parse({ capability: 'switch', readId: 'fixture.0.switch', valueType: 'boolean' });
+		let at = 1000;
+		const timer = setTimeout(() => {
+			at = 1002;
+		}, 0);
+		try {
+			const value = await readObservation(
+				binding,
+				mapping,
+				async () => ({ val: true, ts: 1001, ack: true }),
+				() => at,
+			);
+			assert.equal(value.quality, 'valid');
+			assert.equal(value.measuredAt, 1001);
+			assert.equal(value.receivedAt, 1002);
+		} finally {
+			clearTimeout(timer);
+		}
+		assert.equal(
+			(
+				await readObservation(
+					binding,
+					mapping,
+					async () => ({ val: true, ts: 2000, ack: true }),
+					() => 1000,
+				)
+			).quality,
+			'unknown',
+		);
+		assert.equal(
+			(
+				await readObservation(
+					binding,
+					mapping,
+					async () => ({ val: true, ts: 1001, ack: true }),
+					() => 1000,
+				)
+			).quality,
+			'unknown',
+		);
+		assert.equal(
+			(
+				await readObservation(
+					binding,
+					mapping,
+					async () => ({ val: true, ts: 1001, ack: true, q: 1 }),
+					() => 1000,
+				)
+			).quality,
+			'invalid',
+		);
+	});
 	it('interprets zone-less event timestamps as UTC and rejects unconfirmed or malformed timestamp evidence', () => {
 		const binding = referenceConfiguration('apartment').bindings[0];
 		const mapping = mappingSchema.parse({

@@ -46,6 +46,11 @@ final execution use the same normalization. Command acknowledgement still
 requires new, correlated post-dispatch feedback; read evidence alone cannot
 confirm a command.
 
+The read layer may wait up to a few milliseconds for a report at most 20 ms in
+the future to become eligible in real time. It never changes timestamps or
+accepts a still-future value; larger future offsets remain unknown. This avoids
+treating ordinary cross-process clock jitter as a device outage.
+
 ## Light and house behavior
 
 `parameters.holdMs` supports a twenty-minute quiet period independently of the
