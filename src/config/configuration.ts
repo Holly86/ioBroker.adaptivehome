@@ -11,12 +11,69 @@ export function validateConfiguration(input: unknown, registry?: IntegrationRegi
 		config.sources,
 		config.notificationRoutes,
 		config.scenes,
+		config.connections,
+		config.nativeTransports,
 	]) {
 		if (new Set(entries.map(item => item.id)).size !== entries.length) {
 			throw new Error('duplicate_id');
 		}
 	}
 	const outputs = new Set<string>();
+	for (const c of config.connections) {
+		if (c.outputs.some(o => o.transform === 'cases' && (!o.cases || o.defaultValue === undefined))) {
+			throw Error('source_cases_incomplete');
+		}
+		if (new Set(c.outputs.map(o => o.key)).size !== c.outputs.length) {
+			throw Error('duplicate_source_output');
+		}
+		if (
+			c.outputs.some(
+				o => (c.kind !== 'http-json' && !o.timestampPath) || (o.transform === 'forecastMedian' && !o.forecast),
+			)
+		) {
+			throw Error('source_evidence_required');
+		}
+		if (c.kind === 'state-json' && /^adaptivehome\./.test(c.stateId)) {
+			throw Error('source_cycle');
+		}
+		if (
+			c.kind === 'state-map' &&
+			(new Set(c.inputs.map(i => i.key)).size !== c.inputs.length ||
+				c.inputs.some(i => /^adaptivehome\./.test(i.stateId)))
+		) {
+			throw Error('source_cycle_or_duplicate_input');
+		}
+	}
+	for (const t of config.nativeTransports) {
+		if (t.min > t.max || new Set(t.memberIds).size !== t.memberIds.length) {
+			throw Error('native_transport_invalid');
+		}
+	}
+	if (
+		new Set(config.nativeTransports.map(t => t.physicalId)).size !== config.nativeTransports.length ||
+		new Set(config.nativeTransports.map(t => `${t.backend}:${t.groupId}`)).size !== config.nativeTransports.length
+	) {
+		throw Error('duplicate_native_transport');
+	}
+	for (const b of config.bindings) {
+		for (const mapping of b.capabilities) {
+			if (/^adaptivehome\./.test(mapping.writeId ?? '')) {
+				const match = /^adaptivehome\.(\d+)\.native\.([a-zA-Z0-9_-]+)\.command$/.exec(mapping.writeId!);
+				const t = config.nativeTransports.find(t => t.id === match?.[2]);
+				const prefix = match ? `adaptivehome.${match[1]}.native.${match[2]}` : '';
+				if (
+					!t ||
+					mapping.codec !== 'nativeHeatingProgram' ||
+					t.physicalId !== b.physicalId ||
+					mapping.readId !== `${prefix}.report` ||
+					mapping.confirmId !== `${prefix}.report` ||
+					mapping.freshness?.verifiedAtId !== `${prefix}.verifiedAt`
+				) {
+					throw Error('native_transport_mapping');
+				}
+			}
+		}
+	}
 	const physical = new Set<string>();
 	for (const binding of config.bindings) {
 		registry?.validate(binding);

@@ -41,3 +41,11 @@ Für reale Freigabe Modell, Firmware, Backendversion und Transport privat dokume
 prüfen, anschließend nur ausdrücklich freigegebene Aktoren mit gesichertem Rückweg übernehmen.
 Erfolgreichen Befehl, Gerätemeldung, Handbedienung, Timeout und Wiederverbindung getrennt beobachten.
 Details und Quellen: [Kompatibilitätsmatrix](compatibility.md), [englischer SDK-Vertrag](integration-sdk.md).
+## Quellen und Heizprofil-Transport im Entwicklungsstand
+
+Der aktuelle Quellstand ergänzt ausführbare Leseanschlüsse sowie die SDK-Exporte
+`HmipSessionSource` und `HmipNativeEndpoint`. Die vorhandene Herstellersitzung wird
+wiederverwendet. Eine gepflegte Backend-Erweiterung muss die Nachrichten registrieren;
+installierte Fremdadapter werden nicht verändert. Ein Wochenprofil allein belegt keinen
+absoluten einmaligen Ablauf. Ohne echten Geräte-/Servernachweis bleibt die Steuerung
+gesperrt. Details: [Quellenverbindungen](connections.md).

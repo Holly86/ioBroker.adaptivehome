@@ -11,6 +11,10 @@ import { clientSchema, MUTATIONS, OperationGuard, verifyControl } from './runtim
 import { OptionalProvider, providerSchema } from './learning/provider';
 import { deadline } from './runtime/clock';
 import { addTypeHints } from './integrations/type-hints';
+import { SourceConnections } from './connections/sources';
+import type { SourceDocument } from './connections/sources';
+import { getSourceJSON, readSourceFile, resolveSourceEndpoint } from './connections/io';
+import { NativeConnections } from './connections/runtime';
 class Adaptivehome extends utils.Adapter {
 	private registry: IntegrationRegistry = builtInRegistry();
 	private runtime!: HomeRuntime;
@@ -20,6 +24,35 @@ class Adaptivehome extends utils.Adapter {
 	private timer?: ReturnType<typeof setInterval>;
 	private subscribedIds = new Set<string>();
 	private configurationTasks: Promise<unknown> = Promise.resolve();
+	private sourceConnections = new SourceConnections(this.namespace, {
+		readState: async id => (await this.getForeignStateAsync(id)) as StateValue | null,
+		readFile: key => readSourceFile(key, this.config.sourceFiles ?? {}),
+		readBackend: backend =>
+			new Promise(resolve =>
+				this.sendTo(backend, 'adaptivehomeRead', { protocol: 'adaptivehome.read.v1' }, result =>
+					resolve(result as unknown as SourceDocument),
+				),
+			),
+		getJSON: async key => {
+			const endpoints = JSON.parse(this.config.sourceEndpoints || '{}');
+			if (!Object.hasOwn(endpoints, key)) {
+				throw Error('source_endpoint_not_declared');
+			}
+			const resolved = await resolveSourceEndpoint(
+				endpoints[key],
+				async id => {
+					const obj = await this.getForeignObjectAsync(`system.adapter.${id}`);
+					return obj?.native ?? {};
+				},
+				value => this.decrypt(value),
+			);
+			return getSourceJSON(resolved);
+		},
+	});
+	private nativeConnections = new NativeConnections(this.namespace, {
+		send: (backend, command, payload) => new Promise(resolve => this.sendTo(backend, command, payload, resolve)),
+	});
+	private connectionRound = false;
 	private configuration = new ConfigurationStore(
 		{
 			read: async () => {
@@ -95,13 +128,42 @@ class Adaptivehome extends utils.Adapter {
 		await this.configuration.load();
 		this.runtime = new HomeRuntime(() => this.configuration.record.active, {
 			authorizeBinding: binding => this.registry.validate(binding),
-			read: async id => (await this.getForeignStateAsync(id)) as StateValue | null,
+			read: async id =>
+				this.sourceConnections.metadata(id)
+					? this.sourceConnections.read(id)
+					: this.nativeConnections.metadata(id)
+						? this.nativeConnections.read(id)
+						: ((await this.getForeignStateAsync(id)) as StateValue | null),
 			metadata: async id => {
+				const virtual = this.sourceConnections.metadata(id) ?? this.nativeConnections.metadata(id);
+				if (virtual) {
+					return virtual;
+				}
 				const obj = await this.getForeignObjectAsync(id);
 				return obj?.type === 'state' ? (obj.common as StateMetadata) : null;
 			},
 			write: async (id, value) => {
+				if (this.nativeConnections.handles(id)) {
+					await this.nativeConnections.write(id, value);
+					return;
+				}
+				if (/^adaptivehome\./.test(id)) {
+					throw Error('protected_state');
+				}
 				await this.setForeignStateAsync(id, value, false);
+			},
+			writeNative: async (id, program, dispatchDeadline) => {
+				if (Date.now() >= dispatchDeadline) {
+					throw Error('command_expired');
+				}
+				if (this.nativeConnections.handles(id)) {
+					await this.nativeConnections.write(id, JSON.stringify(program), dispatchDeadline);
+					return;
+				}
+				if (/^adaptivehome\./.test(id)) {
+					throw Error('protected_state');
+				}
+				await this.setForeignStateAsync(id, JSON.stringify(program), false);
 			},
 			send: (adapter, command, payload) =>
 				new Promise(resolve => this.sendTo(adapter, command, payload, resolve)),
@@ -171,11 +233,31 @@ class Adaptivehome extends utils.Adapter {
 		await this.setStateAsync('info.connection', true, true);
 		this.timer = setInterval(
 			() =>
-				void this.runtime
-					.tick()
-					.catch(() => this.log.warn('A runtime round failed; no global device action was issued')),
+				void this.connectedTick().catch(() =>
+					this.log.warn('A runtime round failed; no global device action was issued'),
+				),
 			1000,
 		);
+	}
+	private async connectedTick(): Promise<void> {
+		if (this.connectionRound) {
+			return;
+		}
+		this.connectionRound = true;
+		try {
+			const c = this.configuration.record.active;
+			// Optional I/O refreshes in the background. A hung source cannot suspend healthy functions.
+			void Promise.all([
+				this.sourceConnections.refresh(c.connections),
+				this.nativeConnections.refresh(c.nativeTransports),
+			]).catch(() => undefined);
+			if (c !== this.configuration.record.active) {
+				return;
+			}
+			await this.runtime.tick();
+		} finally {
+			this.connectionRound = false;
+		}
 	}
 	private async persistJournal(key: string, value: unknown): Promise<void> {
 		await this.setObjectNotExistsAsync(`journal.${key}`, {
@@ -186,6 +268,8 @@ class Adaptivehome extends utils.Adapter {
 		await this.setStateAsync(`journal.${key}`, JSON.stringify(value), true);
 	}
 	private async subscriptions(): Promise<void> {
+		this.sourceConnections.configure(this.configuration.record.active.connections);
+		this.nativeConnections.configure(this.configuration.record.active.nativeTransports);
 		this.runtime.configure();
 		const next = new Set<string>();
 		for (const binding of this.configuration.record.active.bindings) {
@@ -276,6 +360,9 @@ class Adaptivehome extends utils.Adapter {
 					break;
 				case 'status': {
 					result = this.runtime.status();
+					Object.assign(result as object, {
+						connections: { sources: this.sourceConnections.errors, native: this.nativeConnections.errors },
+					});
 					if (remoteScope) {
 						const status = result as {
 							functions: Record<string, unknown>;

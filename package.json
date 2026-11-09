@@ -1,6 +1,6 @@
 {
   "name": "iobroker.adaptivehome",
-  "version": "0.1.0-beta.4",
+  "version": "0.1.0-beta.5-dev.0",
   "description": "Configurable capability-based home automation with optional local learning",
   "author": {
     "name": "Holly86",
@@ -60,7 +60,8 @@
     "docs/verification/scenarios.md",
     "docs/integration-sdk.de.md",
     "docs/pilot.md",
-    "docs/policy-parity.md"
+    "docs/policy-parity.md",
+    "docs/connections.md"
   ],
   "scripts": {
     "prebuild": "rimraf build",

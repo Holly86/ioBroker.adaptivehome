@@ -132,11 +132,12 @@
         "docs/verification/AP-03.md",
         "docs/verification/discovery-corrections.md",
         "docs/verification/policy-parity-corrections.md",
-        "docs/verification/beta4-release.md"
+        "docs/verification/beta4-release.md",
+        "docs/verification/source-connections.md"
       ],
       "openChecks": [],
       "commit": "577a660adb1f073e3e0d68c96e100635ddd0e0af",
-      "updatedAt": "2026-11-09T11:52:19.845Z",
+      "updatedAt": "2026-11-09T13:12:29.887Z",
       "correctionSummary": "Published Beta 4: read-evidence freshness, continuous quiet/manual handling, configurable rule parity and bounded report-time corrections; exact artifact passed isolated tests. Physical/backend acceptance remains separate."
     },
     {
@@ -172,11 +173,12 @@
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
-        "docs/verification/AP-05.md"
+        "docs/verification/AP-05.md",
+        "docs/verification/source-connections.md"
       ],
       "openChecks": [],
       "commit": "b74df969f28c122898f990319f0acb4cdcb21a8b",
-      "updatedAt": "2026-11-08T16:05:32.714Z"
+      "updatedAt": "2026-11-09T13:12:29.887Z"
     },
     {
       "id": "AP-06",
@@ -194,11 +196,12 @@
       "evidence": [
         "docs/verification/AP-06.md",
         "docs/verification/policy-parity-corrections.md",
-        "docs/verification/beta4-release.md"
+        "docs/verification/beta4-release.md",
+        "docs/verification/source-connections.md"
       ],
       "openChecks": [],
       "commit": "577a660adb1f073e3e0d68c96e100635ddd0e0af",
-      "updatedAt": "2026-11-09T11:52:19.845Z",
+      "updatedAt": "2026-11-09T13:12:29.887Z",
       "correctionSummary": "Published Beta 4: read-evidence freshness, continuous quiet/manual handling, configurable rule parity and bounded report-time corrections; exact artifact passed isolated tests. Physical/backend acceptance remains separate."
     },
     {
@@ -216,11 +219,12 @@
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-07.md",
-        "docs/verification/policy-parity-corrections.md"
+        "docs/verification/policy-parity-corrections.md",
+        "docs/verification/source-connections.md"
       ],
       "openChecks": [],
       "commit": "167b2f8faeae931e868a615aa00a240ab5b7d36e",
-      "updatedAt": "2026-11-09T10:33:04.488Z",
+      "updatedAt": "2026-11-09T13:12:29.887Z",
       "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries."
     },
     {
@@ -285,13 +289,15 @@
       "hardwareChecksMayBePending": true,
       "evidence": [
         "docs/verification/AP-10.md",
-        "docs/verification/discovery-corrections.md"
+        "docs/verification/discovery-corrections.md",
+        "docs/verification/source-connections.md"
       ],
       "openChecks": [
-        "Exact CCU and HmIP Cloud backend/thermostat/group feedback pending. Native schedule-content and certified native expiry are not advertised."
+        "Public read/native extension is implemented and software-tested but not registered in the installed standard backend. Maintained backend integration and exact physical group/member acceptance remain pending.",
+        "A real device/server absolute one-shot expiry facility is still required. The standard weekly recurrence is not this facility; no local timer or private installed-module patch substitutes for it."
       ],
       "commit": "4b2fde448bbe458a6688c4a52fe0dcc5b6e0c42d",
-      "updatedAt": "2026-11-08T18:32:09.147Z"
+      "updatedAt": "2026-11-09T13:12:29.887Z"
     },
     {
       "id": "AP-11",
@@ -437,13 +443,14 @@
       "hardwareChecksMayBePending": false,
       "evidence": [
         "docs/verification/AP-16.md",
-        "docs/verification/policy-parity-corrections.md"
+        "docs/verification/policy-parity-corrections.md",
+        "docs/verification/source-connections.md"
       ],
       "openChecks": [
-        "The finite native-profile extension is contract-tested only. The standard hmip backend lacks this full-content/absolute-expiry transport; a real backend and autonomous device fallback remain unverified."
+        "Backend-hosted full-profile transport is implemented with anonymous expiry simulation; maintained backend registration, real autonomous absolute expiry and physical acceptance remain unverified."
       ],
       "commit": "5f7fa170c777c21554263f217adc977e2040dfa8",
-      "updatedAt": "2026-11-09T10:42:18.161Z",
+      "updatedAt": "2026-11-09T13:12:29.887Z",
       "correctionSummary": "Post-Beta-3 source: independent device read evidence, continuous quiet/manual leases, configurable house/climate policy, finite native-program extension and disabled offline migration draft; see evidence for contract/controller/physical boundaries. Explicit dynamic native fallback choices and correlated activation/expiry beyond command acknowledgement deadlines are contract-tested."
     },
     {
@@ -639,11 +646,12 @@
         "docs/verification/scenarios.md",
         "docs/verification/discovery-corrections.md",
         "docs/verification/policy-parity-corrections.md",
-        "docs/verification/beta4-release.md"
+        "docs/verification/beta4-release.md",
+        "docs/verification/source-connections.md"
       ],
       "openChecks": [],
       "commit": "577a660adb1f073e3e0d68c96e100635ddd0e0af",
-      "updatedAt": "2026-11-09T11:52:19.845Z",
+      "updatedAt": "2026-11-09T13:12:29.887Z",
       "correctionSummary": "Published Beta 4: read-evidence freshness, continuous quiet/manual handling, configurable rule parity and bounded report-time corrections; exact artifact passed isolated tests. Physical/backend acceptance remains separate."
     },
     {
@@ -695,14 +703,15 @@
         "docs/verification/AP-26.md",
         "docs/verification/discovery-corrections.md",
         "docs/verification/policy-parity-corrections.md",
-        "docs/verification/beta4-release.md"
+        "docs/verification/beta4-release.md",
+        "docs/verification/source-connections.md"
       ],
       "openChecks": [
         "Published Beta 4 read-only/shadow repeat completed with no device/configuration writes, runtime installation or restart; checked production settings unchanged.",
         "Before control takeover: supported installed platform, real device read-evidence producers, verified normalized sources, backend enrollment/availability, physical feedback, native full-profile/absolute-expiry transport, exclusive writer handoff, backup and rollback acceptance."
       ],
       "commit": "577a660adb1f073e3e0d68c96e100635ddd0e0af",
-      "updatedAt": "2026-11-09T11:52:19.845Z",
+      "updatedAt": "2026-11-09T13:12:29.887Z",
       "correctionSummary": "Published Beta 4: read-evidence freshness, continuous quiet/manual handling, configurable rule parity and bounded report-time corrections; exact artifact passed isolated tests. Physical/backend acceptance remains separate."
     },
     {
@@ -865,6 +874,49 @@
       },
       "distribution": "included in published 0.1.0-beta.4; earlier artifacts unchanged",
       "updatedAt": "2026-11-09T11:52:19.845Z"
+    },
+    {
+      "id": "source-connections-2026-11-09",
+      "affectedPackages": [
+        "AP-03",
+        "AP-05",
+        "AP-06",
+        "AP-07",
+        "AP-10",
+        "AP-16",
+        "AP-24",
+        "AP-26"
+      ],
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
+      "evidence": "docs/verification/source-connections.md",
+      "checks": {
+        "build": true,
+        "typecheck": true,
+        "lint": true,
+        "unitContractTests": 103,
+        "packageChecks": 61,
+        "targetedSourceControllerPassed": true,
+        "finalFrozenControllerBrowserSoak": "in_progress",
+        "crossPlatformCI": "not_yet_run",
+        "publicContentReview": true
+      },
+      "privateConfiguration": {
+        "disabledDraftCompleted": true,
+        "schemaAndMetadataAuditsPassed": true,
+        "actuatorWrites": 0,
+        "houseRulesChanged": false,
+        "newBackendRegistrationInstalled": false,
+        "rawEvidence": "ignored local storage only",
+        "controlTakeover": false
+      },
+      "remainingGates": [
+        "Maintained backend registration",
+        "Actual native absolute-expiry facility",
+        "Verified source access and continued source operation after old writer handoff",
+        "Exact physical feedback and scoped takeover/rollback"
+      ],
+      "updatedAt": "2026-11-09T13:12:29.887Z"
     }
   ],
   "releaseHistory": [
@@ -912,5 +964,26 @@
     "productionAccessPerformed": false,
     "privateReadOnlyPilotPerformedSeparately": true,
     "updatedAt": "2026-11-09T11:52:19.845Z"
+  },
+  "developmentVersion": "0.1.0-beta.5-dev.0",
+  "developmentVerification": {
+    "version": "0.1.0-beta.5-dev.0",
+    "implementationStatus": "implemented",
+    "verificationStatus": "partial",
+    "evidence": "docs/verification/source-connections.md",
+    "checks": {
+      "build": true,
+      "typecheck": true,
+      "lint": true,
+      "unitContractTests": 103,
+      "packageChecks": 61,
+      "targetedSourceControllerPassed": true,
+      "finalFrozenControllerBrowserSoak": "in_progress",
+      "crossPlatformCI": "not_yet_run",
+      "publicContentReview": true
+    },
+    "distribution": "source development only; no Beta 5 release; published Beta 4 unchanged",
+    "productionControlTakeover": false,
+    "updatedAt": "2026-11-09T13:12:29.887Z"
   }
 }

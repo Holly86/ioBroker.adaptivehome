@@ -31,6 +31,27 @@
 		plan_cancelled: ['Cancelled', 'Abgebrochen'],
 		history: ['History & incidents', 'Verlauf & Störungen'],
 		settings: ['Import & channels', 'Import & Kanäle'],
+		connections: ['Read sources and freshness evidence', 'Lesequellen und Frischenachweise'],
+		nativeTransports: ['Heating backend connections', 'Heizungsanbindungen'],
+		outputs: ['Provided values', 'Bereitgestellte Werte'],
+		requires: ['Required source evidence', 'Erforderliche Quellennachweise'],
+		path: ['Value path (comma separated)', 'Wertpfad (durch Komma getrennt)'],
+		timestampPath: ['Read timestamp path', 'Pfad der Abfragezeit'],
+		eventTimestampPath: ['Event timestamp path', 'Pfad der Ereigniszeit'],
+		sessionPath: ['Source session path', 'Pfad der Quellensitzung'],
+		fileKey: ['Declared source file name', 'Name der hinterlegten Quelldatei'],
+		endpointKey: ['Declared read access name', 'Name des hinterlegten Lesezugangs'],
+		transform: ['Conversion', 'Umrechnung'],
+		forecast: ['Complete forecast coverage', 'Vollständige Vorhersageabdeckung'],
+		connectionNotice: [
+			'Source files and read credentials are declared separately in instance settings. A repeating weekly profile does not prove absolute expiry.',
+			'Quelldateien und Lesezugänge werden getrennt in den Instanzeinstellungen hinterlegt. Ein wiederkehrendes Wochenprofil belegt keinen absoluten Ablauf.',
+		],
+		cases: ['Conditional source values', 'Bedingte Quellenwerte'],
+		paths: ['Selected value paths', 'Gewählte Wertpfade'],
+		jsonPath: ['Path inside encoded value', 'Pfad im kodierten Wert'],
+		profileMaxAgeMs: ['Profile content maximum age (ms)', 'Höchstalter des Profilinhalts (ms)'],
+		defaultValue: ['Default with complete source evidence', 'Standard bei vollständigem Quellennachweis'],
 		preview: ['Validate draft', 'Entwurf prüfen'],
 		save: ['Activate changes', 'Änderungen aktivieren'],
 		reload: ['Reload', 'Neu laden'],
@@ -597,7 +618,7 @@
 			repeatMs: 'number',
 			maxAttempts: 'number',
 		},
-		source: { id: 'text', kind: ['weather', 'calendar', 'presence', 'energy', 'generic'] },
+		source: { id: 'text', kind: ['weather', 'calendar', 'presence', 'usage', 'energy', 'generic'] },
 	};
 	function form(parent, obj, descriptor, fn) {
 		const cols = grid(parent);
@@ -1508,6 +1529,217 @@
 				form(p, s, descriptors.source);
 				field(p, 'ref', refValue(s.ref), v => (s.ref = parseRef(v)), 'text', refOptions(false));
 			},
+		);
+		root.append(node('p', t('connectionNotice')));
+		config.connections ??= [];
+		config.nativeTransports ??= [];
+		repeat(
+			root,
+			'connections',
+			config.connections,
+			() => ({
+				id: uid('source'),
+				kind: 'json-file',
+				enabled: false,
+				intervalMs: 15000,
+				maxAgeMs: 90000,
+				fileKey: '',
+				outputs: [],
+			}),
+			(p, c) => {
+				form(p, c, { id: 'text', enabled: 'checkbox', intervalMs: 'number', maxAgeMs: 'number' });
+				field(
+					p,
+					'kind',
+					c.kind,
+					v => {
+						delete c.fileKey;
+						delete c.endpointKey;
+						delete c.stateId;
+						delete c.backend;
+						delete c.inputs;
+						c.kind = v;
+						if (v === 'state-map') {
+							c.inputs = [];
+						} else if (v === 'backend-json') {
+							c.backend = 'hmip.0';
+						} else {
+							c[v === 'json-file' ? 'fileKey' : v === 'http-json' ? 'endpointKey' : 'stateId'] = '';
+						}
+						render();
+					},
+					'text',
+					['json-file', 'state-json', 'http-json', 'state-map', 'backend-json'],
+				);
+				if (c.kind === 'state-map') {
+					repeat(
+						p,
+						'inputs',
+						c.inputs,
+						() => ({ key: uid('input'), stateId: '' }),
+						(box, input) => form(box, input, { key: 'text', stateId: 'text' }),
+					);
+				} else if (c.kind === 'backend-json') {
+					form(p, c, { backend: 'text' });
+				} else {
+					form(p, c, {
+						[c.kind === 'json-file' ? 'fileKey' : c.kind === 'http-json' ? 'endpointKey' : 'stateId']:
+							'text',
+					});
+				}
+				repeat(
+					p,
+					'outputs',
+					c.outputs,
+					() => ({
+						key: uid('value'),
+						type: 'boolean',
+						unit: '',
+						path: [],
+						...(c.kind === 'http-json' ? {} : { timestampPath: ['checkedAt'] }),
+						requires: [],
+						transform: 'scalar',
+						scale: 1,
+						offset: 0,
+					}),
+					(box, o) => {
+						form(box, o, {
+							key: 'text',
+							type: ['boolean', 'number', 'string'],
+							unit: 'text',
+							path: 'strings',
+							transform: ['scalar', 'any', 'all', 'maximum', 'forecastMedian', 'cases'],
+							scale: 'number',
+							offset: 'number',
+							min: 'number?',
+							max: 'number?',
+						});
+						for (const key of ['timestampPath', 'eventTimestampPath', 'sessionPath', 'jsonPath']) {
+							field(box, key, (o[key] || []).join(','), v => {
+								if (v.trim()) {
+									o[key] = v.split(',').map(x => x.trim());
+								} else {
+									delete o[key];
+								}
+							});
+						}
+						optionalSection(box, o, 'paths', [], (r, paths) =>
+							repeat(
+								r,
+								'paths',
+								paths,
+								() => [],
+								(row, path) =>
+									field(row, 'path', path.join(','), v =>
+										path.splice(0, path.length, ...v.split(',').map(x => x.trim())),
+									),
+							),
+						);
+						optionalSection(box, o, 'cases', [], (r, cases) => {
+							form(r, o, { defaultValue: 'scalar?' });
+							repeat(
+								r,
+								'cases',
+								cases,
+								() => ({ requires: [], value: false, timezone: config.timezone }),
+								(row, item) => {
+									form(row, item, { value: 'scalar', timezone: 'text' });
+									repeat(
+										row,
+										'requires',
+										item.requires,
+										() => ({ path: [], equals: true }),
+										(rr, e) => form(rr, e, { path: 'strings', equals: 'scalar' }),
+									);
+									optionalSection(
+										row,
+										item,
+										'window',
+										{ days: [1, 2, 3, 4, 5], start: '08:00', end: '16:00' },
+										(rr, w) => form(rr, w, descriptors.window),
+									);
+								},
+							);
+						});
+						const codes = node('details');
+						codes.append(node('summary', t('valueMap')));
+						for (const [raw, value] of Object.entries(o.map || {})) {
+							const row = node('div');
+							let key = raw;
+							field(row, 'sourceValue', key, v => {
+								const old = o.map[key];
+								delete o.map[key];
+								key = v;
+								o.map[key] = old;
+							});
+							field(row, 'value', String(value), v => {
+								o.map[key] = o.type === 'boolean' ? v === 'true' : o.type === 'number' ? Number(v) : v;
+							});
+							button(row, 'remove', () => {
+								delete o.map[key];
+								if (!Object.keys(o.map).length) {
+									delete o.map;
+								}
+								render();
+							});
+							codes.append(row);
+						}
+						button(codes, 'add', () => {
+							o.map ??= {};
+							o.map[uid('code')] = o.type === 'boolean' ? false : o.type === 'number' ? 0 : '';
+							render();
+						});
+						box.append(codes);
+						o.requires ??= [];
+						repeat(
+							box,
+							'requires',
+							o.requires,
+							() => ({ path: [], equals: true }),
+							(r, e) => form(r, e, { path: 'strings', equals: 'scalar' }),
+						);
+						optionalSection(
+							box,
+							o,
+							'forecast',
+							{ samples: 24, cadenceMs: 10800000, horizonMs: 248400000 },
+							(r, f) => form(r, f, { samples: 'number', cadenceMs: 'number', horizonMs: 'number' }),
+						);
+					},
+				);
+			},
+		);
+		repeat(
+			root,
+			'nativeTransports',
+			config.nativeTransports,
+			() => ({
+				id: uid('heating'),
+				enabled: false,
+				backend: 'hmip.0',
+				groupId: '',
+				physicalId: '',
+				profileIndex: 'PROFILE_3',
+				profileMaxAgeMs: 300000,
+				memberIds: [],
+				min: 5,
+				max: 30,
+				maxAgeMs: 30000,
+			}),
+			(p, t) =>
+				form(p, t, {
+					id: 'text',
+					enabled: 'checkbox',
+					backend: 'text',
+					groupId: 'text',
+					physicalId: 'text',
+					profileIndex: ['PROFILE_1', 'PROFILE_2', 'PROFILE_3'],
+					profileMaxAgeMs: 'number',
+					memberIds: 'strings',
+					min: 'number',
+					max: 'number',
+					maxAgeMs: 'number',
+				}),
 		);
 	}
 	async function refresh() {

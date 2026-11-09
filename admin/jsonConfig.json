@@ -2,6 +2,14 @@
   "i18n": true,
   "type": "panel",
   "items": {
+    "sourceFiles": {
+      "type": "jsonEditor", "xs": 12, "newLine": true, "allowEmpty": true, "validateJson": true,
+      "label": {"de": "Optionale lesbare Quelldateien: Name und Pfad", "en": "Optional readable source files: name and path"}
+    },
+    "sourceEndpoints": {
+      "type": "password", "xs": 12, "newLine": true,
+      "label": {"de": "Optionale geschützte Lesezugänge für Hue/Shelly (JSON)", "en": "Optional protected Hue/Shelly read endpoints (JSON)"}
+    },
     "notice": {
       "type": "staticText",
       "text": {

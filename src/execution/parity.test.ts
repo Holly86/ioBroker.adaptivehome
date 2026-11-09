@@ -3,7 +3,7 @@ import { referenceConfiguration } from '../config/examples';
 import { functionSchema, mappingSchema } from '../model/contracts';
 import type { Intent, Scalar } from '../model/contracts';
 import { ManualClock } from '../runtime/clock';
-import { Executor } from './executor';
+import { Executor, type ExecutionPort } from './executor';
 import { compileNativeHeatingProgram } from '../integrations/native-program';
 import { validateConfiguration } from '../config/configuration';
 import type { StateValue } from '../integrations/registry';
@@ -16,7 +16,7 @@ function setup() {
 	const fn = config.functions[0],
 		binding = config.bindings.find(b => b.id === fn.actuator.entityId)!;
 	const writes: { id: string; value: Scalar }[] = [];
-	const port = {
+	const port: ExecutionPort = {
 		read: async (_id: string): Promise<StateValue | null> => null,
 		metadata: async (id: string) => ({ type: id.endsWith('switch') ? 'boolean' : 'number', write: true, unit: '' }),
 		write: async (id: string, value: Scalar) => {
@@ -309,7 +309,14 @@ describe('Anonymized final execution parity', () => {
 		s.port.metadata = async () => ({ type: 'string', write: true, unit: '' });
 		validateConfiguration(s.config);
 		s.fn.nativeProgram.fallbackValues = [13];
+		let dispatchedDeadline = 0;
+		s.port.writeNative = async (id, program, dispatchDeadline) => {
+			dispatchedDeadline = dispatchDeadline;
+			await s.port.write(id, JSON.stringify(program));
+		};
 		const command = await s.executor.execute({ ...s.intent(21), nativeFallback: 13 });
+		assert.equal(dispatchedDeadline, command.deadline);
+		assert.equal(dispatchedDeadline, s.intent().expiresAt);
 		assert.equal(command.dispatchAccepted, true);
 		assert.equal(s.writes.length, 1);
 		const requested = JSON.parse(String(s.writes[0].value));

@@ -74,7 +74,15 @@ export class IntegrationRegistry {
 				) {
 					throw new Error('backend_scope');
 				}
-				if (mapping.writeId === path && /^(system\.|adaptivehome\.)/.test(path)) {
+				if (
+					mapping.writeId === path &&
+					(/^system\./.test(path) ||
+						(/^adaptivehome\./.test(path) &&
+							!(
+								mapping.codec === 'nativeHeatingProgram' &&
+								/^adaptivehome\.\d+\.native\.[a-zA-Z0-9_-]+\.command$/.test(path)
+							)))
+				) {
 					throw new Error('protected_state');
 				}
 			}

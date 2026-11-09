@@ -80,3 +80,13 @@ export function runIntegrationContract(
 	}
 	return { bindings: bindings.length, observations };
 }
+export { HmipNativeEndpoint, hmipProfile } from '../connections/heating-backend';
+export { HmipSessionSource } from '../connections/hmip-session';
+export type {
+	HeatingBackendPort,
+	HeatingTransportJournal,
+	HmipSnapshot,
+	ExpiryProof,
+} from '../connections/heating-backend';
+export { SourceConnections } from '../connections/sources';
+export { getSourceJSON, readSourceFile, resolveSourceEndpoint } from '../connections/io';

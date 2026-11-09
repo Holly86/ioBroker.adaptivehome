@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "adaptivehome",
-    "version": "0.1.0-beta.4",
+    "version": "0.1.0-beta.5-dev.0",
     "news": {
+      "0.1.0-beta.5-dev.0": {
+        "en": "Unreleased source connections, read receipts and shared-session native transport",
+        "de": "Unveröffentlichte Quellenanschlüsse, Lesenachweise und nativer Transport über bestehende Sitzung"
+      },
       "0.1.0-beta.4": {
         "en": "Separate event/read freshness, continuous quiet and manual/house rules; add bounded climate and native profile extension contracts with explicit connection limits.",
         "de": "Ereignis-/Abfragefrische getrennt, kontinuierliche Ruhe und Hand-/Hausregeln ergänzt; begrenzte Klimaregeln und native Profilverträge mit ausdrücklichen Anschlussgrenzen."
@@ -121,16 +125,20 @@
     "controlClients": [],
     "controlSecret": "",
     "modelProvider": null,
-    "modelToken": ""
+    "modelToken": "",
+    "sourceFiles": {},
+    "sourceEndpoints": ""
   },
   "objects": [],
   "instanceObjects": [],
   "encryptedNative": [
     "controlSecret",
-    "modelToken"
+    "modelToken",
+    "sourceEndpoints"
   ],
   "protectedNative": [
     "controlSecret",
-    "modelToken"
+    "modelToken",
+    "sourceEndpoints"
   ]
 }

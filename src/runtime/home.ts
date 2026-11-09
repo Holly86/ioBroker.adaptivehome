@@ -28,11 +28,13 @@ import { LocalLearning } from '../learning/local';
 import { AdaptationController } from '../learning/adaptation';
 import { arbitrate } from '../execution/arbiter';
 import { executionReason } from '../diagnostics/reasons';
+import type { NativeHeatingProgram } from '../integrations/native-program';
 export interface HomePort {
 	authorizeBinding?(binding: DeviceBinding): void;
 	read(id: string): Promise<StateValue | null>;
 	metadata(id: string): Promise<StateMetadata | null>;
 	write(id: string, value: Scalar): Promise<void>;
+	writeNative?(id: string, program: NativeHeatingProgram, dispatchDeadline: number): Promise<void>;
 	persist(key: string, data: unknown): Promise<void>;
 	send?(adapter: string, command: string, payload: Record<string, unknown>): Promise<unknown>;
 }

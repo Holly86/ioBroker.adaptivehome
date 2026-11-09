@@ -6,5 +6,6 @@ tests.integration(path.join(__dirname, '..'), { controllerVersion: '7.2.5', defi
     before(() => require('./artifact-proof.cjs').verifyArtifact());
     require('./controller-suite.cjs').defineControllerTests(context);
     require('./sdk-controller.cjs').defineSdkTests(context);
+    require('./connections-controller.cjs').defineConnectionTests(context);
     require('./browser-controller.cjs').defineBrowserTests(context);
 } });

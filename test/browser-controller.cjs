@@ -111,6 +111,45 @@ function defineBrowserTests({ suite }) {
 				for (let index = 0; index < all.length; index++) {
 					const config = all[index],
 						german = index === 1;
+					if (index === 0) {
+						config.connections = [
+							{
+								id: 'optionalDocument',
+								kind: 'json-file',
+								fileKey: 'fixtureReport',
+								enabled: false,
+								outputs: [
+									{
+										key: 'presence',
+										type: 'boolean',
+										path: ['status'],
+										timestampPath: ['checkedAt'],
+										map: { home: true, away: false },
+									},
+								],
+							},
+							{
+								id: 'optionalBackend',
+								kind: 'backend-json',
+								backend: 'hmip.8',
+								enabled: false,
+								outputs: [{ key: 'readTime', type: 'number', path: ['at'], timestampPath: ['at'] }],
+							},
+						];
+						config.nativeTransports = [
+							{
+								id: 'optionalHeating',
+								backend: 'hmip.8',
+								enabled: false,
+								groupId: 'anonymous-group',
+								physicalId: 'anonymous-physical-group',
+								profileIndex: 'PROFILE_3',
+								memberIds: ['anonymous-valve'],
+								min: 5,
+								max: 30,
+							},
+						];
+					}
 					await page.locator('#language').selectOption(german ? 'de' : 'en');
 					await page
 						.getByRole('button', { name: german ? 'Import & Kanäle' : 'Import & channels', exact: true })
@@ -121,6 +160,11 @@ function defineBrowserTests({ suite }) {
 						buffer: Buffer.from(JSON.stringify(config)),
 					});
 					await page.getByText(german ? 'Entwurf ist gültig' : 'Draft is valid', { exact: true }).waitFor();
+					if (index === 0) {
+						const source = page.getByRole('textbox', { name: 'Declared source file name', exact: true });
+						await source.fill('fixtureReportV2');
+						await source.press('Tab');
+					}
 					await page.getByRole('button', { name: german ? 'Funktionen' : 'Functions', exact: true }).click();
 					const name = page.getByRole('textbox', { name: 'Name', exact: true }).first();
 					await name.fill(`${config.functions[0].name} UI`);
@@ -150,6 +194,13 @@ function defineBrowserTests({ suite }) {
 					await page
 						.getByText(german ? 'Konfiguration aktiviert' : 'Configuration activated', { exact: true })
 						.waitFor({ timeout: 15000 });
+					if (index === 0) {
+						const record = JSON.parse(
+							(await harness.states.getStateAsync('adaptivehome.0.configuration.record')).val,
+						);
+						assert.equal(record.active.connections[0].fileKey, 'fixtureReportV2');
+						assert.deepEqual(record.active.connections[0].outputs[0].map, { home: true, away: false });
+					}
 					await page.getByRole('button', { name: german ? 'Übersicht' : 'Overview', exact: true }).click();
 					await page.getByRole('heading', { name: `${config.functions[0].name} UI`, exact: true }).waitFor();
 					if (index === 0) {

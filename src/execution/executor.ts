@@ -18,6 +18,7 @@ import { deadline, systemClock } from '../runtime/clock';
 import { conditionMatches } from './conditions';
 import { windowMatches } from '../config/schedule';
 import { compileNativeHeatingProgram, parseNativeHeatingReport } from '../integrations/native-program';
+import type { NativeHeatingProgram } from '../integrations/native-program';
 
 export interface ManualWish {
 	at: number;
@@ -47,6 +48,7 @@ export interface ExecutionPort {
 	read(id: string): Promise<StateValue | null>;
 	metadata(id: string): Promise<StateMetadata | null>;
 	write(id: string, value: Scalar): Promise<void>;
+	writeNative?(id: string, program: NativeHeatingProgram, dispatchDeadline: number): Promise<void>;
 	persist(journal: ExecutionJournal): Promise<void>;
 	inputs(fn: FunctionConfig): Promise<Record<string, Observation | null>>;
 }
@@ -609,7 +611,11 @@ export class Executor {
 						) {
 							throw new Error('native_preflight_changed');
 						}
-						await this.port.write(mapping.writeId!, JSON.stringify(command.nativeProgram));
+						if (this.port.writeNative) {
+							await this.port.writeNative(mapping.writeId!, command.nativeProgram, command.deadline);
+						} else {
+							await this.port.write(mapping.writeId!, JSON.stringify(command.nativeProgram));
+						}
 						continue;
 					}
 					let value: Scalar =

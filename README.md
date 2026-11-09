@@ -5,6 +5,10 @@ air quality, scheduled equipment and continuous minimum service. Start with one 
 learning up to an automatic observe → learn → plan → execute → check effect → rollback cycle.
 No language model, notification account, Node-RED or separate web app is required.
 
+The source branch now contains **0.1.0-beta.5-dev.0**, with [read connections and a backend-hosted
+native transport](docs/connections.md). This development version is not a published Beta 5.
+The built public Beta 4 and its checksum remain unchanged.
+
 **0.1.0-beta.4:** implemented and tested on a real js-controller with synthetic devices.
 Physical devices and cloud accounts have not been certified. See [compatibility](docs/compatibility.md).
 

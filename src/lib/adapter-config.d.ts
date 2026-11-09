@@ -9,6 +9,8 @@ declare global {
 			controlSecret?: string;
 			modelProvider?: unknown;
 			modelToken?: string;
+			sourceFiles?: Record<string, string>;
+			sourceEndpoints?: string;
 		}
 	}
 }

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { FUNCTION_KINDS, LEARNING_MODES, OPERATING_MODES } from './product';
 import type { NativeHeatingProgram } from '../integrations/native-program';
+import { connectionSchema, nativeTransportSchema } from '../connections/schema';
 export const id = z
 	.string()
 	.regex(/^[a-zA-Z0-9_-]{1,64}$/)
@@ -294,6 +295,8 @@ export const configSchema = z.strictObject({
 		.array(z.strictObject({ id, name: z.string().min(1).max(128), kind: z.enum(['room', 'installation']) }))
 		.max(256),
 	bindings: z.array(bindingSchema).max(512),
+	connections: z.array(connectionSchema).max(128).default([]),
+	nativeTransports: z.array(nativeTransportSchema).max(64).default([]),
 	functions: z.array(functionSchema).max(256),
 	scenes: z
 		.array(

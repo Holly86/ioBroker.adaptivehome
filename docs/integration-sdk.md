@@ -51,3 +51,8 @@ provide correlated full-content feedback, automatic activation and autonomous
 absolute expiry/fallback. These exports do not supply a vendor transport or
 establish standard hmip support. Never set backend verification from schema
 validation alone; keep unsupported configurations disabled.
+
+Development source now also exports executable source adapters and the backend-hosted
+transport. See [connections](connections.md) for shared-session integration, sender/authority
+gates, virtual paths and the still-required real absolute-expiry capability. It is not installed
+in an existing backend automatically and does not modify installed third-party modules.
