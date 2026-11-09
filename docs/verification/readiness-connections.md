@@ -60,6 +60,11 @@ weekly end time or cached successful profile read substitutes for that capabilit
 Physical feedback, manual-wish handoff, exclusive ownership and rollback remain open.
 The current configuration is therefore not approved for takeover.
 
+These deployment points describe this earlier read-only stage. The subsequent explicitly
+authorized [read-only host/context installation](read-only-host-context.md) closes the
+independent-context and backend-registration points. Expiry and physical actuator handoff
+remain separate gates.
+
 All seven source CI jobs passed on Node 22/24 across Linux, Windows and macOS:
 [actual source CI run](https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42652481987). Source commit: `6cc2a82e2dfc066a53ae28cac35aeb2e2891b2d9`.
 The frozen package remains byte-identical after the source commit. The completed
