@@ -213,6 +213,7 @@ export class HmipSessionSource {
 				controlMode: group.controlMode,
 				unreach: group.unreach,
 				partyMode: group.partyMode,
+				windowState: group.windowState,
 				boostMode: group.boostMode,
 				setPointTemperature: group.setPointTemperature,
 				profile,

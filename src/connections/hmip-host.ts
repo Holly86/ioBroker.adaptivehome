@@ -2,6 +2,14 @@ import { HmipSessionSource, type ExistingHmipSession } from './hmip-session';
 import { HmipNativeEndpoint, type HeatingBackendPort, type HeatingTransportJournal } from './heating-backend';
 import { nativeTransportSchema, type NativeTransportConfig } from './schema';
 import { HmipTimedLeaseEndpoint, type TimedLeaseAcceptance, type TimedLeaseJournal } from './timed-lease';
+import {
+	CommissioningExecutor,
+	type CommissioningGrant,
+	type CommissioningAuthority,
+	type CommissioningJournal,
+} from '../execution/commissioning';
+import { handleHandoffControl } from '../execution/maintenance-host';
+import type { HandoffCoordinator } from '../execution/handoff-coordinator';
 
 export interface BackendEnvelope {
 	command: string;
@@ -14,7 +22,14 @@ export interface HmipHostOptions {
 	clientCharacteristics: Record<string, unknown>;
 	allowedSenders: string[];
 	targets: NativeTransportConfig[];
-	mode?: 'read-only' | 'control';
+	mode?: 'read-only' | 'control' | 'commission';
+	commissioning?: {
+		grant: CommissioningGrant;
+		authority(): Promise<CommissioningAuthority>;
+		persist(journal: CommissioningJournal): Promise<void>;
+		saved?: CommissioningJournal;
+	};
+	handoff?: { coordinator: HandoffCoordinator; operator: string };
 	now?: () => number;
 	cacheMs?: number;
 	authorize?: HeatingBackendPort['authorize'];
@@ -29,7 +44,7 @@ export interface HmipHostCapabilities {
 	protocol: string;
 	readProtocol: string;
 	nativeProtocol: string;
-	mode: 'read-only' | 'control';
+	mode: 'read-only' | 'control' | 'commission';
 	sharedExistingSession: boolean;
 	fullProfileRead: boolean;
 	controlEnabled: boolean;
@@ -60,6 +75,25 @@ export function createHmipBackendHost(options: HmipHostOptions): HmipBackendHost
 		throw Error('backend_timed_journal_required');
 	}
 	const source = new HmipSessionSource(options.api, options.clientCharacteristics, now, options.cacheMs);
+	if (mode === 'commission' && (!options.commissioning || !options.authorize))
+		throw Error('backend_commission_ports_required');
+	const commissioning =
+		mode === 'commission'
+			? new CommissioningExecutor(
+					options.commissioning!.grant,
+					targets,
+					{
+						snapshot: (t, fresh) => source.snapshot(t, fresh),
+						authorize: t => options.authorize!(t),
+						activate: (group, temperature, end) => source.activateTimedLease(group, temperature, end),
+						authority: () => options.commissioning!.authority(),
+						persist: j => options.commissioning!.persist(j),
+					},
+					now,
+					options.commissioning!.saved,
+					options.allowedSenders,
+				)
+			: undefined;
 	const timed = new HmipTimedLeaseEndpoint(
 		targets,
 		{
@@ -123,12 +157,30 @@ export function createHmipBackendHost(options: HmipHostOptions): HmipBackendHost
 					'adaptivehomeRead',
 					'adaptivehomeProfileRead',
 					'adaptivehomeNative',
+					'adaptivehomeCommission',
+					'adaptivehomeHandoff',
 				].includes(envelope.command)
 			) {
 				return { handled: false };
 			}
 			if (!options.allowedSenders.includes(envelope.from)) {
 				throw Error('backend_sender_denied');
+			}
+			if (envelope.command === 'adaptivehomeCommission') {
+				if (!commissioning) throw Error('backend_commission_disabled');
+				return { handled: true, result: await commissioning.handle(envelope.message, envelope.from) };
+			}
+			if (envelope.command === 'adaptivehomeHandoff') {
+				if (mode !== 'control' || !options.handoff) throw Error('backend_handoff_disabled');
+				return {
+					handled: true,
+					result: await handleHandoffControl(
+						options.handoff.coordinator,
+						options.handoff.operator,
+						envelope.message,
+						now(),
+					),
+				};
 			}
 			if (envelope.command === 'adaptivehomeCapabilities') {
 				return { handled: true, result: capabilities() };
@@ -149,7 +201,7 @@ export function createHmipBackendHost(options: HmipHostOptions): HmipBackendHost
 				return { handled: true, result: await source.snapshot(target) };
 			}
 			const message = envelope.message as { operation?: unknown };
-			if (mode === 'read-only' && message?.operation !== 'inspect') {
+			if (mode !== 'control' && message?.operation !== 'inspect') {
 				throw Error('backend_read_only');
 			}
 			const strategy = targets.find(

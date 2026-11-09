@@ -103,3 +103,29 @@ export {
 export type { TimedLeaseAcceptance, TimedLeaseJournal, TimedLeasePort } from '../connections/timed-lease';
 export { handoffPlanSchema, inspectHandoff, handoffTransition } from '../execution/handoff';
 export type { HandoffPlan, HandoffObservation, HandoffJournal, HandoffAction } from '../execution/handoff';
+export { CommissioningExecutor, commissioningGrantSchema } from '../execution/commissioning';
+export type {
+	CommissioningGrant,
+	CommissioningAuthority,
+	CommissioningJournal,
+	CommissioningPort,
+} from '../execution/commissioning';
+export {
+	HandoffCoordinator,
+	RegisteredHandoffExecutor,
+	handoffReviewHash,
+	manualWishRevision,
+	mergeManualWishes,
+} from '../execution/handoff-coordinator';
+export type {
+	CoordinatorJournal,
+	CoordinatorObservation,
+	HandoffCoordinatorPort,
+	RegisteredWriter,
+	RestoreRecipe,
+} from '../execution/handoff-coordinator';
+export { MaintenanceStore } from '../execution/maintenance-store';
+export { ManualWishBridge } from '../execution/manual-wish-bridge';
+export { constantProfileRestoreRecipe } from '../execution/native-restore';
+export { dockerWriterLifecycle, ioBrokerWriterLifecycle } from '../execution/writer-lifecycle';
+export { handleHandoffControl } from '../execution/maintenance-host';

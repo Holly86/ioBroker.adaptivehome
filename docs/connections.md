@@ -327,3 +327,121 @@ The [manufacturer user manual, section Partymodus](https://homematic-ip.com/site
 Timed acceptance also binds the home's validated timezone, and must remain valid through the requested end. The backend reports an existing owned sharedDeadlineAt; Executor clamps joining-room plans to that deadline and refuses an incompatible earlier room cutoff. A reservation that fails before any vendor invocation is recorded as not-sent, distinct from an uncertain vendor result. Neither path replays the failed command.
 
 Rollback proposals wait for the native lease to expire and for fresh fallback feedback; they do not cancel the shared party slot. Stopping an adapter is not treated as expiry. A newer manual/profile revision blocks automatic restoration and requires an explicit baseline review preserving the current human wish.
+
+## Manual commissioning and executable handoff after Beta 6
+
+Development source `0.1.0-beta.7-dev.0` adds an explicit manual commissioning executor,
+a durable handoff coordinator, registered lifecycle providers, journal transfer and
+a constant-profile recovery executor. The published Beta 6 is unchanged. Nothing
+installs these services into an existing backend or activates a house writer.
+
+### Bounded manual commissioning
+
+A maintained backend can explicitly select `mode: 'commission'` and provide
+`commissioning: { grant, authority, persist, saved }`, plus the existing session,
+enabled native target list, fixed allowed senders and exclusive-writer authorization.
+The default remains read-only. Commission mode rejects routine native apply;
+control/read-only modes reject `adaptivehomeCommission`. No physical certificate
+is fabricated. Commission responses have a separate protocol, `routineControlReady:
+false` and `physicalAcceptanceGranted: false`; even their internal native report
+has absoluteExpiry false. Normal native connections cannot consume them as proof.
+
+`commissioningGrantSchema` binds one operator, home, timezone, configuration/package
+hashes, physical targets, profile hashes, exact membership, discrete allowed
+temperatures, a finite list of step IDs, a command count and an expiry. A grant lasts
+at most one hour, allows at most sixteen commands and eight selected targets, and
+limits each native lease to at most fifteen minutes. The regular five-minute end
+grid, constant fallback, local spacing/budget, shared-deadline, App/window/manual
+protection and original device-feedback checks remain in force. No weekly comfort
+periods are uploaded and no adapter timer claims physical return.
+
+The trusted `authority()` callback must independently verify current on-site operator
+acknowledgement, grant identity, unrevoked scope, configuration/package identity and
+exclusive ownership. Its original acknowledgement must be at most thirty seconds
+old. A backend heartbeat is not attendance; returning current time and true without
+checking the operator/owners would violate this contract. Authorization is checked
+again immediately before dispatch. Initial hardware evidence is deliberately absent;
+the operator supervises this limited manual trial and separately records its outcome.
+
+Each manual request uses protocol `adaptivehome.commission.v1`, operation step or
+inspect, grantId, operator and targetId. Step additionally requires its granted
+stepId, a finite timed-lease program and dispatch deadline. Unknown fields, values,
+operators, targets and steps are rejected. Reservations precede any actor send;
+denied/ambiguous steps are not automatically retried. Restored sessions can inspect
+but cannot resume commissioning. Request/authority/storage timeouts are bounded;
+late preflight responses cannot dispatch after a timed-out step. A send already
+offered to an external API may remain uncertain, so no cancellation/exactly-once
+claim is made and native fallback still needs physical acceptance.
+
+The adapter's Admin-only commission/handoff gateway starts with native settings
+`commissioningEnabled: false` and `commissioningBackend: ''`. An operator must
+explicitly configure one maintained hmip instance. Requests use the standard
+requestId/expectedRevision/expiresAt operation envelope and nested request object.
+The gateway supplies the actual Admin sender as operator, never an operator name
+from untrusted payload. Existing remote-control clients cannot enter this path.
+The backend must independently bind its grant to that operator; granting the
+gateway alone grants neither device writes nor lifecycle authority.
+
+### Executable handoff and recovery
+
+`HandoffCoordinator` executes activate and rollback against an immutable finite
+handoff plan. It stores each action reservation before calling
+`RegisteredHandoffExecutor`, verifies actual read-back, and records completed or
+uncertain results. The executor accepts only statically registered writer identities,
+whole physical scopes and reviewed restore recipes; plans contain no shell commands,
+scripts, paths or implementations. Old owners are stopped and positively observed
+before new owners start. A comfort-only selector is not a per-device exclusion.
+
+Observation must cover every target exactly once, report fresh owner state and
+bind manualRevision to the latest explicit manual wish. `mergeManualWishes` keeps
+the newer original wish; conflicting same-time wishes require review. Before an
+owner starts, the executor checks destination wishes, imports them, reads them
+back and rechecks current authority, manual/profile identity, physical gates and
+the operation deadline. Import providers must compare the expected destination
+hash atomically under their ownership fence. Newer destination wishes cannot be
+overwritten. False/OFF, original times, holds and unrelated journals are preserved;
+quiet-progress timers restart instead of inheriting old verified quiet time.
+
+Concrete providers include fixed-instance ioBroker enable/alive verification and
+a fixed-container Docker Engine client. The latter accepts an explicit local socket
+or loopback endpoint and immutable full container ID; only inspect, start and stop
+routes exist. No Docker socket is discovered, mounted or contacted automatically.
+Socket access is an operator deployment decision; use a restricted maintained proxy
+where appropriate. The caller must implement the ioBroker setEnabled API as a
+guarded update of that exact instance's common.enabled, preserving native settings.
+Liveness is checked separately from configuration acceptance. Docker endpoint
+conformance is tested with an isolated API emulator and real child processes, not
+certified against a production Docker daemon by those tests.
+
+`MaintenanceStore` supplies an explicit absolute-directory owner lock, fsynced
+atomic journal replacement, serialized updates and a four-MiB record limit. A crash
+leaves the lock and reserved actions remain uncertain. Recovery requires the exact
+old lock hash and independently verified stopped-owner proof; never replace that
+callback with an unconditional true. POSIX directory fsync is used; Windows lacks
+that directory guarantee. `ManualWishBridge` updates an already existing own
+execution journal transactionally under that lock, preserving unrelated commands,
+budgets and uncertainty records. Other legacy request-store formats require a
+registered, scoped import provider using the same compare-and-set contract.
+
+Rollback stops the new owner first, then waits for actually observed native expiry
+and fresh feedback even if the activation plan has expired. `constantProfileRestoreRecipe`
+uses the existing-session updateProfile path with current identity, manual revision,
+stopped-owner and native-state checks. It refuses recurring historical schedules;
+updated profiles and original member timestamps must confirm restoration. Delayed
+or missing feedback remains uncertain rather than being reported as device success.
+Fresh restore recipes expire within five minutes. Alternatively an explicit review
+hash can retain the currently verified safe baseline and import current wishes
+before the old owner resumes; it does not grant physical acceptance.
+
+Restored coordinators never replay activation. Uncertain effects require explicit
+fresh reconciliation and do not trigger blind retries. A newly observed restart of
+the intended-to-be-stopped new owner permits a new journaled stop on an explicit
+rollback call; it never replays a start. Read-only inspect exposes the current review
+hash. `handleHandoffControl` binds activate/rollback/reconcile/inspect to the stored
+plan hash, operator and short request deadline. A maintained host serves this only
+when control mode and its coordinator are explicitly registered. Actual lifecycle,
+manual-import and recipe providers must be installed and scoped for the target
+environment; these services are not a universal foreign-controller installer.
+
+The software checks use synthetic homes and isolated processes/controller databases.
+They do not perform physical expiry, HAP/network interruption or house takeover.

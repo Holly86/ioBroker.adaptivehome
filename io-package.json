@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "adaptivehome",
-    "version": "0.1.0-beta.6",
+    "version": "0.1.0-beta.7-dev.0",
     "news": {
+      "0.1.0-beta.7-dev.0": {
+        "en": "Unreleased bounded manual commissioning and durable executable handoff/rollback coordinator; no production activation.",
+        "de": "Unveröffentlichter begrenzter manueller Prüfmodus und ausführender dauerhafter Übergabe-/Rückwegkoordinator; keine Produktivaktivierung."
+      },
       "0.1.0-beta.6": {
         "en": "Independent source receipts and shared-session profile reads; optional dated heating leases with App priority and guarded handoff/rollback preparation. Physical commissioning remains required.",
         "de": "Unabhängige Frischenachweise und Profilabfragen in bestehender Sitzung; optionale Heizfristen mit App-Vorrang und vorbereitete Übergabe/Rückkehr. Physische Inbetriebnahme bleibt erforderlich."
@@ -131,7 +135,9 @@
     "modelProvider": null,
     "modelToken": "",
     "sourceFiles": {},
-    "sourceEndpoints": ""
+    "sourceEndpoints": "",
+    "commissioningEnabled": false,
+    "commissioningBackend": ""
   },
   "objects": [],
   "instanceObjects": [],

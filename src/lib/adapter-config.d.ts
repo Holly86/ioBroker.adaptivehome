@@ -11,6 +11,8 @@ declare global {
 			modelToken?: string;
 			sourceFiles?: Record<string, string>;
 			sourceEndpoints?: string;
+			commissioningEnabled?: boolean;
+			commissioningBackend?: string;
 		}
 	}
 }

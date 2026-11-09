@@ -5,6 +5,11 @@ air quality, scheduled equipment and continuous minimum service. Start with one 
 learning up to an automatic observe → learn → plan → execute → check effect → rollback cycle.
 No language model, notification account, Node-RED or separate web app is required.
 
+The branch additionally contains unreleased **0.1.0-beta.7-dev.0** manual commissioning
+and executable handoff/rollback services. Their gateways start disabled; deployment and
+physical acceptance are separate from the [isolated software checks](docs/connections.md#manual-commissioning-and-executable-handoff-after-beta-6).
+The published Beta 6 package remains unchanged.
+
 **0.1.0-beta.6** adds independent source receipts, operator/calendar/presence projections,
 read-only shared-session profile inspection, optional native dated heating leases with App priority,
 and guarded handoff/rollback preparation. It includes the seven optional read-only data profiles

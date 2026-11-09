@@ -25,6 +25,8 @@ export const controlSchema = z.strictObject({
 });
 export type ControlEnvelope = z.infer<typeof controlSchema>;
 export const MUTATIONS = new Set([
+	'commission',
+	'handoff',
 	'applyConfiguration',
 	'rollbackConfiguration',
 	'manual',

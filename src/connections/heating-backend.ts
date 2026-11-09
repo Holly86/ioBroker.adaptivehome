@@ -39,6 +39,7 @@ export interface HmipSnapshot {
 		controlMode: string;
 		unreach: boolean;
 		partyMode: boolean;
+		windowState?: string;
 		boostMode: boolean;
 		setPointTemperature: number;
 		profile: HmipProfile;

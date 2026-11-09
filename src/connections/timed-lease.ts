@@ -21,7 +21,7 @@ export const heatingFingerprint = (value: unknown): string => {
 		.update(JSON.stringify(stable(value)))
 		.digest('hex');
 };
-const controlFingerprint = (s: HmipSnapshot): string => {
+export const controlFingerprint = (s: HmipSnapshot): string => {
 	const { profileCheckedAt: _at, ...group } = s.group;
 	return heatingFingerprint({
 		group,
@@ -101,6 +101,10 @@ export interface TimedLeasePort {
 	activate(groupId: string, temperature: number, endTime: string): Promise<void>;
 	persist(journal: TimedLeaseJournal): Promise<void>;
 }
+/** Trusted executor-only commissioning authority, never an acceptance certificate. */
+export interface ManualLeaseAuthority {
+	check(target: NativeTransportConfig, snapshot: HmipSnapshot, program: NativeHeatingProgram): Promise<void>;
+}
 const envelope = z.strictObject({
 	protocol: z.literal('adaptivehome.hmip-native.v1'),
 	operation: z.enum(['inspect', 'apply']),
@@ -120,6 +124,7 @@ export class HmipTimedLeaseEndpoint {
 		private now: () => number = Date.now,
 		saved?: TimedLeaseJournal,
 		private allowedSenders: string[] = [],
+		private commissioning?: ManualLeaseAuthority,
 	) {
 		this.journal = structuredClone(saved ?? { commands: {} });
 		for (const c of Object.values(this.journal.commands)) {
@@ -217,7 +222,7 @@ export class HmipTimedLeaseEndpoint {
 		) {
 			reasons.push('native_home_absence_or_vacation_protected');
 		}
-		if (!this.accepted(t, s)) {
+		if (!this.commissioning && !this.accepted(t, s)) {
 			reasons.push('native_timed_physical_acceptance_missing');
 		}
 		if (!constantHeatingFallback(s.group.profile, fallback)) {
@@ -285,10 +290,11 @@ export class HmipTimedLeaseEndpoint {
 		if (reasons.length) {
 			throw Error(reasons[0]);
 		}
-		if (this.acceptance!.validUntil < p.expiresAt) {
+		await this.commissioning?.check(t, s, p);
+		if (!this.commissioning && this.acceptance!.validUntil < p.expiresAt) {
 			throw Error('native_timed_acceptance_expires_first');
 		}
-		if (this.acceptance!.timezone !== p.timezone) {
+		if (!this.commissioning && this.acceptance!.timezone !== p.timezone) {
 			throw Error('native_timed_timezone_unverified');
 		}
 		if (s.members.some(m => m.configPending !== false)) {
@@ -322,6 +328,7 @@ export class HmipTimedLeaseEndpoint {
 		let mayHaveSent = false;
 		try {
 			const again = await this.state(t, true);
+			await this.commissioning?.check(t, again, p);
 			if (
 				!(await this.port.authorize(t)) ||
 				this.now() >= deadline ||
@@ -358,7 +365,7 @@ export class HmipTimedLeaseEndpoint {
 		const reasons = this.blockers(t, s, base),
 			capabilities = {
 				fullWeeklyProfile: true,
-				absoluteExpiry: this.accepted(t, s),
+				absoluteExpiry: !this.commissioning && this.accepted(t, s),
 				sharedExistingSession: true,
 				expiryMechanism: 'native-shared-party-deadline',
 			};
@@ -415,7 +422,7 @@ export class HmipTimedLeaseEndpoint {
 				status: matches ? 'applied' : 'rejected',
 				automatic: true,
 				fallbackVerified: constantHeatingFallback(s.group.profile, p.fallback),
-				absoluteExpiryVerified: matches,
+				absoluteExpiryVerified: !this.commissioning && matches,
 				appOverride: !matches || s.group.setPointTemperature !== expected,
 				devicePending,
 				effectiveTarget: s.group.setPointTemperature,
