@@ -4,6 +4,11 @@ Date: 2026-11-09. Source correction, not a replacement of the immutable Beta-3
 release asset. No production device, controller configuration, installed driver
 or existing house automation was changed by this work.
 
+These corrections now ship in the separately published Beta 4. The checks below record
+the earlier source verification; [Beta 4 release evidence](beta4-release.md) records the
+later 85 unit/contract, 61 package and 12 isolated controller/browser/soak checks,
+fresh public download and repeated private read-only/shadow pilot.
+
 ## Implemented and contract-verified
 
 - Device-scoped successful read evidence is independent of event time. An old,
