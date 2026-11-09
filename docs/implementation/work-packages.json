@@ -310,7 +310,8 @@
         "docs/verification/readiness-connections.md",
         "docs/verification/read-only-host-context.md",
         "docs/verification/timed-lease-handoff.md",
-        "docs/verification/beta6-release.md"
+        "docs/verification/beta6-release.md",
+        "docs/verification/physical-acceptance-preparation.md"
       ],
       "openChecks": [
         "Commission constant fallback profiles and obtain target/profile/member/timezone-bound physical expiry, shared deadline, App priority, failure, window and cloud-traffic evidence.",
@@ -318,8 +319,8 @@
         "Physical feedback, exclusive writer handoff preserving newer manual wishes and rollback acceptance."
       ],
       "commit": "452170a83c712b028a3fb760d65f5eb2c8aac3b7",
-      "updatedAt": "2026-11-09T20:24:31.873Z",
-      "correctionSummary": "Published Beta 6: independent source receipts, read-only shared-session profile inspection, native timed lease and guarded handoff contracts; exact published package, real SQL/SQLite, platform CI and private read-only shadow passed. Physical commissioning remains open."
+      "updatedAt": "2026-11-09T23:03:27.504Z",
+      "correctionSummary": "Concrete private physical acceptance/intervention/rollback plan prepared from fresh read-only evidence; no physical case run and no production change. Manual commissioning and durable handoff execution still require implementation and separate acceptance."
     },
     {
       "id": "AP-11",
@@ -744,7 +745,8 @@
         "docs/verification/readiness-connections.md",
         "docs/verification/read-only-host-context.md",
         "docs/verification/timed-lease-handoff.md",
-        "docs/verification/beta6-release.md"
+        "docs/verification/beta6-release.md",
+        "docs/verification/physical-acceptance-preparation.md"
       ],
       "openChecks": [
         "Commission constant fallback profiles and obtain target/profile/member/timezone-bound physical expiry, shared deadline, App priority, failure, window and cloud-traffic evidence.",
@@ -752,8 +754,8 @@
         "Physical feedback, exclusive writer handoff preserving newer manual wishes and rollback acceptance."
       ],
       "commit": "452170a83c712b028a3fb760d65f5eb2c8aac3b7",
-      "updatedAt": "2026-11-09T20:24:31.873Z",
-      "correctionSummary": "Published Beta 6: independent source receipts, read-only shared-session profile inspection, native timed lease and guarded handoff contracts; exact published package, real SQL/SQLite, platform CI and private read-only shadow passed. Physical commissioning remains open."
+      "updatedAt": "2026-11-09T23:03:27.504Z",
+      "correctionSummary": "Concrete private physical acceptance/intervention/rollback plan prepared from fresh read-only evidence; no physical case run and no production change. Manual commissioning and durable handoff execution still require implementation and separate acceptance."
     },
     {
       "id": "AP-27",
@@ -1278,6 +1280,44 @@
         "Physical feedback, exclusive writer handoff preserving newer manual wishes and rollback acceptance."
       ],
       "updatedAt": "2026-11-09T20:24:31.873Z"
+    },
+    {
+      "id": "physical-acceptance-preparation-2026-11-10",
+      "affectedPackages": [
+        "AP-10",
+        "AP-26"
+      ],
+      "implementationStatus": "implemented",
+      "verificationStatus": "passed",
+      "verificationScope": "preparation consistency and read-only production invariants only; no physical execution",
+      "evidence": "docs/verification/physical-acceptance-preparation.md",
+      "physicalVerificationStatus": "not_run",
+      "checks": {
+        "freshReadOnlyProfiles": true,
+        "configurationDisabled": true,
+        "targetAndMemberConsistency": true,
+        "proofTemplateHasNoAuthority": true,
+        "originalBackupHashesVerified": true,
+        "productionSettingsFlowsAndProcessesUnchanged": true,
+        "publicContentReview": true
+      },
+      "execution": {
+        "approved": false,
+        "actuatorWrites": 0,
+        "configurationWrites": 0,
+        "productionRestarts": 0,
+        "networkInterruptions": 0,
+        "physicalTestsRun": 0,
+        "readyForExecution": false
+      },
+      "remainingPrerequisites": [
+        "Bounded and separately reviewed manual commissioning path without fabricated acceptance flags",
+        "Durable coordinator, executable recovery and cross-system current manual-wish handoff",
+        "Pinned new backend projection first deployed and verified in read-only mode within separately authorized lifecycle scope",
+        "On-site operator and separately approved maintenance scope; scoped physical evidence remains outstanding"
+      ],
+      "rawEvidence": "ignored local evidence only",
+      "updatedAt": "2026-11-09T23:03:27.504Z"
     }
   ],
   "releaseHistory": [
