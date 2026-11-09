@@ -102,6 +102,7 @@ household energy-saving claim is made.
 * Separate device read evidence from event time; support continuous twenty-minute quiet without replaying old movement.
 * Add quiet-based manual OFF rearm, manual input/signature handling, departure/welcome/session rules and confirmed compound light activation.
 * Restrict command values independently of readable feedback, including OFF-only outputs that are currently ON.
+* Preserve correlated own-device feedback across millisecond timestamp jitter so it does not create false manual ownership.
 * Add context-aware climate and a finite native-profile SDK contract with explicit dynamic fallback choices and correlated delayed activation/expiry.
 * Expose the optional settings in Admin and add anonymized regression tests. Real source connections, native backend transport and hardware acceptance remain separate prerequisites.
 

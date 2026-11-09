@@ -126,7 +126,10 @@ function defineBrowserTests({ suite }) {
 					await name.fill(`${config.functions[0].name} UI`);
 					await name.press('Tab');
 					if (index === 0) {
-						await page.getByRole('checkbox', { name: 'House and manual behavior', exact: true }).check();
+						await page
+							.getByRole('checkbox', { name: 'House and manual behavior', exact: true })
+							.first()
+							.check();
 						const quiet = page.getByRole('spinbutton', {
 							name: 'Quiet required after manual OFF (ms)',
 							exact: true,

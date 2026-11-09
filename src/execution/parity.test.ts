@@ -45,6 +45,21 @@ function setup() {
 }
 
 describe('Anonymized final execution parity', () => {
+	it('does not classify correlated own feedback across millisecond clock jitter as a human change', async () => {
+		const s = setup(),
+			mapping = s.binding.capabilities[0];
+		await s.executor.observeActuator(
+			s.fn,
+			normalize(s.binding, mapping, { val: false, ts: s.clock.now() - 1000, ack: true }, s.clock.now()),
+		);
+		const command = await s.executor.execute(s.intent());
+		s.clock.advance(2);
+		const raw = { val: true, ts: command.sentAt - 1, lc: command.sentAt + 1, ack: true };
+		await s.executor.feedback(mapping.confirmId!, raw);
+		assert.equal(s.executor.journal.commands[0].feedbackMatched, true);
+		await s.executor.observeActuator(s.fn, normalize(s.binding, mapping, raw, s.clock.now()));
+		assert.equal(Object.keys(s.executor.journal.manual).length, 0);
+	});
 	it('uses the actual OFF state for a physical input edge and therefore requires quiet rearm', async () => {
 		const s = setup();
 		s.fn.behavior = {

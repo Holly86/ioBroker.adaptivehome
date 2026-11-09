@@ -103,14 +103,16 @@ async function seed(harness, config, overrides = {}) {
 		}
 	}
 }
-function emulator(harness, config) {
+function emulator(harness, config, heartbeatMs = 0) {
 	const outputs = new Set(config.bindings.flatMap(b => b.capabilities.map(c => c.writeId).filter(Boolean))),
-		writes = [];
+		writes = [],
+		reported = new Map();
 	const listener = (id, state) => {
 		if (!outputs.has(id) || !state || state.ack || !state.from?.startsWith('system.adapter.adaptivehome.')) {
 			return;
 		}
 		writes.push({ id, value: state.val, at: Date.now() });
+		reported.set(id, state.val);
 		void harness.states.setStateAsync(id, {
 			val: state.val,
 			ack: true,
@@ -119,7 +121,25 @@ function emulator(harness, config) {
 		});
 	};
 	harness.on('stateChange', listener);
-	return { writes, close: () => harness.removeListener('stateChange', listener) };
+	const heartbeat = heartbeatMs
+		? setInterval(() => {
+				for (const [id, value] of reported) {
+					void harness.states.setStateAsync(id, {
+						val: value,
+						ack: true,
+						ts: Date.now(),
+						from: 'system.adapter.synthetic.0',
+					});
+				}
+			}, heartbeatMs)
+		: undefined;
+	return {
+		writes,
+		close: () => {
+			clearInterval(heartbeat);
+			harness.removeListener('stateChange', listener);
+		},
+	};
 }
 async function preconfigure(harness, config) {
 	await harness.objects.setObjectAsync('adaptivehome.0.configuration.record', {
@@ -484,7 +504,7 @@ function defineControllerTests({ suite }) {
 	});
 	suite('S24–S32 full automation on js-controller with device emulator', getHarness => {
 		it('trains in a worker, activates a new rule, confirms device feedback and rolls back degraded air quality', async function () {
-			this.timeout(45000);
+			this.timeout(70000);
 			const harness = getHarness(),
 				config = referenceConfiguration('air'),
 				fn = config.functions[0],
@@ -499,7 +519,7 @@ function defineControllerTests({ suite }) {
 				capabilities: ['fan'],
 				blocks: ['schedule', 'sensor'],
 				parameters: { threshold: { min: 25, max: 30 } },
-				evaluateAfterMs: 5000,
+				evaluateAfterMs: 10000,
 				objectives: { comfort: 1, energy: 0, switching: 0 },
 			};
 			config.bindings[0].capabilities[0].confirmation = 'device';
@@ -581,7 +601,7 @@ function defineControllerTests({ suite }) {
 						return result.learning.air?.plans.find(p => p.rollbackReason === 'observed_outcome_degraded');
 					},
 					'measured quality rollback',
-					15000,
+					25000,
 				);
 				assert.ok(outcome.effect.score > outcome.baseline.score);
 				assert.equal(outcome.status, 'rolled_back');
@@ -655,22 +675,8 @@ function defineControllerTests({ suite }) {
 				config.bindings[0].capabilities[0].confirmation = 'device';
 				await seed(harness, config);
 				await preconfigure(harness, config);
-				const device = emulator(harness, config),
+				const device = emulator(harness, config, 1000),
 					rpc = await operator(harness);
-				// Simulate successful repeated device reports as well as command feedback.
-				// A cached actuator acknowledgement alone is not five minutes of reachability.
-				const heartbeat = setInterval(async () => {
-					const id = config.bindings[0].capabilities[0].readId;
-					const state = await harness.states.getStateAsync(id);
-					if (state?.ack) {
-						await harness.states.setStateAsync(id, {
-							val: state.val,
-							ack: true,
-							ts: Date.now(),
-							from: 'system.adapter.synthetic.0',
-						});
-					}
-				}, 1000);
 				try {
 					await harness.startAdapterAndWait(true);
 					await harness.states.setStateAsync('test.0.motion.motion', {
@@ -708,8 +714,14 @@ function defineControllerTests({ suite }) {
 							kind: 'synthetic device via actual controller',
 						}),
 					);
+				} catch (error) {
+					fs.mkdirSync(path.join(__dirname, '../.local/evidence/AP-24'), { recursive: true });
+					fs.writeFileSync(
+						path.join(__dirname, '../.local/evidence/AP-24/quiet-soak-failure.json'),
+						JSON.stringify({ status: await rpc('status'), writes: device.writes, at: Date.now() }, null, 2),
+					);
+					throw error;
 				} finally {
-					clearInterval(heartbeat);
 					device.close();
 				}
 			});

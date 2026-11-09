@@ -137,7 +137,11 @@ export class Executor {
 		const own = this.journal.commands.some(
 			c =>
 				c.physicalId === binding.physicalId &&
-				c.sentAt <= observed.measuredAt &&
+				followsDispatch(
+					{ val: observed.value, ts: observed.measuredAt, lc: observed.lastChange },
+					c.sentAt,
+					this.clock.now(),
+				) &&
 				((c.nativeProgram &&
 					observed.programCommandId === c.commandId &&
 					(observed.value === c.nativeProgram.target || observed.value === c.nativeProgram.fallback)) ||
