@@ -53,3 +53,7 @@ The [manufacturer FAQ](https://homematic-ip.com/de/faqs) describes timed party m
 and selected heating profiles. The [Access Point manual](https://homematic-ip.com/sites/default/files/downloads/hmip-hap-um-web_1.pdf)
 distinguishes factory/reset procedures from ordinary operation. Neither is proof
 of this installation's offline expiry; factory reset is excluded from the plan.
+
+## Software follow-up (2026-11-10)
+
+The bounded manual commissioning executor and executable durable handoff/recovery services are now implemented and isolated-tested in development source. The [implementation evidence](manual-commissioning-coordinator.md) replaces their earlier implementation prerequisite. Scoped deployment, actual legacy-store/provider wiring and physical acceptance remain separate; no existing house component was changed.
