@@ -1,7 +1,7 @@
 # Release procedure and external prerequisites
 
 Release source: https://github.com/Holly86/ioBroker.adaptivehome
-Built package: GitHub prerelease 0.1.0-beta.6, separate from npm and ioBroker latest/stable.
+Built package: GitHub prerelease 0.1.0-beta.7, separate from npm and ioBroker latest/stable.
 
 1. Run type/lint/unit/package/controller/browser/frozen-artifact checks. Inspect actual git diff,
    all new files, commit authors, package whitelist and support export. Run scripts/public-review.cjs.
@@ -18,7 +18,7 @@ Built package: GitHub prerelease 0.1.0-beta.6, separate from npm and ioBroker la
    beta testing and request latest inclusion through the ioBroker repositories process. Stable follows
    successful latest/user testing and maintainer approval. No external catalog approval is implied.
 
-Current upstream references reviewed on 2026-11-09:
+Current upstream references reviewed on 2026-11-10:
 [repository requirements](https://github.com/ioBroker/ioBroker.repositories#requirements-for-an-adapter-to-get-added-to-the-beta-latest-repository),
 [publishing guidance](https://github.com/ioBroker/ioBroker.docs/blob/master/docs/en/dev/adapterpublish.md),
 [installation CLI](https://github.com/ioBroker/ioBroker.docs/blob/master/docs/en/config/cli.md).

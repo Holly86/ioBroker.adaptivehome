@@ -5,10 +5,11 @@ air quality, scheduled equipment and continuous minimum service. Start with one 
 learning up to an automatic observe → learn → plan → execute → check effect → rollback cycle.
 No language model, notification account, Node-RED or separate web app is required.
 
-The branch additionally contains unreleased **0.1.0-beta.7-dev.0** manual commissioning
-and executable handoff/rollback services. Their gateways start disabled; deployment and
-physical acceptance are separate from the [isolated software checks](docs/connections.md#manual-commissioning-and-executable-handoff-after-beta-6).
-The published Beta 6 package remains unchanged.
+**0.1.0-beta.7** adds bounded manual commissioning and executable handoff/rollback
+services with durable reservations, current manual-wish transfer and guarded recovery.
+Their gateways start disabled; scoped provider deployment and physical acceptance remain
+separate from the [isolated software checks](docs/connections.md#manual-commissioning-and-executable-handoff-after-beta-6).
+Earlier beta packages remain unchanged.
 
 **0.1.0-beta.6** adds independent source receipts, operator/calendar/presence projections,
 read-only shared-session profile inspection, optional native dated heating leases with App priority,
@@ -28,7 +29,7 @@ Tested locally: Node 24.22.1, controller 7.2.5, Admin 8.3.11 on Windows.
 Download the release's `.tgz` and `SHA256SUMS.txt`. Verify its checksum, then run in the ioBroker directory:
 
 ```sh
-npm install ./iobroker.adaptivehome-0.1.0-beta.6.tgz
+npm install ./iobroker.adaptivehome-0.1.0-beta.7.tgz
 iobroker upload adaptivehome
 iobroker add adaptivehome --enabled
 ```
@@ -37,13 +38,14 @@ Open Adaptive Home in Admin's tab menu. Use the built `.tgz`; the source archive
 build. GitHub beta, npm publication and ioBroker latest/stable inclusion are separate statuses.
 This beta does not claim catalog inclusion.
 
-Beta 6 includes the [freshness and policy corrections](docs/policy-parity.md).
+Beta 7 includes the [freshness and policy corrections](docs/policy-parity.md).
 Device read-evidence and normalized context sources must actually be connected.
 The native heating profile extension is contract-tested; the standard hmip backend
 does not provide its full-profile/absolute-expiry transport. Keep unsupported
 functions disabled. Dated leases additionally require a commissioned constant fallback,
-scoped physical acceptance and an explicitly authorized control host. Beta 6 does not
-authorize a production handoff; handoff SDK functions only propose guarded transitions.
+scoped physical acceptance and an explicitly authorized control host. Beta 7 does not
+authorize a production handoff. Its executable coordinator requires registered scoped
+providers, current request-store/owner evidence and a separately approved handoff plan.
 
 ## Configure
 
@@ -107,6 +109,12 @@ Meter readings, power integration and estimates have distinct labels and coverag
 household energy-saving claim is made.
 
 ## Changelog
+
+### 0.1.0-beta.7
+* Add a separately bounded manual commissioning executor without granting routine physical acceptance.
+* Execute durable writer handoff and rollback, preserving newer human wishes and verifying actual stop/start feedback.
+* Guard constant-profile recovery, original-request reconciliation, concurrent journal recovery and late responses.
+* Verify the frozen package with isolated controller messages, real test processes and SQL/SQLite; require fresh SQL startup evidence.
 
 ### 0.1.0-beta.6
 

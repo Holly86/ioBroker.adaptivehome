@@ -330,9 +330,9 @@ Rollback proposals wait for the native lease to expire and for fresh fallback fe
 
 ## Manual commissioning and executable handoff after Beta 6
 
-Development source `0.1.0-beta.7-dev.0` adds an explicit manual commissioning executor,
+Beta `0.1.0-beta.7` adds an explicit manual commissioning executor,
 a durable handoff coordinator, registered lifecycle providers, journal transfer and
-a constant-profile recovery executor. The published Beta 6 is unchanged. Nothing
+a constant-profile recovery executor. Earlier beta packages remain unchanged. Nothing
 installs these services into an existing backend or activates a house writer.
 
 ### Bounded manual commissioning

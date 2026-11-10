@@ -1,11 +1,11 @@
 {
   "common": {
     "name": "adaptivehome",
-    "version": "0.1.0-beta.7-dev.0",
+    "version": "0.1.0-beta.7",
     "news": {
-      "0.1.0-beta.7-dev.0": {
-        "en": "Unreleased bounded manual commissioning and durable executable handoff/rollback coordinator; no production activation.",
-        "de": "Unveröffentlichter begrenzter manueller Prüfmodus und ausführender dauerhafter Übergabe-/Rückwegkoordinator; keine Produktivaktivierung."
+      "0.1.0-beta.7": {
+        "en": "Bounded manual commissioning and durable executable handoff/rollback with current manual wishes, guarded recovery and isolated verification. Gateways remain disabled by default; physical acceptance is separate.",
+        "de": "Begrenzter manueller Prüfmodus und ausführende dauerhafte Übergabe/Rückkehr mit aktuellen Bedienwünschen, abgesicherter Wiederherstellung und isolierter Prüfung. Zugänge bleiben standardmäßig deaktiviert; physische Abnahme separat."
       },
       "0.1.0-beta.6": {
         "en": "Independent source receipts and shared-session profile reads; optional dated heating leases with App priority and guarded handoff/rollback preparation. Physical commissioning remains required.",
