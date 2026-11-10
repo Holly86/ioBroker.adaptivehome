@@ -51,9 +51,17 @@ function defineSqlTests({ suite }) {
 			const checked = validateConfiguration(cfg);
 			await seed(harness, checked, { 'mihome-vacuum.42.info.battery': 42 });
 			await preconfigure(harness, checked);
+			// A retained connection flag from a previous controller session is not startup evidence.
+			await harness.states.setStateAsync('sql.8.info.connection', {
+				val: true,
+				ack: true,
+				from: 'system.adapter.sql.8',
+				ts: Date.now() - 60000,
+			});
 			const log = fs.createWriteStream(
 					path.join(root, '.local/evidence/AP-26/beta5-20261109/sql-controller.log'),
 				),
+				sqlStartedAt = Date.now(),
 				child = spawn(process.execPath, [path.join(sqlDir, pkg.main), '--instance', '8', '--console'], {
 					cwd: sqlDir,
 					windowsHide: true,
@@ -80,7 +88,15 @@ function defineSqlTests({ suite }) {
 			}
 			try {
 				await until(
-					async () => (await harness.states.getStateAsync('sql.8.info.connection'))?.val === true,
+					async () => {
+						const connection = await harness.states.getStateAsync('sql.8.info.connection');
+						return (
+							connection?.val === true &&
+							connection.ack === true &&
+							connection.from === 'system.adapter.sql.8' &&
+							connection.ts >= sqlStartedAt
+						);
+					},
 					'isolated SQL connection',
 					15000,
 				);
