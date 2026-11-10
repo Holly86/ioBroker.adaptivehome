@@ -20,27 +20,36 @@ export class MaintenanceStore<T> {
 		if ((await fs.lstat(directory)).isSymbolicLink()) {
 			throw Error('maintenance_symlink_denied');
 		}
-		const lock = path.join(directory, 'owner.lock');
-		if (recovery) {
-			const previous = await fs.readFile(lock);
-			if (
-				createHash('sha256').update(previous).digest('hex') !== recovery.expectedLockHash ||
-				!(await recovery.previousOwnerStopped()) ||
-				!(await fs.readFile(lock)).equals(previous)
-			) {
-				throw Error('maintenance_recovery_denied');
-			}
-			await fs.rename(lock, path.join(directory, `retired-${randomUUID()}.lock`));
-		}
-		const owner = randomUUID(),
-			fd = await fs.open(lock, 'wx', 0o600);
+		// Serialize the complete recovery/open sequence across processes, including its async proof.
+		// A crashed opener leaves this marker in place: never remove it automatically.
+		const openingLock = path.join(directory, 'opening.lock');
+		const opening = await fs.open(openingLock, 'wx', 0o600);
 		try {
-			await fd.writeFile(owner);
-			await fd.sync();
+			const lock = path.join(directory, 'owner.lock');
+			if (recovery) {
+				const previous = await fs.readFile(lock);
+				if (
+					createHash('sha256').update(previous).digest('hex') !== recovery.expectedLockHash ||
+					!(await recovery.previousOwnerStopped()) ||
+					!(await fs.readFile(lock)).equals(previous)
+				) {
+					throw Error('maintenance_recovery_denied');
+				}
+				await fs.rename(lock, path.join(directory, `retired-${randomUUID()}.lock`));
+			}
+			const owner = randomUUID(),
+				fd = await fs.open(lock, 'wx', 0o600);
+			try {
+				await fd.writeFile(owner);
+				await fd.sync();
+			} finally {
+				await fd.close();
+			}
+			return new MaintenanceStore<T>(directory, owner);
 		} finally {
-			await fd.close();
+			await opening.close();
+			await fs.unlink(openingLock);
 		}
-		return new MaintenanceStore<T>(directory, owner);
 	}
 	async read(): Promise<T | undefined> {
 		await this.fence();

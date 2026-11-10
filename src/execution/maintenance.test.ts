@@ -744,6 +744,49 @@ describe('Maintenance late-response and bounded-authority regressions', () => {
 });
 
 describe('Real manual-wish journal transfer', () => {
+	it('serializes concurrent owner recovery before checking a stopped predecessor', async () => {
+		const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'adaptive-recovery-'));
+		const original = await MaintenanceStore.open(directory);
+		const lock = await fs.readFile(path.join(directory, 'owner.lock'));
+		const expectedLockHash = createHash('sha256').update(lock).digest('hex');
+		let release!: (stopped: boolean) => void;
+		let entered!: () => void;
+		let checks = 0;
+		const stopped = new Promise<boolean>(resolve => {
+			release = resolve;
+		});
+		const checking = new Promise<void>(resolve => {
+			entered = resolve;
+		});
+		const first = MaintenanceStore.open(directory, {
+			expectedLockHash,
+			previousOwnerStopped: async () => {
+				checks++;
+				entered();
+				return stopped;
+			},
+		});
+		await checking;
+		try {
+			await assert.rejects(
+				MaintenanceStore.open(directory, {
+					expectedLockHash,
+					previousOwnerStopped: async () => {
+						checks++;
+						return false;
+					},
+				}),
+			);
+			assert.equal(checks, 1);
+		} finally {
+			release(true);
+			const recovered = await first;
+			await assert.rejects(original.fence());
+			await recovered.close();
+		}
+		await fs.writeFile(path.join(directory, 'opening.lock'), 'abandoned-opening');
+		await assert.rejects(MaintenanceStore.open(directory));
+	});
 	it('preserves manual OFF and unrelated journals, resets quiet progress, and rejects a stale destination revision', async () => {
 		const d = await fs.mkdtemp(path.join(os.tmpdir(), 'adaptive-manual-')),
 			store = await MaintenanceStore.open<any>(d);

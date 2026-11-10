@@ -417,7 +417,11 @@ certified against a production Docker daemon by those tests.
 atomic journal replacement, serialized updates and a four-MiB record limit. A crash
 leaves the lock and reserved actions remain uncertain. Recovery requires the exact
 old lock hash and independently verified stopped-owner proof; never replace that
-callback with an unconditional true. POSIX directory fsync is used; Windows lacks
+callback with an unconditional true. An exclusive `opening.lock` serializes the
+entire open/recovery sequence, including the asynchronous stopped-owner check.
+An abandoned opening marker also denies new opens; it requires separate offline
+inspection with all maintenance owners stopped and is never removed by age.
+POSIX directory fsync is used; Windows lacks
 that directory guarantee. `ManualWishBridge` updates an already existing own
 execution journal transactionally under that lock, preserving unrelated commands,
 budgets and uncertainty records. Other legacy request-store formats require a
