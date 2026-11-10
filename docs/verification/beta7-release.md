@@ -1,0 +1,19 @@
+# Beta 7 release verification
+
+[Published installable GitHub prerelease](https://github.com/Holly86/ioBroker.adaptivehome/releases/tag/v0.1.0-beta.7), version 0.1.0-beta.7. Runtime/tag source: 9399e491967c8780ca1bb64c9e82ad8d8f10fbee. [Source CI](https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42775595001) passed all seven Node 22/24 Linux/Windows/macOS jobs. npm publishing and ioBroker latest/stable acceptance remain separate external gates.
+
+The built tgz contains 147 files, 331063 packed bytes and 1325561 unpacked bytes. SHA-256:
+
+`be3b9fd41841aca9322af11389a1a44ca4ee6f402801c9fbb85c4c36dcd8de1b`
+
+Beta 7 includes independent original-receipt context/presence/calendar projections, protected credential references, shared-session read-only full-profile inspection, actual native group/member feedback times, optional dated heating leases with App priority, and the bounded manual commissioning executor, durable executable handoff/rollback, serialized ownership recovery, bounded atomic journal-sharing recovery and guarded constant-profile recovery. The seven data profiles and bounded SQL logging from Beta 5 remain included. See [connection requirements](../connections.md) and [timed-lease software evidence](timed-lease-handoff.md).
+
+Build, typecheck, full lint, 178 anonymized unit/contract tests and 61 package checks passed. All 17 exact-frozen-package isolated controller/Admin/browser/soak checks passed in js-controller 7.2.5/Admin 8.3.11. All 124 installed runtime/Admin files match the archive. Three alternate configurations, English/German, narrow/wide layouts, actual read-only backend message registration and a real five-minute quiet interval (301689 ms) are covered. SQL 3.0.1 stores generated observations in an actual isolated SQLite database; other dialects remain unverified.
+
+After publication, the tgz and checksum were freshly downloaded. The frozen archive, download, checksum and GitHub asset digest are byte-identical. The published archive was installed again in isolation and passed five further controller checks: selected source processing, read-only HmIP host registration, bounded manual commissioning, executable isolated process handoff/rollback and real SQL/SQLite persistence. Earlier beta tags and release assets are unchanged.
+
+The freshly downloaded package then completed the bounded private read-only/shadow repeat using its normalization, source replay and pure policy modules. No Main/HomeRuntime/Executor or SQL exporter was instantiated. Existing house policies, effective runtime, active flows and controller processes were unchanged. The installed heating host remains read-only and its vendor files/runtime unchanged. No production adapter installation, configuration update, restart, actuator mutation, new cloud authentication or production SQL message was performed.
+
+Private identities, topology, state values, configuration and raw evidence remain ignored. The disabled private configuration and scoped handoff/rollback preparation were refreshed against the published package; source gaps remain explicitly unknown, stale or unavailable. Successful source reads do not authorize takeover.
+
+The native timed path requires commissioned constant fallback profiles and explicit physical acceptance bound to target/profile/member/timezone. Internet/access-point failure expiry, shared deadline, App priority, window behavior, cloud traffic and actual device feedback remain installation-specific acceptance. Historical unscoped acceptance flags are not substituted. The new control transport was not installed in production. The executable handoff/rollback coordinator and bounded manual commissioning path are included and isolated-tested; scoped providers, request-store/operator evidence and physical acceptance remain separate. No production coordinator or writer transfer was installed or executed. Physical handoff/rollback remain pending.

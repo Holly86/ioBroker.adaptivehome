@@ -139,12 +139,13 @@
         "docs/verification/read-only-host-context.md",
         "docs/verification/timed-lease-handoff.md",
         "docs/verification/beta6-release.md",
-        "docs/verification/manual-commissioning-coordinator.md"
+        "docs/verification/manual-commissioning-coordinator.md",
+        "docs/verification/beta7-release.md"
       ],
       "openChecks": [],
-      "commit": "85eacbcf523a0fe1e3dc439cd92006c6a2c83b5e",
-      "updatedAt": "2026-11-10T00:25:09.149Z",
-      "correctionSummary": "Unreleased bounded manual commissioning, durable executable lifecycle handoff, transactional wish transfer and guarded constant-profile recovery verified in isolation. Production and physical acceptance remain separate."
+      "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
+      "updatedAt": "2026-11-10T08:35:55.157Z",
+      "correctionSummary": "Published Beta 7: independent source receipts, read-only shared-session profile inspection, native timed lease, bounded manual commissioning and executable durable handoff/rollback; exact published package, real SQL/SQLite, platform CI and private read-only shadow passed. Physical commissioning remains open."
     },
     {
       "id": "AP-04",
@@ -210,12 +211,13 @@
         "docs/verification/readiness-connections.md",
         "docs/verification/timed-lease-handoff.md",
         "docs/verification/beta6-release.md",
-        "docs/verification/manual-commissioning-coordinator.md"
+        "docs/verification/manual-commissioning-coordinator.md",
+        "docs/verification/beta7-release.md"
       ],
       "openChecks": [],
-      "commit": "85eacbcf523a0fe1e3dc439cd92006c6a2c83b5e",
-      "updatedAt": "2026-11-10T00:25:09.149Z",
-      "correctionSummary": "Unreleased bounded manual commissioning, durable executable lifecycle handoff, transactional wish transfer and guarded constant-profile recovery verified in isolation. Production and physical acceptance remain separate."
+      "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
+      "updatedAt": "2026-11-10T08:35:55.157Z",
+      "correctionSummary": "Published Beta 7: independent source receipts, read-only shared-session profile inspection, native timed lease, bounded manual commissioning and executable durable handoff/rollback; exact published package, real SQL/SQLite, platform CI and private read-only shadow passed. Physical commissioning remains open."
     },
     {
       "id": "AP-07",
@@ -236,12 +238,13 @@
         "docs/verification/source-connections.md",
         "docs/verification/readiness-connections.md",
         "docs/verification/read-only-host-context.md",
-        "docs/verification/beta6-release.md"
+        "docs/verification/beta6-release.md",
+        "docs/verification/beta7-release.md"
       ],
       "openChecks": [],
-      "commit": "452170a83c712b028a3fb760d65f5eb2c8aac3b7",
-      "updatedAt": "2026-11-09T20:24:31.873Z",
-      "correctionSummary": "Published Beta 6: independent source receipts, read-only shared-session profile inspection, native timed lease and guarded handoff contracts; exact published package, real SQL/SQLite, platform CI and private read-only shadow passed. Physical commissioning remains open."
+      "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
+      "updatedAt": "2026-11-10T08:35:55.157Z",
+      "correctionSummary": "Published Beta 7: independent source receipts, read-only shared-session profile inspection, native timed lease, bounded manual commissioning and executable durable handoff/rollback; exact published package, real SQL/SQLite, platform CI and private read-only shadow passed. Physical commissioning remains open."
     },
     {
       "id": "AP-08",
@@ -314,16 +317,17 @@
         "docs/verification/timed-lease-handoff.md",
         "docs/verification/beta6-release.md",
         "docs/verification/physical-acceptance-preparation.md",
-        "docs/verification/manual-commissioning-coordinator.md"
+        "docs/verification/manual-commissioning-coordinator.md",
+        "docs/verification/beta7-release.md"
       ],
       "openChecks": [
-        "Install scoped maintained providers and the pinned source/read-only projection under separately authorized lifecycle scope; no automatic foreign-adapter/container installer.",
-        "Bind the actual old/new request stores, authoritative original-request receipts, operator attendance, complete writer scope and current reviewed restore data.",
-        "Separately approved on-site physical expiry/failure/App/window/cloud-traffic and full-scope handoff/rollback acceptance."
+        "Commission constant fallback profiles and obtain target/profile/member/timezone-bound physical expiry, shared deadline, App priority, failure, window and cloud-traffic evidence.",
+        "Deploy scoped maintained control/lifecycle providers and actual old/new request stores with original-request completion receipts, independent operator attendance/exclusivity and fresh reviewed restore data; current production host stays read-only.",
+        "Physical feedback, exclusive writer handoff preserving newer manual wishes and rollback acceptance."
       ],
-      "commit": "85eacbcf523a0fe1e3dc439cd92006c6a2c83b5e",
-      "updatedAt": "2026-11-10T00:25:09.149Z",
-      "correctionSummary": "Unreleased bounded manual commissioning, durable executable lifecycle handoff, transactional wish transfer and guarded constant-profile recovery verified in isolation. Production and physical acceptance remain separate."
+      "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
+      "updatedAt": "2026-11-10T08:35:55.157Z",
+      "correctionSummary": "Published Beta 7: independent source receipts, read-only shared-session profile inspection, native timed lease, bounded manual commissioning and executable durable handoff/rollback; exact published package, real SQL/SQLite, platform CI and private read-only shadow passed. Physical commissioning remains open."
     },
     {
       "id": "AP-11",
@@ -423,12 +427,13 @@
         "docs/verification/read-only-host-context.md",
         "docs/verification/timed-lease-handoff.md",
         "docs/verification/beta6-release.md",
-        "docs/verification/manual-commissioning-coordinator.md"
+        "docs/verification/manual-commissioning-coordinator.md",
+        "docs/verification/beta7-release.md"
       ],
       "openChecks": [],
-      "commit": "85eacbcf523a0fe1e3dc439cd92006c6a2c83b5e",
-      "updatedAt": "2026-11-10T00:25:09.149Z",
-      "correctionSummary": "Unreleased bounded manual commissioning, durable executable lifecycle handoff, transactional wish transfer and guarded constant-profile recovery verified in isolation. Production and physical acceptance remain separate."
+      "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
+      "updatedAt": "2026-11-10T08:35:55.157Z",
+      "correctionSummary": "Published Beta 7: independent source receipts, read-only shared-session profile inspection, native timed lease, bounded manual commissioning and executable durable handoff/rollback; exact published package, real SQL/SQLite, platform CI and private read-only shadow passed. Physical commissioning remains open."
     },
     {
       "id": "AP-15",
@@ -686,12 +691,13 @@
         "docs/verification/read-only-host-context.md",
         "docs/verification/timed-lease-handoff.md",
         "docs/verification/beta6-release.md",
-        "docs/verification/manual-commissioning-coordinator.md"
+        "docs/verification/manual-commissioning-coordinator.md",
+        "docs/verification/beta7-release.md"
       ],
       "openChecks": [],
-      "commit": "85eacbcf523a0fe1e3dc439cd92006c6a2c83b5e",
-      "updatedAt": "2026-11-10T00:25:09.149Z",
-      "correctionSummary": "Unreleased bounded manual commissioning, durable executable lifecycle handoff, transactional wish transfer and guarded constant-profile recovery verified in isolation. Production and physical acceptance remain separate."
+      "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
+      "updatedAt": "2026-11-10T08:35:55.157Z",
+      "correctionSummary": "Published Beta 7: independent source receipts, read-only shared-session profile inspection, native timed lease, bounded manual commissioning and executable durable handoff/rollback; exact published package, real SQL/SQLite, platform CI and private read-only shadow passed. Physical commissioning remains open."
     },
     {
       "id": "AP-25",
@@ -714,14 +720,15 @@
         "docs/verification/AP-25.md",
         "docs/verification/beta4-release.md",
         "docs/verification/beta5-release.md",
-        "docs/verification/beta6-release.md"
+        "docs/verification/beta6-release.md",
+        "docs/verification/beta7-release.md"
       ],
       "openChecks": [
         "npm needs authenticated publishing rights; ioBroker package co-ownership and latest/stable acceptance remain external."
       ],
-      "commit": "452170a83c712b028a3fb760d65f5eb2c8aac3b7",
-      "updatedAt": "2026-11-09T20:24:31.873Z",
-      "correctionSummary": "Published Beta 6: independent source receipts, read-only shared-session profile inspection, native timed lease and guarded handoff contracts; exact published package, real SQL/SQLite, platform CI and private read-only shadow passed. Physical commissioning remains open."
+      "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
+      "updatedAt": "2026-11-10T08:35:55.157Z",
+      "correctionSummary": "Published Beta 7: independent source receipts, read-only shared-session profile inspection, native timed lease, bounded manual commissioning and executable durable handoff/rollback; exact published package, real SQL/SQLite, platform CI and private read-only shadow passed. Physical commissioning remains open."
     },
     {
       "id": "AP-26",
@@ -752,16 +759,17 @@
         "docs/verification/timed-lease-handoff.md",
         "docs/verification/beta6-release.md",
         "docs/verification/physical-acceptance-preparation.md",
-        "docs/verification/manual-commissioning-coordinator.md"
+        "docs/verification/manual-commissioning-coordinator.md",
+        "docs/verification/beta7-release.md"
       ],
       "openChecks": [
-        "Install scoped maintained providers and the pinned source/read-only projection under separately authorized lifecycle scope; no automatic foreign-adapter/container installer.",
-        "Bind the actual old/new request stores, authoritative original-request receipts, operator attendance, complete writer scope and current reviewed restore data.",
-        "Separately approved on-site physical expiry/failure/App/window/cloud-traffic and full-scope handoff/rollback acceptance."
+        "Commission constant fallback profiles and obtain target/profile/member/timezone-bound physical expiry, shared deadline, App priority, failure, window and cloud-traffic evidence.",
+        "Deploy scoped maintained control/lifecycle providers and actual old/new request stores with original-request completion receipts, independent operator attendance/exclusivity and fresh reviewed restore data; current production host stays read-only.",
+        "Physical feedback, exclusive writer handoff preserving newer manual wishes and rollback acceptance."
       ],
-      "commit": "85eacbcf523a0fe1e3dc439cd92006c6a2c83b5e",
-      "updatedAt": "2026-11-10T00:25:09.149Z",
-      "correctionSummary": "Unreleased bounded manual commissioning, durable executable lifecycle handoff, transactional wish transfer and guarded constant-profile recovery verified in isolation. Production and physical acceptance remain separate."
+      "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
+      "updatedAt": "2026-11-10T08:35:55.157Z",
+      "correctionSummary": "Published Beta 7: independent source receipts, read-only shared-session profile inspection, native timed lease, bounded manual commissioning and executable durable handoff/rollback; exact published package, real SQL/SQLite, platform CI and private read-only shadow passed. Physical commissioning remains open."
     },
     {
       "id": "AP-27",
@@ -782,14 +790,15 @@
         "docs/handoff.md",
         "docs/verification/beta4-release.md",
         "docs/verification/beta5-release.md",
-        "docs/verification/beta6-release.md"
+        "docs/verification/beta6-release.md",
+        "docs/verification/beta7-release.md"
       ],
       "openChecks": [
         "Software release accepted. Physical/source/native-backend acceptance and expressly scoped production handoff remain pending; no takeover authorized or performed."
       ],
-      "commit": "452170a83c712b028a3fb760d65f5eb2c8aac3b7",
-      "updatedAt": "2026-11-09T20:24:31.873Z",
-      "correctionSummary": "Published Beta 6: independent source receipts, read-only shared-session profile inspection, native timed lease and guarded handoff contracts; exact published package, real SQL/SQLite, platform CI and private read-only shadow passed. Physical commissioning remains open."
+      "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
+      "updatedAt": "2026-11-10T08:35:55.157Z",
+      "correctionSummary": "Published Beta 7: independent source receipts, read-only shared-session profile inspection, native timed lease, bounded manual commissioning and executable durable handoff/rollback; exact published package, real SQL/SQLite, platform CI and private read-only shadow passed. Physical commissioning remains open."
     }
   ],
   "scenarioIds": [
@@ -831,13 +840,13 @@
     "S36"
   ],
   "repositoryUrl": "https://github.com/Holly86/ioBroker.adaptivehome",
-  "releasedVersion": "0.1.0-beta.6",
-  "releaseUrl": "https://github.com/Holly86/ioBroker.adaptivehome/releases/tag/v0.1.0-beta.6",
+  "releasedVersion": "0.1.0-beta.7",
+  "releaseUrl": "https://github.com/Holly86/ioBroker.adaptivehome/releases/tag/v0.1.0-beta.7",
   "artifact": {
-    "name": "iobroker.adaptivehome-0.1.0-beta.6.tgz",
-    "sha256": "87701b4e1487caf6fc00a51c0ca9360d93c420afc7e64bd6999a2c0a5b71bf85",
-    "runtimeSourceCommit": "452170a83c712b028a3fb760d65f5eb2c8aac3b7",
-    "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42690442060"
+    "name": "iobroker.adaptivehome-0.1.0-beta.7.tgz",
+    "sha256": "be3b9fd41841aca9322af11389a1a44ca4ee6f402801c9fbb85c4c36dcd8de1b",
+    "runtimeSourceCommit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
+    "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42775595001"
   },
   "corrections": [
     {
@@ -1379,6 +1388,87 @@
         "Separately approved on-site physical expiry/failure/App/window/cloud-traffic and full-scope handoff/rollback acceptance."
       ],
       "updatedAt": "2026-11-10T00:25:09.149Z"
+    },
+    {
+      "id": "beta7-commissioning-executable-handoff-2026-11-10",
+      "affectedPackages": [
+        "AP-03",
+        "AP-06",
+        "AP-07",
+        "AP-10",
+        "AP-14",
+        "AP-24",
+        "AP-25",
+        "AP-26",
+        "AP-27"
+      ],
+      "implementationStatus": "implemented",
+      "verificationStatus": "passed",
+      "verificationScope": "published frozen package, isolated controller/browser/SQL, anonymous native contracts and private read-only shadow; physical acceptance remains separate",
+      "evidence": "docs/verification/beta7-release.md",
+      "checks": {
+        "build": true,
+        "typecheck": true,
+        "lint": true,
+        "unitContractTests": 178,
+        "packageChecks": 61,
+        "controllerBrowserSoakTests": 17,
+        "additionalPublishedPackageControllerChecks": 5,
+        "installedRuntimeAdminFiles": 124,
+        "quietMs": 301689,
+        "admin": "8.3.11",
+        "alternateConfigurations": 3,
+        "crossPlatformJobs": 7,
+        "actualSqlSQLiteVerified": true,
+        "publicContentReview": true,
+        "publishedDownloadByteIdentical": true,
+        "boundedManualCommissioningVerified": true,
+        "executableHandoffRollbackVerified": true,
+        "serializedJournalRecoveryVerified": true,
+        "atomicFileSharingRecoveryVerified": true,
+        "realFileStressWrites": 2000,
+        "originalRequestQuiescenceRequired": true,
+        "containerAPIEmulated": true
+      },
+      "release": {
+        "version": "0.1.0-beta.7",
+        "url": "https://github.com/Holly86/ioBroker.adaptivehome/releases/tag/v0.1.0-beta.7",
+        "sourceCommit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
+        "sha256": "be3b9fd41841aca9322af11389a1a44ca4ee6f402801c9fbb85c4c36dcd8de1b",
+        "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42775595001"
+      },
+      "privateConfiguration": {
+        "disabledDraftCompleted": true,
+        "schemaAndMetadataAuditsPassed": true,
+        "independentContextHandoffComplete": true,
+        "fullConfiguredProfilesRead": true,
+        "timedLeaseAndSharedDeadlinePrepared": true,
+        "appPriorityPrepared": true,
+        "scopedHandoffAndRollbackPrepared": true,
+        "originalBackupsVerified": true,
+        "backendMode": "read-only",
+        "newControlTransportInstalled": false,
+        "existingHousePoliciesFlowsAndRuntimeUnchanged": true,
+        "actuatorWrites": 0,
+        "configurationWrites": 0,
+        "productionRestarts": 0,
+        "SQLMessages": 0,
+        "physicalExpiryAcceptance": false,
+        "writerHandoffPerformed": false,
+        "rollbackExecuted": false,
+        "readyForCutover": false,
+        "rawEvidence": "ignored local evidence only",
+        "manualCommissioningCodeIncluded": true,
+        "maintenanceServicesInstalled": false,
+        "maintenanceGrantsIssued": 0,
+        "handoffCoordinatorInstalled": false
+      },
+      "remainingGates": [
+        "Commission constant fallback profiles and obtain target/profile/member/timezone-bound physical expiry, shared deadline, App priority, failure, window and cloud-traffic evidence.",
+        "Deploy scoped maintained control/lifecycle providers and actual old/new request stores with original-request completion receipts, independent operator attendance/exclusivity and fresh reviewed restore data; current production host stays read-only.",
+        "Physical feedback, exclusive writer handoff preserving newer manual wishes and rollback acceptance."
+      ],
+      "updatedAt": "2026-11-10T08:35:55.157Z"
     }
   ],
   "releaseHistory": [
@@ -1450,29 +1540,78 @@
         "SQLMessages": 0,
         "updatedAt": "2026-11-09T14:38:17.825Z"
       }
+    },
+    {
+      "version": "0.1.0-beta.6",
+      "url": "https://github.com/Holly86/ioBroker.adaptivehome/releases/tag/v0.1.0-beta.6",
+      "artifact": {
+        "name": "iobroker.adaptivehome-0.1.0-beta.6.tgz",
+        "sha256": "87701b4e1487caf6fc00a51c0ca9360d93c420afc7e64bd6999a2c0a5b71bf85",
+        "runtimeSourceCommit": "452170a83c712b028a3fb760d65f5eb2c8aac3b7",
+        "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42690442060"
+      },
+      "verification": {
+        "version": "0.1.0-beta.6",
+        "implementationStatus": "implemented",
+        "verificationStatus": "passed",
+        "evidence": "docs/verification/beta6-release.md",
+        "checks": {
+          "build": true,
+          "typecheck": true,
+          "lint": true,
+          "unitContractTests": 153,
+          "packageChecks": 61,
+          "controllerBrowserSoakTests": 15,
+          "additionalPublishedPackageControllerChecks": 3,
+          "installedRuntimeAdminFiles": 110,
+          "quietMs": 301168,
+          "admin": "8.3.11",
+          "alternateConfigurations": 3,
+          "crossPlatformJobs": 7,
+          "actualSqlSQLiteVerified": true,
+          "publicContentReview": true,
+          "publishedDownloadByteIdentical": true
+        },
+        "productionControlChanges": false,
+        "privateReadOnlyPilotPerformedSeparately": true,
+        "actuatorWrites": 0,
+        "configurationWrites": 0,
+        "productionRestarts": 0,
+        "SQLMessages": 0,
+        "physicalExpiryAcceptance": false,
+        "readyForCutover": false,
+        "updatedAt": "2026-11-09T20:24:31.873Z"
+      }
     }
   ],
   "releaseVerification": {
-    "version": "0.1.0-beta.6",
+    "version": "0.1.0-beta.7",
     "implementationStatus": "implemented",
     "verificationStatus": "passed",
-    "evidence": "docs/verification/beta6-release.md",
+    "evidence": "docs/verification/beta7-release.md",
     "checks": {
       "build": true,
       "typecheck": true,
       "lint": true,
-      "unitContractTests": 153,
+      "unitContractTests": 178,
       "packageChecks": 61,
-      "controllerBrowserSoakTests": 15,
-      "additionalPublishedPackageControllerChecks": 3,
-      "installedRuntimeAdminFiles": 110,
-      "quietMs": 301168,
+      "controllerBrowserSoakTests": 17,
+      "additionalPublishedPackageControllerChecks": 5,
+      "installedRuntimeAdminFiles": 124,
+      "quietMs": 301689,
       "admin": "8.3.11",
       "alternateConfigurations": 3,
       "crossPlatformJobs": 7,
       "actualSqlSQLiteVerified": true,
       "publicContentReview": true,
-      "publishedDownloadByteIdentical": true
+      "publishedDownloadByteIdentical": true,
+      "boundedManualCommissioningVerified": true,
+      "executableHandoffRollbackVerified": true,
+      "serializedJournalRecoveryVerified": true,
+      "atomicFileSharingRecoveryVerified": true,
+      "realFileStressWrites": 2000,
+      "originalRequestQuiescenceRequired": true,
+      "containerAPIEmulated": true
     },
     "productionControlChanges": false,
     "privateReadOnlyPilotPerformedSeparately": true,
@@ -1482,62 +1621,6 @@
     "SQLMessages": 0,
     "physicalExpiryAcceptance": false,
     "readyForCutover": false,
-    "updatedAt": "2026-11-09T20:24:31.873Z"
-  },
-  "developmentVersion": "0.1.0-beta.7-dev.0",
-  "developmentVerification": {
-    "id": "manual-commissioning-executable-coordinator-2026-11-10",
-    "affectedPackages": [
-      "AP-03",
-      "AP-06",
-      "AP-10",
-      "AP-14",
-      "AP-24",
-      "AP-26"
-    ],
-    "implementationStatus": "implemented",
-    "verificationStatus": "passed",
-    "verificationScope": "anonymous contracts, real isolated controller messages/state store, actual isolated child-process handoff and frozen package; no production or physical execution",
-    "evidence": "docs/verification/manual-commissioning-coordinator.md",
-    "version": "0.1.0-beta.7-dev.0",
-    "sourceCommit": "85eacbcf523a0fe1e3dc439cd92006c6a2c83b5e",
-    "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42726712645",
-    "artifactSha256": "baeb5798ec97a54a2678727a8131370a9613d7b1ebd904607d55d975b4739ecb",
-    "distribution": "unreleased local development package; published Beta 6 unchanged",
-    "checks": {
-      "build": true,
-      "typecheck": true,
-      "lint": true,
-      "unitContractTests": 175,
-      "packageChecks": 61,
-      "controllerBrowserSoakTests": 17,
-      "installedRuntimeAdminFiles": 124,
-      "crossPlatformJobs": 7,
-      "actualSqlSQLiteVerified": true,
-      "actualAdminGatewayAndBackendProtocol": true,
-      "actualIsolatedChildProcessLifecycle": true,
-      "containerAPIEmulated": true,
-      "durableFileStoreAndOwnerLock": true,
-      "serializedOwnerRecovery": true,
-      "manualWishTransactionalTransfer": true,
-      "originalRequestQuiescenceRequired": true,
-      "publicContentReview": true
-    },
-    "production": {
-      "accessed": false,
-      "actuatorWrites": 0,
-      "configurationWrites": 0,
-      "restarts": 0,
-      "newGrantsIssued": 0,
-      "physicalTestsRun": 0,
-      "controlDeploymentPerformed": false,
-      "readyForCutover": false
-    },
-    "remainingGates": [
-      "Install scoped maintained providers and the pinned source/read-only projection under separately authorized lifecycle scope; no automatic foreign-adapter/container installer.",
-      "Bind the actual old/new request stores, authoritative original-request receipts, operator attendance, complete writer scope and current reviewed restore data.",
-      "Separately approved on-site physical expiry/failure/App/window/cloud-traffic and full-scope handoff/rollback acceptance."
-    ],
-    "updatedAt": "2026-11-10T00:25:09.149Z"
+    "updatedAt": "2026-11-10T08:35:55.157Z"
   }
 }
