@@ -422,7 +422,11 @@ entire open/recovery sequence, including the asynchronous stopped-owner check.
 An abandoned opening marker also denies new opens; it requires separate offline
 inspection with all maintenance owners stopped and is never removed by age.
 POSIX directory fsync is used; Windows lacks
-that directory guarantee. `ManualWishBridge` updates an already existing own
+that directory guarantee. Known file-sharing denials during atomic journal
+replacement receive at most eight attempts over less than one second of scheduled
+delay, with the owner lock checked before every attempt. Other errors or persistent
+denial still fail closed. These retries never repeat lifecycle or device effects.
+`ManualWishBridge` updates an already existing own
 execution journal transactionally under that lock, preserving unrelated commands,
 budgets and uncertainty records. Other legacy request-store formats require a
 registered, scoped import provider using the same compare-and-set contract.

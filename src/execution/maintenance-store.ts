@@ -101,8 +101,23 @@ export class MaintenanceStore<T> {
 		} finally {
 			await fd.close();
 		}
-		await this.fence();
-		await fs.rename(temp, path.join(this.directory, 'journal.json'));
+		for (let attempt = 0; ; attempt++) {
+			await this.fence();
+			try {
+				await fs.rename(temp, path.join(this.directory, 'journal.json'));
+				break;
+			} catch (error) {
+				// Windows can briefly deny replacement while a reader/scanner holds the destination.
+				// Retry only the same atomic file replacement, never a lifecycle or device effect.
+				if (
+					!['EPERM', 'EACCES', 'EBUSY'].includes((error as NodeJS.ErrnoException).code ?? '') ||
+					attempt >= 7
+				) {
+					throw error;
+				}
+				await new Promise(resolve => setTimeout(resolve, Math.min(25 * 2 ** attempt, 200)));
+			}
+		}
 		// POSIX directory sync makes the rename durable; Windows doesn't expose directory fsync.
 		if (process.platform !== 'win32') {
 			const dir = await fs.open(this.directory, 'r');

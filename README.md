@@ -114,6 +114,7 @@ household energy-saving claim is made.
 * Add a separately bounded manual commissioning executor without granting routine physical acceptance.
 * Execute durable writer handoff and rollback, preserving newer human wishes and verifying actual stop/start feedback.
 * Guard constant-profile recovery, original-request reconciliation, concurrent journal recovery and late responses.
+* Retry bounded atomic journal replacement on transient file-sharing denial, rechecking ownership before each attempt.
 * Verify the frozen package with isolated controller messages, real test processes and SQL/SQLite; require fresh SQL startup evidence.
 
 ### 0.1.0-beta.6

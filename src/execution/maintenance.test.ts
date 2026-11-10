@@ -654,6 +654,78 @@ describe('Executable durable handoff and rollback coordinator', () => {
 });
 
 describe('Concrete durable maintenance file store', () => {
+	it('retries transient atomic replacement denials without exposing a partial journal', async () => {
+		const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'adaptive-sharing-'));
+		const store = await MaintenanceStore.open<any>(directory);
+		await store.save({ phase: 'previous' });
+		const original = fs.rename;
+		try {
+			for (const code of ['EPERM', 'EACCES', 'EBUSY']) {
+				const previous = await store.read();
+				let attempts = 0;
+				fs.rename = async (...args) => {
+					if (++attempts === 1) {
+						assert.deepEqual(
+							JSON.parse(await fs.readFile(path.join(directory, 'journal.json'), 'utf8')),
+							previous,
+						);
+						throw Object.assign(Error('sharing denial'), { code });
+					}
+					return original(...args);
+				};
+				await store.save({ phase: code });
+				assert.equal(attempts, 2);
+				assert.equal((await store.read()).phase, code);
+			}
+		} finally {
+			fs.rename = original;
+			await store.close();
+		}
+	});
+	it('bounds sharing retries and immediately rejects other storage errors', async () => {
+		const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'adaptive-sharing-limit-'));
+		const store = await MaintenanceStore.open<any>(directory);
+		await store.save({ phase: 'previous' });
+		const original = fs.rename;
+		try {
+			for (const code of ['ENOSPC', 'EPERM']) {
+				let attempts = 0;
+				fs.rename = async () => {
+					attempts++;
+					throw Object.assign(Error('storage denial'), { code });
+				};
+				await assert.rejects(store.save({ phase: 'new' }), { code });
+				assert.equal(attempts, code === 'EPERM' ? 8 : 1);
+				assert.deepEqual(await store.read(), { phase: 'previous' });
+			}
+		} finally {
+			fs.rename = original;
+			await store.close();
+		}
+	});
+	it('rechecks ownership after a sharing denial before replacing the journal', async () => {
+		const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'adaptive-sharing-fence-'));
+		const store = await MaintenanceStore.open<any>(directory);
+		await store.save({ phase: 'previous' });
+		const original = fs.rename;
+		let attempts = 0;
+		try {
+			fs.rename = async () => {
+				attempts++;
+				await fs.writeFile(path.join(directory, 'owner.lock'), 'different-owner');
+				throw Object.assign(Error('sharing denial'), { code: 'EBUSY' });
+			};
+			await assert.rejects(store.save({ phase: 'new' }), /owner_lost/);
+			assert.equal(attempts, 1);
+			assert.deepEqual(JSON.parse(await fs.readFile(path.join(directory, 'journal.json'), 'utf8')), {
+				phase: 'previous',
+			});
+		} finally {
+			fs.rename = original;
+			await fs.writeFile(path.join(directory, 'owner.lock'), store.owner);
+			await store.close();
+		}
+	});
 	it('locks competing owners, fsyncs atomic snapshots and requires positive recovery proof', async () => {
 		const d = await fs.mkdtemp(path.join(os.tmpdir(), 'adaptive-maintenance-'));
 		const store = await MaintenanceStore.open<any>(d);
