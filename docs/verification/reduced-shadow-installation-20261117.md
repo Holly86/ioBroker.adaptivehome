@@ -36,3 +36,17 @@ no actuator write was issued. Production deployment clearance remains subject to
 live baseline-drift check. A later source-only installation still requires a fresh verified backup,
 an unchanged-current-state check and a separately requested maintenance execution. Subsequent
 live shadow observation and physical ownership/expiry/handoff acceptance remain open.
+
+## Read-only operational follow-up
+
+Retained runtime events establish an error exit and simultaneous shared-host Docker delays.
+An early image probe populated an inherited anonymous data volume during that interval;
+indirect test-load contribution is probable, rather than causally proven. The final reader
+definition already masks the inherited volume. The subsequent investigation started no
+production test containers or processes inside existing service containers.
+
+The package and current configuration checks still pass. Production installation remains
+blocked by a separate private installer issue: the full recovery receipt is durably rewritten
+per copied file. That avoidable write amplification must be reduced and interruption/rollback
+cases verified offhost before deployment. Functional contract checks do not certify shared-host
+resource impact. No change to existing house-control services is required to correct this tool.

@@ -767,14 +767,14 @@
         "docs/verification/reduced-shadow-installation-20261117.md"
       ],
       "openChecks": [
-        "Resolve the live baseline-drift clearance through read-only diagnosis before any production installation.",
+        "Reduce private installer recovery-receipt write amplification and verify hard-interruption/rollback cases offhost before source-only deployment; retain current house-control services unchanged.",
         "Commission constant fallback profiles and obtain target/profile/member/timezone-bound physical expiry, shared deadline, App priority, failure, window and cloud-traffic evidence.",
         "Deploy the reduced source-only instance and isolated file reader in a separately requested maintenance execution, with a fresh verified backup and current-state check; repeat live shadow observation. Full handoff roles remain disabled until separate acceptance.",
         "Physical feedback, complete exclusive writer handoff preserving newer human wishes and original deadlines, and rollback acceptance."
       ],
       "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
-      "updatedAt": "2026-11-17T15:49:47.399Z",
-      "correctionSummary": "Private reduced source-only reader and installation package prepared; isolated installation, official backup/restore and bounded rollback verified against unchanged Beta 7. Production deployment and physical acceptance remain pending.",
+      "updatedAt": "2026-11-17T19:34:20.063Z",
+      "correctionSummary": "Read-only diagnosis establishes historical error exit and shared-host delays, with probable indirect contribution from early NAS image probes. Source configuration remains valid; source-only deployment still awaits private installer IO hardening, fresh backup and revalidation.",
       "privateBindingVerification": {
         "implementationStatus": "implemented",
         "verificationStatus": "passed",
@@ -809,7 +809,9 @@
         "physicalAcceptance": false,
         "readyForCutover": false,
         "productionRestartsRequested": 0,
-        "productionBaselineClearance": "pending-read-only-drift-diagnosis"
+        "productionBaselineClearance": "diagnosed-probable-indirect-test-load; deployment-blocked-by-private-installer-IO",
+        "installerIOHardening": "pending-offhost-change-and-interruption-verification",
+        "readinessInvestigationProductionChanges": 0
       }
     },
     {
