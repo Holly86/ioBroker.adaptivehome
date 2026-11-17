@@ -763,16 +763,18 @@
         "docs/verification/manual-commissioning-coordinator.md",
         "docs/verification/beta7-release.md",
         "docs/verification/readiness-refresh-20261116.md",
-        "docs/verification/private-house-binding-20261117.md"
+        "docs/verification/private-house-binding-20261117.md",
+        "docs/verification/reduced-shadow-installation-20261117.md"
       ],
       "openChecks": [
+        "Resolve the live baseline-drift clearance through read-only diagnosis before any production installation.",
         "Commission constant fallback profiles and obtain target/profile/member/timezone-bound physical expiry, shared deadline, App priority, failure, window and cloud-traffic evidence.",
-        "Deploy the completed private maintained lifecycle/request-store/owner bindings in scoped read-only mode and verify their host-side receipts and producer fencing; current production host stays read-only.",
+        "Deploy the reduced source-only instance and isolated file reader in a separately requested maintenance execution, with a fresh verified backup and current-state check; repeat live shadow observation. Full handoff roles remain disabled until separate acceptance.",
         "Physical feedback, complete exclusive writer handoff preserving newer human wishes and original deadlines, and rollback acceptance."
       ],
       "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
-      "updatedAt": "2026-11-17T09:29:53.105Z",
-      "correctionSummary": "Concrete private Beta 7 house bindings completed and isolated; production controls unchanged, scoped deployment and physical acceptance pending.",
+      "updatedAt": "2026-11-17T15:49:47.399Z",
+      "correctionSummary": "Private reduced source-only reader and installation package prepared; isolated installation, official backup/restore and bounded rollback verified against unchanged Beta 7. Production deployment and physical acceptance remain pending.",
       "privateBindingVerification": {
         "implementationStatus": "implemented",
         "verificationStatus": "passed",
@@ -789,6 +791,25 @@
         "productionRestarts": 0,
         "physicalAcceptance": false,
         "readyForCutover": false
+      },
+      "reducedShadowInstallationVerification": {
+        "implementationStatus": "implemented",
+        "verificationStatus": "passed",
+        "evidence": "docs/verification/reduced-shadow-installation-20261117.md",
+        "sourceAndInstallationContractChecks": 24,
+        "actualControllerInstallationAndRollback": true,
+        "officialExistingBackupRestore": true,
+        "officialOnlineBackupAndSecondRestore": true,
+        "readerContainerWriteBarriers": true,
+        "existingTargetRuntimeImagePureProbe": true,
+        "sourceOnly": true,
+        "productionAdapterInstalled": false,
+        "productionActuatorWrites": 0,
+        "productionConfigurationWrites": 0,
+        "physicalAcceptance": false,
+        "readyForCutover": false,
+        "productionRestartsRequested": 0,
+        "productionBaselineClearance": "pending-read-only-drift-diagnosis"
       }
     },
     {
