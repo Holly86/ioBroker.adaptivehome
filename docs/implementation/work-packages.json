@@ -767,14 +767,13 @@
         "docs/verification/reduced-shadow-installation-20261117.md"
       ],
       "openChecks": [
-        "Reduce private installer recovery-receipt write amplification and verify hard-interruption/rollback cases offhost before source-only deployment; retain current house-control services unchanged.",
         "Commission constant fallback profiles and obtain target/profile/member/timezone-bound physical expiry, shared deadline, App priority, failure, window and cloud-traffic evidence.",
         "Deploy the reduced source-only instance and isolated file reader in a separately requested maintenance execution, with a fresh verified backup and current-state check; repeat live shadow observation. Full handoff roles remain disabled until separate acceptance.",
         "Physical feedback, complete exclusive writer handoff preserving newer human wishes and original deadlines, and rollback acceptance."
       ],
       "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
-      "updatedAt": "2026-11-17T19:34:20.063Z",
-      "correctionSummary": "Read-only diagnosis establishes historical error exit and shared-host delays, with probable indirect contribution from early NAS image probes. Source configuration remains valid; source-only deployment still awaits private installer IO hardening, fresh backup and revalidation.",
+      "updatedAt": "2026-11-17T20:08:39.404Z",
+      "correctionSummary": "Private source-only installer journal amplification resolved and verified offhost, including real hard-kill recovery and orphan CLI fencing. Updated private package prepared; production execution still requires fresh backup/restore and immediate baseline checks.",
       "privateBindingVerification": {
         "implementationStatus": "implemented",
         "verificationStatus": "passed",
@@ -796,7 +795,7 @@
         "implementationStatus": "implemented",
         "verificationStatus": "passed",
         "evidence": "docs/verification/reduced-shadow-installation-20261117.md",
-        "sourceAndInstallationContractChecks": 24,
+        "sourceAndInstallationContractChecks": 45,
         "actualControllerInstallationAndRollback": true,
         "officialExistingBackupRestore": true,
         "officialOnlineBackupAndSecondRestore": true,
@@ -809,9 +808,14 @@
         "physicalAcceptance": false,
         "readyForCutover": false,
         "productionRestartsRequested": 0,
-        "productionBaselineClearance": "diagnosed-probable-indirect-test-load; deployment-blocked-by-private-installer-IO",
-        "installerIOHardening": "pending-offhost-change-and-interruption-verification",
-        "readinessInvestigationProductionChanges": 0
+        "productionBaselineClearance": "offhost-preparation-passed; fresh-live-preflight-required",
+        "installerIOHardening": "implemented-and-verified-offhost",
+        "readinessInvestigationProductionChanges": 0,
+        "actualControllerHardAbortRecoveryCases": 11,
+        "journalWriteReductionPercent": 99.36,
+        "journalFileSyncsBefore": 156,
+        "journalFileSyncsAfter": 8,
+        "productionAccessDuringLowIOWork": 0
       }
     },
     {
