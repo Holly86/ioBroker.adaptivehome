@@ -762,16 +762,34 @@
         "docs/verification/physical-acceptance-preparation.md",
         "docs/verification/manual-commissioning-coordinator.md",
         "docs/verification/beta7-release.md",
-        "docs/verification/readiness-refresh-20261116.md"
+        "docs/verification/readiness-refresh-20261116.md",
+        "docs/verification/private-house-binding-20261117.md"
       ],
       "openChecks": [
         "Commission constant fallback profiles and obtain target/profile/member/timezone-bound physical expiry, shared deadline, App priority, failure, window and cloud-traffic evidence.",
-        "Deploy scoped maintained control/lifecycle providers and actual old/new request stores with original-request completion receipts, independent operator attendance/exclusivity and fresh reviewed restore data; current production host stays read-only.",
-        "Physical feedback, exclusive writer handoff preserving newer manual wishes and rollback acceptance."
+        "Deploy the completed private maintained lifecycle/request-store/owner bindings in scoped read-only mode and verify their host-side receipts and producer fencing; current production host stays read-only.",
+        "Physical feedback, complete exclusive writer handoff preserving newer human wishes and original deadlines, and rollback acceptance."
       ],
       "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
-      "updatedAt": "2026-11-16T20:15:58.266Z",
-      "correctionSummary": "Fresh read-only readiness review and private native-unit declaration correction; house controls unchanged and physical acceptance still pending."
+      "updatedAt": "2026-11-17T09:29:53.105Z",
+      "correctionSummary": "Concrete private Beta 7 house bindings completed and isolated; production controls unchanged, scoped deployment and physical acceptance pending.",
+      "privateBindingVerification": {
+        "implementationStatus": "implemented",
+        "verificationStatus": "passed",
+        "evidence": "docs/verification/private-house-binding-20261117.md",
+        "isolatedBindingChecks": 51,
+        "actualControllerChecks": 2,
+        "publishedDependencyFilesCompared": 147,
+        "runtimeAdminFilesCompared": 124,
+        "productUnitContractTests": 178,
+        "packageChecks": 61,
+        "privateDeploymentRolesEnabled": 0,
+        "productionActuatorWrites": 0,
+        "productionConfigurationWrites": 0,
+        "productionRestarts": 0,
+        "physicalAcceptance": false,
+        "readyForCutover": false
+      }
     },
     {
       "id": "AP-27",
