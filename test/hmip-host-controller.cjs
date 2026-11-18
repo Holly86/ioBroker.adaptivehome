@@ -2,7 +2,7 @@ const assert = require('node:assert/strict'),
 	{ EventEmitter } = require('node:events');
 const { registerHmipBackendHost } = require('../build/connections/hmip-host');
 const { emptyConfiguration, validateConfiguration } = require('../build/config/configuration');
-const { seed, preconfigure, operator, until } = require('./controller-suite.cjs');
+const { seed, preconfigure, operator, until, delay } = require('./controller-suite.cjs');
 function defineHmipHostTests({ suite }) {
 	suite('Read-only HmIP backend host through actual controller messages', getHarness => {
 		it('registers read commands, processes the returned source and sends no actuator mutation', async function () {
@@ -10,7 +10,9 @@ function defineHmipHostTests({ suite }) {
 			const h = getHarness(),
 				sender = 'system.adapter.hmip.9',
 				events = new EventEmitter(),
-				calls = [];
+				calls = [],
+				callTimes = [];
+			let fail = true;
 			const host = registerHmipBackendHost(
 				Object.assign(events, {
 					sendTo: (to, command, result, callback) =>
@@ -25,6 +27,13 @@ function defineHmipHostTests({ suite }) {
 					api: {
 						callRestApi: async endpoint => {
 							calls.push(endpoint);
+							callTimes.push(Date.now());
+							if (fail) {
+								throw Object.assign(Error('anonymous-provider-secret'), {
+									status: 429,
+									retryAfterMs: 3000,
+								});
+							}
 							return {
 								home: { id: 'synthetic-home', connected: true },
 								groups: { room: { id: 'room', homeId: 'synthetic-home', actualTemperature: 20 } },
@@ -35,6 +44,7 @@ function defineHmipHostTests({ suite }) {
 					clientCharacteristics: {},
 					allowedSenders: ['system.adapter.adaptivehome.0'],
 					targets: [],
+					cacheMs: 1000,
 				},
 			);
 			await h.objects.setObjectAsync(sender, {
@@ -102,11 +112,35 @@ function defineHmipHostTests({ suite }) {
 			try {
 				await h.startAdapterAndWait(true);
 				const rpc = await operator(h);
+				const failed = await until(async () => {
+					const r = await rpc('status');
+					return r.result.sourceDiagnostics?.backend?.status === 429 ? r.result : null;
+				}, 'safe source read diagnostic');
+				assert.equal(failed.connections.sources.backend, 'source_rate_limited');
+				assert.ok(!JSON.stringify(failed).includes('anonymous-provider-secret'));
+				assert.equal(calls.length, 1);
+				await delay(1000);
+				assert.equal(calls.length, 1);
+				fail = false;
 				const status = await until(async () => {
 					const r = await rpc('status');
 					return r.result.sources.temperature?.value === 20 ? r.result : null;
-				}, 'registered backend observation');
+				}, 'registered backend observation').catch(async error => {
+					const result = (await rpc('status')).result;
+					console.error(
+						'Synthetic read recovery diagnostic',
+						JSON.stringify({
+							calls,
+							connections: result.connections,
+							diagnostics: result.sourceDiagnostics,
+							observation: result.sources.temperature,
+						}),
+					);
+					throw error;
+				});
 				assert.equal(status.commands.length, 0);
+				assert.equal(status.sourceDiagnostics.backend, undefined);
+				assert.ok(callTimes[1] - callTimes[0] >= 3000);
 				assert.equal(host.capabilities().controlEnabled, false);
 				assert.ok(calls.length && calls.every(e => e === 'home/getCurrentState'));
 			} finally {

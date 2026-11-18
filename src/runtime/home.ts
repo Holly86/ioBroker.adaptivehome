@@ -49,6 +49,7 @@ export class HomeRuntime {
 	readonly learning: LocalLearning;
 	readonly adaptation: AdaptationController;
 	private lastHistoryFlush = 0;
+	private persistedHistoryRevision = -1;
 	private memories: Record<string, PolicyMemory> = {};
 	private proposals: Intent[] = [];
 	private ticking = false;
@@ -272,8 +273,13 @@ export class HomeRuntime {
 			if (this.clock.now() - this.lastHistoryFlush >= 30000) {
 				this.history.rotate(this.clock.now());
 				this.lastHistoryFlush = this.clock.now();
+				const revision = this.history.revision;
+				if (revision === this.persistedHistoryRevision) {
+					return;
+				}
 				try {
 					await this.port.persist('history', this.history.record);
+					this.persistedHistoryRevision = revision;
 					this.history.storageError = false;
 				} catch {
 					this.history.storageError = true;

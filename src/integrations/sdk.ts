@@ -4,6 +4,7 @@ import type { DetectionRule } from './profiles';
 import { createProfile } from './profiles';
 import type { IntegrationManifest, StateMetadata, StateValue } from './registry';
 import { IntegrationRegistry, normalize } from './registry';
+export { ReadFailure, readFailure, type ReadDiagnostic } from '../connections/read-errors';
 export {
 	nativeHeatingProgramSchema,
 	nativeHeatingReportSchema,

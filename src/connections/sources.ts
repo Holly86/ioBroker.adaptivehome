@@ -1,10 +1,12 @@
 import type { StateMetadata, StateValue } from '../integrations/registry';
+import { DERIVED_SOURCE_TIME } from '../integrations/registry';
 import type { SourceConnection, SourceOutput } from './schema';
 import { connectionPrefix } from './schema';
 import { deadline } from '../runtime/clock';
 import { windowMatches } from '../config/schedule';
 import { createHash } from 'node:crypto';
 import { calendarAvailable, type CalendarRead } from '../context/read-observer';
+import { backendReadDocument, ReadBackoff, type ReadDiagnostic } from './read-errors';
 
 export function select(document: unknown, path: (string | number)[]): unknown {
 	let current = document;
@@ -144,13 +146,15 @@ export interface SourcePort {
 	readState(id: string): Promise<StateValue | null>;
 	readFile(key: string): Promise<unknown>;
 	getJSON(key: string): Promise<SourceDocument>;
-	readBackend?(backend: string): Promise<SourceDocument>;
+	readBackend?(backend: string): Promise<unknown>;
 }
 /** In-memory derived states only. No foreign/device writer exists on this port. */
 export class SourceConnections {
 	private values = new Map<string, StateValue>();
 	private definitions = new Map<string, StateMetadata>();
 	private attempted = new Map<string, number>();
+	private pending = new Set<string>();
+	private backoffs = new Map<string, ReadBackoff>();
 	private accepted = new Map<
 		string,
 		{
@@ -167,6 +171,7 @@ export class SourceConnections {
 	private sessions = new Map<string, string>();
 	private signature = '';
 	readonly errors: Record<string, string> = {};
+	readonly diagnostics: Record<string, ReadDiagnostic> = {};
 	constructor(
 		private namespace: string,
 		private port: SourcePort,
@@ -181,6 +186,14 @@ export class SourceConnections {
 		this.values.clear();
 		this.definitions.clear();
 		this.attempted.clear();
+		this.pending.clear();
+		this.backoffs.clear();
+		for (const key of Object.keys(this.errors)) {
+			delete this.errors[key];
+		}
+		for (const key of Object.keys(this.diagnostics)) {
+			delete this.diagnostics[key];
+		}
 		this.accepted.clear();
 		this.sessions.clear();
 		for (const c of connections) {
@@ -212,10 +225,17 @@ export class SourceConnections {
 				}
 				const at = this.now(),
 					previous = this.attempted.get(c.id);
+				const backoff = this.backoffs.get(c.id) ?? new ReadBackoff();
+				this.backoffs.set(c.id, backoff);
+				if (this.pending.has(c.id) || backoff.blocked(at)) {
+					return;
+				}
 				if (previous !== undefined && at >= previous && at - previous < c.intervalMs) {
 					return;
 				}
 				this.attempted.set(c.id, at);
+				this.pending.add(c.id);
+				const attemptVersion = backoff.version;
 				try {
 					let data: SourceDocument;
 					if (c.kind === 'json-file') {
@@ -226,7 +246,7 @@ export class SourceConnections {
 						if (!this.port.readBackend) {
 							throw Error('source_backend_unavailable');
 						}
-						data = await deadline(this.port.readBackend(c.backend), 5000);
+						data = backendReadDocument(await deadline(this.port.readBackend(c.backend), 5000));
 					} else if (c.kind === 'state-map') {
 						const document: Record<string, Record<string, unknown>> = {
 							values: {},
@@ -275,13 +295,21 @@ export class SourceConnections {
 						this.project(c, output, data);
 					}
 					delete this.errors[c.id];
-				} catch {
+					delete this.diagnostics[c.id];
+					backoff.success(attemptVersion);
+				} catch (error) {
 					if (signature !== this.signature) {
 						return;
 					}
-					this.errors[c.id] = 'source_unavailable';
+					const failure = backoff.failure(error, this.now(), c.intervalMs);
+					this.errors[c.id] = failure.diagnostic.code;
+					this.diagnostics[c.id] = failure.diagnostic;
 					for (const output of c.outputs) {
 						this.invalidate(`${connectionPrefix(this.namespace, c.id)}.${output.key}`);
+					}
+				} finally {
+					if (signature === this.signature) {
+						this.pending.delete(c.id);
 					}
 				}
 			}),
@@ -391,7 +419,14 @@ export class SourceConnections {
 		const ts = eventAt ?? (changed ? (timed ? now : checkedAt) : previous.ts),
 			lc = changed ? ts : previous?.lc;
 		this.accepted.set(p, { checkedAt, eventAt, value, ts, lc, evaluatedAt: now, basis, phase });
-		this.values.set(p, { val: value, ts, lc, ack: true, q: 0 });
+		this.values.set(p, {
+			val: value,
+			ts,
+			lc,
+			ack: true,
+			q: 0,
+			...(timed && eventAt === undefined ? { [DERIVED_SOURCE_TIME]: checkedAt } : {}),
+		});
 		this.values.set(`${p}.verifiedAt`, { val: checkedAt, ts: checkedAt, ack: true, q: 0 });
 		if (eventAt !== undefined) {
 			this.values.set(`${p}.eventAt`, { val: eventAt, ts: checkedAt, ack: true, q: 0 });

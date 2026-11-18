@@ -7,6 +7,37 @@ import { HomeRuntime } from '../runtime/home';
 import { ManualClock } from '../runtime/clock';
 
 describe('Seven optional read-only backend connectors', () => {
+	it('accepts numeric and textual NINA severity without guessing a severity for missing data', () => {
+		const p = contextProfiles().find(p => p.id === 'nina')!;
+		for (const [type, val] of [
+			['number', 3],
+			['string', 'Severe'],
+			['string', '3'],
+		] as const) {
+			const b = p.discover({ 'nina.7.region.warning.severity': { type, read: true, write: false } })[0],
+				m = b.capabilities[0];
+			assert.equal(m.capability, 'alertSeverity');
+			assert.equal(normalize(b, m, { val, ts: 10000, ack: true }, 11000).value, val);
+			assert.equal(normalize(b, m, null, 11000).quality, 'unavailable');
+			assert.equal(m.writeId, undefined);
+		}
+	});
+	it('budgets for declared polling cadences without making old receipts fresh', () => {
+		for (const [id, path, age, budget] of [
+			['nina', 'region.activeWarn', 900000, 1200000],
+			['solarmanpv', 'device.power', 360000, 600000],
+		] as const) {
+			const b = contextProfiles()
+					.find(p => p.id === id)!
+					.discover({
+						[`${id}.7.${path}`]: { type: 'number', unit: id === 'solarmanpv' ? 'W' : '', read: true },
+					})[0],
+				m = b.capabilities[0];
+			assert.equal(m.maxAgeMs, budget);
+			assert.equal(normalize(b, m, { val: 1, ts: 10000, ack: true }, 10000 + age).quality, 'valid');
+			assert.equal(normalize(b, m, { val: 1, ts: 10000, ack: true }, 10001 + budget).quality, 'stale');
+		}
+	});
 	const cases: [string, string, string, string, string | undefined][] = [
 		['mihome-vacuum', 'info.battery', 'batteryLevel', 'number', '%'],
 		['radar2', 'selected_device._here', 'devicePresence', 'boolean', ''],

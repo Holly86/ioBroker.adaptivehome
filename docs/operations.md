@@ -22,6 +22,12 @@ For package rollback stop the instance, reinstall a previous tested artifact and
 files. Restore a compatible private backup if a future release changes schema. There is no earlier production release. Beta 1 has a known ambiguous-ownership issue; it is not a workaround for overlapping functions. Ownership must remain exclusive through takeover and rollback.
 
 Local history is bounded to seven days and 10,000 rows. Old/malformed rows are dropped, with counts.
+In development, repeated missing/invalid null readings are deduplicated without
+counting each read attempt as a new measurement. Quality, source, value and genuine
+measurement/proof changes remain distinct. History is persisted at the normal
+flush interval only after a content change; a failed write remains pending for
+retry. Restoring an old journal applies the same deduplication, but cannot recover
+observations that an earlier full buffer already displaced.
 Clear history deletes observations; model, adaptation, command, incident and replay journals remain
 separate records. For full removal stop the instance and delete its data through ioBroker. Preserve
 command/replay/budget records during ordinary restarts: deleting them loses previous reservations.

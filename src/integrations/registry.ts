@@ -1,5 +1,7 @@
 import type { CapabilityMapping, DeviceBinding, Observation, Scalar } from '../model/contracts';
 import { parseNativeHeatingReport } from './native-program';
+/** In-memory provenance set by trusted projections; foreign JSON states cannot supply this symbol. */
+export const DERIVED_SOURCE_TIME = Symbol('derived-source-time');
 export interface StateValue {
 	val: unknown;
 	ts: number;
@@ -7,6 +9,7 @@ export interface StateValue {
 	ack?: boolean;
 	q?: number;
 	from?: string;
+	[DERIVED_SOURCE_TIME]?: number;
 }
 export interface StateMetadata {
 	type: string;
@@ -253,13 +256,17 @@ export function normalize(
 		const proof = evidence?.verifiedAt,
 			reachable = evidence?.reachable;
 		const at = proof?.val;
+		const sourceTime = raw[DERIVED_SOURCE_TIME] ?? raw.ts;
 		if (
 			proof?.ack !== true ||
 			!Number.isFinite(proof.ts) ||
 			(proof.q !== undefined && proof.q !== 0) ||
 			typeof at !== 'number' ||
 			!Number.isFinite(at) ||
-			at < raw.ts ||
+			!Number.isFinite(sourceTime) ||
+			sourceTime < 0 ||
+			sourceTime > now ||
+			at < sourceTime ||
 			at > now ||
 			proof.ts > now
 		) {

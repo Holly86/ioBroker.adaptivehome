@@ -31,7 +31,15 @@ function profile(id: string, name: string, rules: DetectionRule[]): IntegrationM
 					...m,
 					requireAck: true,
 					confirmation: 'none' as const,
-					maxAgeMs: id === 'openweathermap' ? 7200000 : 300000,
+					// Conservative discovery defaults; the operator can require a stricter age per mapping.
+					maxAgeMs:
+						id === 'openweathermap'
+							? 7200000
+							: id === 'nina'
+								? 1200000
+								: id === 'solarmanpv'
+									? 600000
+									: 300000,
 					...(['batteryLevel', 'humidity', 'cloudCover', 'volume'].includes(m.capability)
 						? { min: 0, max: 100 }
 						: {}),
@@ -90,6 +98,7 @@ export function contextProfiles(): IntegrationManifest[] {
 			online,
 			rule('warningCount', /\.(?:numberOfWarn|activeWarn|cancelWarn)$/i, 'number', ''),
 			rule('alertSeverity', /\.severity$/i, 'number', ''),
+			rule('alertSeverity', /\.severity$/i, 'string', ''),
 			rule('alertText', /\.(?:headline|description|event)$/i, 'string', ''),
 		]),
 		profile('harmony', 'Harmony hub and activity feedback', [

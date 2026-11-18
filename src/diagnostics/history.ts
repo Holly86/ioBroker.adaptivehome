@@ -23,6 +23,7 @@ export class History {
 	record: HistoryRecord = { version: 1, observations: [], events: [] };
 	dropped = 0;
 	storageError = false;
+	revision = 0;
 	private fingerprints = new Map<string, string>();
 	constructor(
 		private maxRows = 10000,
@@ -60,7 +61,10 @@ export class History {
 	observation(observation: Observation): void {
 		const key = `${observation.entityId}:${observation.capability}`;
 		const fingerprint = JSON.stringify([
-			observation.measuredAt,
+			observation.sourceId,
+			observation.unit,
+			// A missing value has no new measurement just because another read was attempted.
+			observation.value === null && observation.quality !== 'valid' ? null : observation.measuredAt,
 			observation.verifiedAt,
 			observation.value,
 			observation.quality,
@@ -70,6 +74,7 @@ export class History {
 		}
 		this.fingerprints.set(key, fingerprint);
 		this.record.observations.push(structuredClone(observation));
+		this.revision++;
 		this.onRecord?.('observation', observation);
 		if (this.record.observations.length > this.maxRows) {
 			this.record.observations.splice(0, this.record.observations.length - this.maxRows);
@@ -88,20 +93,32 @@ export class History {
 			return;
 		}
 		this.record.events.push(historyEventSchema.parse(event));
+		this.revision++;
 		this.onRecord?.('event', event);
 		if (this.record.events.length > this.maxRows) {
 			this.record.events.shift();
 		}
 	}
 	rotate(now: number): void {
+		const before = this.record.observations.length + this.record.events.length;
 		this.record.observations = this.record.observations.filter(
 			o => now - o.receivedAt <= this.retentionMs && o.receivedAt <= now + 1000,
 		);
 		this.record.events = this.record.events.filter(e => now - e.at <= this.retentionMs && e.at <= now + 1000);
+		if (before !== this.record.observations.length + this.record.events.length) {
+			this.revision++;
+			const remaining = new Set(this.record.observations.map(o => `${o.entityId}:${o.capability}`));
+			for (const key of this.fingerprints.keys()) {
+				if (!remaining.has(key)) {
+					this.fingerprints.delete(key);
+				}
+			}
+		}
 	}
 	clear(): void {
 		this.record = { version: 1, observations: [], events: [] };
 		this.fingerprints.clear();
+		this.revision++;
 	}
 	supportExport(): unknown {
 		// No observations, device paths, recipients, user names or free text leave through support export.

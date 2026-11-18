@@ -10,6 +10,7 @@ import {
 } from '../execution/commissioning';
 import { handleHandoffControl } from '../execution/maintenance-host';
 import type { HandoffCoordinator } from '../execution/handoff-coordinator';
+import { readFailure } from './read-errors';
 
 export interface BackendEnvelope {
 	command: string;
@@ -229,25 +230,38 @@ export function registerHmipBackendHost(
 	options: HmipHostOptions,
 ): HmipBackendHost & { close(): void } {
 	const host = createHmipBackendHost(options);
+	let closed = false;
 	const listener = (message: BackendEnvelope): void => {
+		if (closed) {
+			return;
+		}
 		void host
 			.handle(message)
 			.then(r => {
-				if (r.handled && message.callback) {
+				if (!closed && r.handled && message.callback) {
 					adapter.sendTo(message.from, message.command, r.result, message.callback);
 				}
 			})
-			.catch(() => {
-				if (message.callback) {
+			.catch(error => {
+				if (!closed && message.callback) {
 					adapter.sendTo(
 						message.from,
 						message.command,
-						{ error: 'adaptivehome_backend_request_rejected' },
+						{
+							error: 'adaptivehome_backend_request_rejected',
+							diagnostic: readFailure(error, (options.now ?? Date.now)()).diagnostic,
+						},
 						message.callback,
 					);
 				}
 			});
 	};
 	adapter.on('message', listener);
-	return { ...host, close: () => adapter.removeListener('message', listener) };
+	return {
+		...host,
+		close: () => {
+			closed = true;
+			adapter.removeListener('message', listener);
+		},
+	};
 }

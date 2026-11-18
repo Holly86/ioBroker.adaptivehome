@@ -56,3 +56,10 @@ Development source now also exports executable source adapters and the backend-h
 transport. See [connections](connections.md) for shared-session integration, sender/authority
 gates, virtual paths and the still-required real absolute-expiry capability. It is not installed
 in an existing backend automatically and does not modify installed third-party modules.
+
+The development SDK additionally exports `ReadFailure`, `readFailure` and
+`ReadDiagnostic` for finite, sanitized read failures. A backend can preserve an
+HTTP status and `retryAfterMs`/absolute `retryAt` without exposing the original
+exception. Registered hosts serialize only validated diagnostic fields; clients
+also validate the reply. Keep the existing authenticated session and its shared
+cooldown. Registering a read host grants no native writes or physical acceptance.

@@ -76,4 +76,32 @@ describe('Maintained HmIP backend registration', () => {
 		assert.equal(events.listenerCount('message'), 1);
 		assert.equal(events.listeners('message')[0], original);
 	});
+	it('does not reply from an in-flight read after its registration was closed', async () => {
+		const events = new EventEmitter(),
+			replies: unknown[] = [];
+		let resolve!: (v: unknown) => void;
+		const o = {
+			...options(),
+			api: {
+				callRestApi: () =>
+					new Promise<unknown>(r => {
+						resolve = r;
+					}),
+			},
+		};
+		const host = registerHmipBackendHost(
+			Object.assign(events, { sendTo: (...args: unknown[]) => replies.push(args[2]) }),
+			o,
+		);
+		events.emit('message', {
+			from: o.allowedSenders[0],
+			command: 'adaptivehomeRead',
+			message: { protocol: 'adaptivehome.read.v1' },
+			callback: { id: 1 },
+		});
+		host.close();
+		resolve({ home: { id: 'home-a', connected: true }, groups: {}, devices: {} });
+		await new Promise(r => setImmediate(r));
+		assert.equal(replies.length, 0);
+	});
 });

@@ -1,6 +1,7 @@
 import { open } from 'node:fs/promises';
 import { z } from 'zod';
 import type { SourceDocument } from './sources';
+import { readFailure } from './read-errors';
 
 export const endpointSchema = z.strictObject({
 	kind: z.enum([
@@ -156,7 +157,18 @@ export async function getSourceJSON(
 		redirect: 'error',
 		signal: AbortSignal.timeout(5000),
 	});
-	if (!response.ok || Number(response.headers.get('content-length') ?? 0) > 1048576) {
+	if (!response.ok) {
+		const retry = response.headers.get('retry-after');
+		const wait =
+			retry === null
+				? undefined
+				: /^\d+(?:\.\d+)?$/.test(retry.trim())
+					? Math.ceil(Number(retry) * 1000)
+					: Math.max(0, Date.parse(retry) - now());
+		await response.body?.cancel().catch(() => undefined);
+		throw readFailure({ status: response.status, retryAfterMs: wait }, now());
+	}
+	if (Number(response.headers.get('content-length') ?? 0) > 1048576) {
 		throw Error('source_read_failed');
 	}
 	const reader = response.body?.getReader();

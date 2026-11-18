@@ -74,7 +74,7 @@
       ],
       "openChecks": [],
       "commit": "fc6983f165f7c363edfff875286fa1677fffff49",
-      "updatedAt": "2026-11-08T16:05:32.710Z"
+      "updatedAt": "2026-11-08T16:05:32.71Z"
     },
     {
       "id": "AP-01",
@@ -265,8 +265,8 @@
       ],
       "openChecks": [],
       "commit": "a8cdae6a3e85876781f3ec4888af17505cd8d10c",
-      "updatedAt": "2026-11-09T14:38:17.825Z",
-      "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
+      "updatedAt": "2026-11-18T23:18:38.995454+01:00",
+      "correctionSummary": "Deduplicate unchanged missing/null observations and persist history only after content changes; preserve source/quality/evidence transitions and retry failed storage."
     },
     {
       "id": "AP-09",
@@ -326,8 +326,8 @@
         "Physical feedback, exclusive writer handoff preserving newer manual wishes and rollback acceptance."
       ],
       "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
-      "updatedAt": "2026-11-10T08:35:55.157Z",
-      "correctionSummary": "Published Beta 7: independent source receipts, read-only shared-session profile inspection, native timed lease, bounded manual commissioning and executable durable handoff/rollback; exact published package, real SQL/SQLite, platform CI and private read-only shadow passed. Physical commissioning remains open."
+      "updatedAt": "2026-11-18T23:18:38.995454+01:00",
+      "correctionSummary": "Sanitized shared-session read diagnostics, provider minimum wait pacing and closed-host late-reply fencing; private read-only backend hook prepared but not deployed."
     },
     {
       "id": "AP-11",
@@ -433,8 +433,8 @@
       ],
       "openChecks": [],
       "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
-      "updatedAt": "2026-11-10T08:35:55.157Z",
-      "correctionSummary": "Published Beta 7: independent source receipts, read-only shared-session profile inspection, native timed lease, bounded manual commissioning and executable durable handoff/rollback; exact published package, real SQL/SQLite, platform CI and private read-only shadow passed. Physical commissioning remains open."
+      "updatedAt": "2026-11-18T23:18:38.995454+01:00",
+      "correctionSummary": "NINA textual/numeric severity and documented new-discovery freshness budgets for polling sources; existing mappings retain their configured limits."
     },
     {
       "id": "AP-15",
@@ -607,7 +607,7 @@
         "Optional real Ollama/cloud server/account call pending. Real local HTTP protocol/budget validation passed without paid calls."
       ],
       "commit": "88169abbdc51b28728fe2a37be8d51aa723198c1",
-      "updatedAt": "2026-11-08T16:05:32.720Z"
+      "updatedAt": "2026-11-08T16:05:32.72Z"
     },
     {
       "id": "AP-22",
@@ -629,7 +629,7 @@
       ],
       "openChecks": [],
       "commit": "e7e7bb67b86f1aa523e6278181166613c01f5bf1",
-      "updatedAt": "2026-11-08T16:05:32.720Z"
+      "updatedAt": "2026-11-08T16:05:32.72Z"
     },
     {
       "id": "AP-23",
@@ -652,7 +652,7 @@
       ],
       "openChecks": [],
       "commit": "e77f73d2d74023d221aecda846461d38b7b49433",
-      "updatedAt": "2026-11-08T16:05:32.720Z"
+      "updatedAt": "2026-11-08T16:05:32.72Z"
     },
     {
       "id": "AP-24",
@@ -697,8 +697,8 @@
       ],
       "openChecks": [],
       "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
-      "updatedAt": "2026-11-10T08:35:55.157Z",
-      "correctionSummary": "Published Beta 7: independent source receipts, read-only shared-session profile inspection, native timed lease, bounded manual commissioning and executable durable handoff/rollback; exact published package, real SQL/SQLite, platform CI and private read-only shadow passed. Physical commissioning remains open."
+      "updatedAt": "2026-11-18T23:18:38.995454+01:00",
+      "correctionSummary": "191 anonymous checks, 61 package checks and isolated controller correction scenarios passed; initial recovery timeout remains documented as not reproduced. No new long-duration or physical acceptance."
     },
     {
       "id": "AP-25",
@@ -772,8 +772,8 @@
         "Physical feedback, complete exclusive writer handoff preserving newer human wishes and original deadlines, and rollback acceptance."
       ],
       "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
-      "updatedAt": "2026-11-17T20:08:39.404Z",
-      "correctionSummary": "Private source-only installer journal amplification resolved and verified offhost, including real hard-kill recovery and orphan CLI fencing. Updated private package prepared; production execution still requires fresh backup/restore and immediate baseline checks.",
+      "updatedAt": "2026-11-18T23:18:38.995454+01:00",
+      "correctionSummary": "Corrected private file reader and expanded source-only configuration prepared and isolated-tested; current backend source pins reviewed. No production configuration, service restart or actuator changes.",
       "privateBindingVerification": {
         "implementationStatus": "implemented",
         "verificationStatus": "passed",
@@ -1547,6 +1547,46 @@
         "Separately approved read-only deployment and subsequent on-site bounded native expiry and full-scope handoff/rollback acceptance."
       ],
       "updatedAt": "2026-11-16T20:15:58.266Z"
+    },
+    {
+      "id": "read-shadow-regressions-2026-11-18",
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
+      "softwareVerification": "passed",
+      "evidence": "docs/verification/read-shadow-regressions.md",
+      "checks": {
+        "build": true,
+        "typecheck": true,
+        "lint": true,
+        "unitContractTests": 191,
+        "packageChecks": 61,
+        "finalCandidateControllerScenarios": 2,
+        "additionalFreshInstallRecoveryRepeat": 1,
+        "installedRuntimeAdminFiles": 126,
+        "anonymousPrivateFileReaderChecks": 21,
+        "actualPcFilePublicationCycles": 30,
+        "separateReaderProcessVerified": true,
+        "privateLoaderApiCooldownChecks": 7,
+        "publicContentReview": true
+      },
+      "initialControllerRecoveryTimeoutNotReproduced": true,
+      "unreleasedTestCandidateSha256": "b86e3bab982faff1b5d3c4184a32caf913b29ba53bf312feaa26ed3434527530",
+      "productionConfigurationWrites": 0,
+      "productionRestarts": 0,
+      "actuatorWrites": 0,
+      "privateBackendInterfacePrepared": true,
+      "privateBackendInterfaceActivated": false,
+      "new24HourAcceptance": false,
+      "physicalExpiryAcceptance": false,
+      "writerHandoffPerformed": false,
+      "readyForCutover": false,
+      "newReleasePublished": false,
+      "remaining": [
+        "Initial isolated recovery timeout cause is unestablished despite subsequent passing fresh-install runs.",
+        "Existing backend activation, real source availability, host load/restart causes and a new live observation remain external.",
+        "Full rule parity, physical expiry and actual handoff/rollback remain separately required."
+      ],
+      "updatedAt": "2026-11-18T23:18:38.995454+01:00"
     }
   ],
   "releaseHistory": [

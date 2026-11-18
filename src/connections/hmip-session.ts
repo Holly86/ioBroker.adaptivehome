@@ -1,6 +1,7 @@
 import type { NativeTransportConfig } from './schema';
 import type { HmipProfile, HmipSnapshot } from './heating-backend';
 import type { SourceDocument } from './sources';
+import { ReadBackoff } from './read-errors';
 
 /** Adapter-hosted API only. No credentials, authentication or socket creation occur here. */
 export interface ExistingHmipSession {
@@ -51,6 +52,7 @@ export function normalizeHmipProfile(raw: unknown, group: Data, index: string): 
 export class HmipSessionSource {
 	private cached?: SourceDocument;
 	private pending?: Promise<SourceDocument>;
+	private readBackoff = new ReadBackoff();
 	private profiles = new Map<string, { fingerprint: string; profile: HmipProfile; checkedAt: number }>();
 	constructor(
 		private api: ExistingHmipSession,
@@ -73,11 +75,25 @@ export class HmipSessionSource {
 		if (this.pending) {
 			return this.pending;
 		}
-		this.pending = this.load();
+		this.pending = this.pacedRead(() => this.load());
 		try {
 			return await this.pending;
 		} finally {
 			this.pending = undefined;
+		}
+	}
+	private async pacedRead<T>(read: () => Promise<T>): Promise<T> {
+		const blocked = this.readBackoff.blocked(this.now());
+		if (blocked) {
+			throw blocked;
+		}
+		const version = this.readBackoff.version;
+		try {
+			const result = await read();
+			this.readBackoff.success(version);
+			return result;
+		} catch (error) {
+			throw this.readBackoff.failure(error, this.now(), this.cacheMs);
 		}
 	}
 	private async load(): Promise<SourceDocument> {
@@ -173,11 +189,13 @@ export class HmipSessionSource {
 				: undefined;
 		if (!profile) {
 			profile = normalizeHmipProfile(
-				await this.api.callRestApi('group/heating/getProfile', {
-					groupId: t.groupId,
-					profileIndex: t.profileIndex,
-					profileName: object(metadata).name,
-				}),
+				await this.pacedRead(() =>
+					this.api.callRestApi('group/heating/getProfile', {
+						groupId: t.groupId,
+						profileIndex: t.profileIndex,
+						profileName: object(metadata).name,
+					}),
+				),
 				group,
 				t.profileIndex,
 			);
@@ -249,7 +267,10 @@ export class HmipSessionSource {
 		if (!['group/heating/getProfile', 'group/heating/updateProfile'].includes(endpoint)) {
 			throw Error('hmip_endpoint_denied');
 		}
-		const result = await this.api.callRestApi(endpoint, body);
+		const result =
+			endpoint === 'group/heating/getProfile'
+				? await this.pacedRead(() => this.api.callRestApi(endpoint, body))
+				: await this.api.callRestApi(endpoint, body);
 		if (endpoint.endsWith('updateProfile')) {
 			this.cached = undefined;
 			this.profiles.delete(String(body.groupId));

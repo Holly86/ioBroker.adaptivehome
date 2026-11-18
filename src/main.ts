@@ -12,7 +12,6 @@ import { OptionalProvider, providerSchema } from './learning/provider';
 import { deadline } from './runtime/clock';
 import { addTypeHints } from './integrations/type-hints';
 import { SourceConnections } from './connections/sources';
-import type { SourceDocument } from './connections/sources';
 import { getSourceJSON, readSourceFile, resolveSourceEndpoint } from './connections/io';
 import { NativeConnections } from './connections/runtime';
 import { SqlLogging } from './diagnostics/sql-logging';
@@ -31,7 +30,7 @@ class Adaptivehome extends utils.Adapter {
 		readBackend: backend =>
 			new Promise(resolve =>
 				this.sendTo(backend, 'adaptivehomeRead', { protocol: 'adaptivehome.read.v1' }, result =>
-					resolve(result as unknown as SourceDocument),
+					resolve(result),
 				),
 			),
 		getJSON: async key => {
@@ -419,6 +418,7 @@ class Adaptivehome extends utils.Adapter {
 					Object.assign(result as object, {
 						logging: this.sqlLogging.state(),
 						connections: { sources: this.sourceConnections.errors, native: this.nativeConnections.errors },
+						sourceDiagnostics: this.sourceConnections.diagnostics,
 					});
 					if (remoteScope) {
 						const status = result as {

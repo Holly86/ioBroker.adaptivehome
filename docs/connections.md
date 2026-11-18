@@ -457,3 +457,31 @@ environment; these services are not a universal foreign-controller installer.
 
 The software checks use synthetic homes and isolated processes/controller databases.
 They do not perform physical expiry, HAP/network interruption or house takeover.
+
+## Read-source corrections in development
+
+Time-derived calendar gates, declared windows and rolling forecast selections keep
+their local value-change time separate from the original source verification time.
+Only the trusted in-memory projection carries that provenance; a foreign JSON
+state cannot opt into it. Re-evaluation does not refresh the source receipt. Stale,
+future, changed-at-the-same-receipt and unreachable inputs remain rejected. Physical
+events still require evidence at least as recent as their event/value timestamp.
+
+Newly discovered NINA mappings allow numeric or textual severity and default to a
+20-minute maximum source age. SolarmanPV discovery defaults to ten minutes;
+OpenWeatherMap remains two hours. These defaults accommodate common polling
+cadences and do not guarantee immediate alerts. Existing mappings keep their
+configured ages. Select an age appropriate to each function and the actual polling
+schedule; neither repeated cache reads nor process uptime renew source evidence.
+Discovery offers warning fields across supplied regions without selecting or
+enabling them automatically. Absent dynamic warning objects are not invented.
+
+Backend read failures may add a validated `diagnostic` containing a finite code,
+HTTP status and minimum retry delay to the existing error reply. Adapter status
+exposes these facts under `sourceDiagnostics`. Exception text, URLs, credentials,
+headers and response bodies are never forwarded. Legacy generic error replies
+remain supported. Producer-side reads and source consumers both pace retries;
+HTTP `Retry-After` seconds and dates are respected. Successful reads clear the
+local failure state without a service restart. An earlier concurrent success
+cannot clear a newer wait. Local read backoff is in memory; an existing provider's
+persistent cooldown remains authoritative and must not be bypassed on restart.
