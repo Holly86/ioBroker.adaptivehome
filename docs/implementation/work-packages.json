@@ -1586,7 +1586,8 @@
         "Existing backend activation, real source availability, host load/restart causes and a new live observation remain external.",
         "Full rule parity, physical expiry and actual handoff/rollback remain separately required."
       ],
-      "updatedAt": "2026-11-18T23:18:38.995454+01:00"
+      "updatedAt": "2026-11-18T23:18:38.995454+01:00",
+      "sourceCommit": "ef204804e2f30f49f51840f21f7a11a1dfab8bdc"
     }
   ],
   "releaseHistory": [
