@@ -1,4 +1,6 @@
-# Read/shadow regression corrections (unreleased)
+# Read/shadow regression corrections (2026-11-18 preparation)
+
+This is the historical pre-release record. Publication and the subsequent controlled timeout investigation are recorded in [Beta 8 release verification](beta8-release.md); the observations below describe the earlier preparation.
 
 The development source corrects issues reproduced with anonymous fixtures:
 

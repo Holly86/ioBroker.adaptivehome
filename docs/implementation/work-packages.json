@@ -722,14 +722,15 @@
         "docs/verification/beta4-release.md",
         "docs/verification/beta5-release.md",
         "docs/verification/beta6-release.md",
-        "docs/verification/beta7-release.md"
+        "docs/verification/beta7-release.md",
+        "docs/verification/beta8-release.md"
       ],
       "openChecks": [
-        "npm needs authenticated publishing rights; ioBroker package co-ownership and latest/stable acceptance remain external."
+        "npm publication, ioBroker package co-ownership and latest/stable acceptance remain separate external steps."
       ],
-      "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
-      "updatedAt": "2026-11-10T08:35:55.157Z",
-      "correctionSummary": "Published Beta 7: independent source receipts, read-only shared-session profile inspection, native timed lease, bounded manual commissioning and executable durable handoff/rollback; exact published package, real SQL/SQLite, platform CI and private read-only shadow passed. Physical commissioning remains open."
+      "commit": "7f81e0b0fec3e2b9437b89ef2e71073171080268",
+      "updatedAt": "2026-11-19T07:48:30.880694+00:00",
+      "correctionSummary": "Published Beta 8: source freshness/history/severity/pacing corrections and aligned backend read deadlines; exact public artifact, isolated controller/browser/SQL/quiet tests, fresh download installation and platform CI passed. Production and physical acceptance unchanged."
     },
     {
       "id": "AP-26",
@@ -887,13 +888,13 @@
     "S36"
   ],
   "repositoryUrl": "https://github.com/Holly86/ioBroker.adaptivehome",
-  "releasedVersion": "0.1.0-beta.7",
-  "releaseUrl": "https://github.com/Holly86/ioBroker.adaptivehome/releases/tag/v0.1.0-beta.7",
+  "releasedVersion": "0.1.0-beta.8",
+  "releaseUrl": "https://github.com/Holly86/ioBroker.adaptivehome/releases/tag/v0.1.0-beta.8",
   "artifact": {
-    "name": "iobroker.adaptivehome-0.1.0-beta.7.tgz",
-    "sha256": "be3b9fd41841aca9322af11389a1a44ca4ee6f402801c9fbb85c4c36dcd8de1b",
-    "runtimeSourceCommit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
-    "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42775595001"
+    "name": "iobroker.adaptivehome-0.1.0-beta.8.tgz",
+    "sha256": "b791be9c019331c9440317f1e1ae3823ffcabecaf6c5cb40cf884ffc26209805",
+    "runtimeSourceCommit": "7f81e0b0fec3e2b9437b89ef2e71073171080268",
+    "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/44481077466"
   },
   "corrections": [
     {
@@ -1587,7 +1588,70 @@
         "Full rule parity, physical expiry and actual handoff/rollback remain separately required."
       ],
       "updatedAt": "2026-11-18T23:18:38.995454+01:00",
-      "sourceCommit": "ef204804e2f30f49f51840f21f7a11a1dfab8bdc"
+      "sourceCommit": "ef204804e2f30f49f51840f21f7a11a1dfab8bdc",
+      "followUpEvidence": "docs/verification/beta8-release.md",
+      "followUpSummary": "Published Beta 8 includes these public corrections and fixes a separately reproduced backend deadline mismatch; historical one-off attribution and private/physical acceptance remain open."
+    },
+    {
+      "id": "beta8-release-2026-11-19",
+      "sourceCommit": "7f81e0b0fec3e2b9437b89ef2e71073171080268",
+      "affectedPackages": [
+        "AP-03",
+        "AP-11",
+        "AP-15",
+        "AP-24",
+        "AP-25",
+        "AP-26"
+      ],
+      "implementationStatus": "implemented",
+      "verificationStatus": "passed",
+      "verificationScope": "Public release and isolated synthetic software checks only.",
+      "evidence": "docs/verification/beta8-release.md",
+      "checks": {
+        "build": true,
+        "typecheck": true,
+        "lint": true,
+        "unitContractTests": 191,
+        "packageChecks": 61,
+        "controllerBrowserSoakTests": 19,
+        "additionalPublishedPackageControllerChecks": 6,
+        "installedRuntimeAdminFiles": 126,
+        "quietMs": 301020,
+        "admin": "8.3.11",
+        "alternateConfigurations": 3,
+        "crossPlatformJobs": 7,
+        "actualSqlSQLiteVerified": true,
+        "publicContentReview": true,
+        "publishedDownloadByteIdentical": true,
+        "githubAssetDigestMatches": true,
+        "earlierTagsAndAssetsUnchanged": true,
+        "slowBackendRecoveryVerified": true,
+        "negativeControlExpectedFailures": 2,
+        "backendConsumerDeadlineMs": 20000,
+        "producerApiDeadlineMs": 15000,
+        "historicalOneOffTimeoutCauseProven": false
+      },
+      "release": {
+        "version": "0.1.0-beta.8",
+        "url": "https://github.com/Holly86/ioBroker.adaptivehome/releases/tag/v0.1.0-beta.8",
+        "sourceCommit": "7f81e0b0fec3e2b9437b89ef2e71073171080268",
+        "sha256": "b791be9c019331c9440317f1e1ae3823ffcabecaf6c5cb40cf884ffc26209805",
+        "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/44481077466"
+      },
+      "productionConfigurationWrites": 0,
+      "productionRestarts": 0,
+      "actuatorWrites": 0,
+      "privatePreparedHelpersDeployed": false,
+      "new24HourAcceptance": false,
+      "physicalExpiryAcceptance": false,
+      "writerHandoffPerformed": false,
+      "readyForCutover": false,
+      "remainingGates": [
+        "Historical one-off timeout attribution remains unproved without its original trace.",
+        "Separately authorized private read-only deployment and fresh live source/provider stability observation.",
+        "Physical native expiry, App priority, exclusive writer handoff and rollback acceptance."
+      ],
+      "updatedAt": "2026-11-19T07:48:30.880694+00:00"
     }
   ],
   "releaseHistory": [
@@ -1701,52 +1765,98 @@
         "readyForCutover": false,
         "updatedAt": "2026-11-09T20:24:31.873Z"
       }
+    },
+    {
+      "version": "0.1.0-beta.7",
+      "url": "https://github.com/Holly86/ioBroker.adaptivehome/releases/tag/v0.1.0-beta.7",
+      "artifact": {
+        "name": "iobroker.adaptivehome-0.1.0-beta.7.tgz",
+        "sha256": "be3b9fd41841aca9322af11389a1a44ca4ee6f402801c9fbb85c4c36dcd8de1b",
+        "runtimeSourceCommit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
+        "ciUrl": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/42775595001"
+      },
+      "verification": {
+        "version": "0.1.0-beta.7",
+        "implementationStatus": "implemented",
+        "verificationStatus": "passed",
+        "evidence": "docs/verification/beta7-release.md",
+        "checks": {
+          "build": true,
+          "typecheck": true,
+          "lint": true,
+          "unitContractTests": 178,
+          "packageChecks": 61,
+          "controllerBrowserSoakTests": 17,
+          "additionalPublishedPackageControllerChecks": 5,
+          "installedRuntimeAdminFiles": 124,
+          "quietMs": 301689,
+          "admin": "8.3.11",
+          "alternateConfigurations": 3,
+          "crossPlatformJobs": 7,
+          "actualSqlSQLiteVerified": true,
+          "publicContentReview": true,
+          "publishedDownloadByteIdentical": true,
+          "boundedManualCommissioningVerified": true,
+          "executableHandoffRollbackVerified": true,
+          "serializedJournalRecoveryVerified": true,
+          "atomicFileSharingRecoveryVerified": true,
+          "realFileStressWrites": 2000,
+          "originalRequestQuiescenceRequired": true,
+          "containerAPIEmulated": true
+        },
+        "productionControlChanges": false,
+        "privateReadOnlyPilotPerformedSeparately": true,
+        "actuatorWrites": 0,
+        "configurationWrites": 0,
+        "productionRestarts": 0,
+        "SQLMessages": 0,
+        "physicalExpiryAcceptance": false,
+        "readyForCutover": false,
+        "updatedAt": "2026-11-10T08:35:55.157Z"
+      }
     }
   ],
   "releaseVerification": {
-    "version": "0.1.0-beta.7",
+    "version": "0.1.0-beta.8",
     "implementationStatus": "implemented",
     "verificationStatus": "passed",
-    "evidence": "docs/verification/beta7-release.md",
+    "evidence": "docs/verification/beta8-release.md",
     "checks": {
       "build": true,
       "typecheck": true,
       "lint": true,
-      "unitContractTests": 178,
+      "unitContractTests": 191,
       "packageChecks": 61,
-      "controllerBrowserSoakTests": 17,
-      "additionalPublishedPackageControllerChecks": 5,
-      "installedRuntimeAdminFiles": 124,
-      "quietMs": 301689,
+      "controllerBrowserSoakTests": 19,
+      "additionalPublishedPackageControllerChecks": 6,
+      "installedRuntimeAdminFiles": 126,
+      "quietMs": 301020,
       "admin": "8.3.11",
       "alternateConfigurations": 3,
       "crossPlatformJobs": 7,
       "actualSqlSQLiteVerified": true,
       "publicContentReview": true,
       "publishedDownloadByteIdentical": true,
-      "boundedManualCommissioningVerified": true,
-      "executableHandoffRollbackVerified": true,
-      "serializedJournalRecoveryVerified": true,
-      "atomicFileSharingRecoveryVerified": true,
-      "realFileStressWrites": 2000,
-      "originalRequestQuiescenceRequired": true,
-      "containerAPIEmulated": true
+      "githubAssetDigestMatches": true,
+      "earlierTagsAndAssetsUnchanged": true,
+      "slowBackendRecoveryVerified": true,
+      "negativeControlExpectedFailures": 2,
+      "backendConsumerDeadlineMs": 20000,
+      "producerApiDeadlineMs": 15000,
+      "historicalOneOffTimeoutCauseProven": false
     },
+    "verificationScope": "Public package and isolated synthetic controller checks; no production installation or live pilot in this task.",
     "productionControlChanges": false,
-    "privateReadOnlyPilotPerformedSeparately": true,
+    "privateReadOnlyPilotPerformedSeparately": false,
     "actuatorWrites": 0,
     "configurationWrites": 0,
     "productionRestarts": 0,
+    "existingServiceRestarts": 0,
     "SQLMessages": 0,
     "physicalExpiryAcceptance": false,
+    "new24HourAcceptance": false,
+    "writerHandoffPerformed": false,
     "readyForCutover": false,
-    "updatedAt": "2026-11-10T08:35:55.157Z"
-  },
-  "developmentVersion": "0.1.0-beta.8",
-  "developmentVerification": {
-    "implementationStatus": "in_progress",
-    "verificationStatus": "not_run",
-    "evidence": "docs/verification/beta8-release.md",
-    "scope": "Public release and isolated checks only; production is untouched."
+    "updatedAt": "2026-11-19T07:48:30.880694+00:00"
   }
 }
