@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "adaptivehome",
-    "version": "0.1.0-beta.7",
+    "version": "0.1.0-beta.8",
     "news": {
+      "0.1.0-beta.8": {
+        "en": "Correct derived source freshness, reduce history writes, support textual warnings and paced shared-session reads including slow responses. Physical commissioning remains separate.",
+        "de": "Frische abgeleiteter Quellen korrigiert, Historienlast reduziert, Textwarnungen und begrenzte Lese-Wiederholungen mit langsamen Sitzungsantworten unterstützt. Physische Abnahme bleibt separat."
+      },
       "0.1.0-beta.7": {
         "en": "Bounded manual commissioning and durable executable handoff/rollback with current manual wishes, guarded recovery and isolated verification. Gateways remain disabled by default; physical acceptance is separate.",
         "de": "Begrenzter manueller Prüfmodus und ausführende dauerhafte Übergabe/Rückkehr mit aktuellen Bedienwünschen, abgesicherter Wiederherstellung und isolierter Prüfung. Zugänge bleiben standardmäßig deaktiviert; physische Abnahme separat."

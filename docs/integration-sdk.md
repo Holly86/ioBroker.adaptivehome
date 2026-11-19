@@ -57,7 +57,7 @@ transport. See [connections](connections.md) for shared-session integration, sen
 gates, virtual paths and the still-required real absolute-expiry capability. It is not installed
 in an existing backend automatically and does not modify installed third-party modules.
 
-The development SDK additionally exports `ReadFailure`, `readFailure` and
+The Beta 8 SDK additionally exports `ReadFailure`, `readFailure` and
 `ReadDiagnostic` for finite, sanitized read failures. A backend can preserve an
 HTTP status and `retryAfterMs`/absolute `retryAt` without exposing the original
 exception. Registered hosts serialize only validated diagnostic fields; clients

@@ -110,6 +110,14 @@ household energy-saving claim is made.
 
 ## Changelog
 
+### 0.1.0-beta.8
+
+* Preserve original source evidence for time-derived calendar, forecast and window values.
+* Deduplicate missing-value history and persist history only after content changes.
+* Recognize textual NINA severity and offer polling-aware freshness defaults for NINA and PV.
+* Keep safe backend diagnostics and minimum retry waits; allow slow existing-session reads without premature consumer timeouts.
+* Verify delayed read recovery, source-only processing and the exact installable package in isolation. Physical commissioning remains separate.
+
 ### 0.1.0-beta.7
 * Add a separately bounded manual commissioning executor without granting routine physical acceptance.
 * Execute durable writer handoff and rollback, preserving newer human wishes and verifying actual stop/start feedback.

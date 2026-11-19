@@ -458,7 +458,7 @@ environment; these services are not a universal foreign-controller installer.
 The software checks use synthetic homes and isolated processes/controller databases.
 They do not perform physical expiry, HAP/network interruption or house takeover.
 
-## Read-source corrections in development
+## Read-source corrections in Beta 8
 
 Time-derived calendar gates, declared windows and rolling forecast selections keep
 their local value-change time separate from the original source verification time.
@@ -485,3 +485,10 @@ HTTP `Retry-After` seconds and dates are respected. Successful reads clear the
 local failure state without a service restart. An earlier concurrent success
 cannot clear a newer wait. Local read backoff is in memory; an existing provider's
 persistent cooldown remains authoritative and must not be bypassed on restart.
+
+The backend-json consumer allows up to 20 seconds for a response, covering the
+maintained backend's 15-second REST timeout and message delivery. Each connection
+still has at most one pending read. Refresh remains in the background so a slow
+backend does not suspend independent functions. HTTP/file source limits remain
+unchanged. An unanswered request is still bounded and produces invalid evidence,
+sanitized diagnostics and paced recovery rather than a synthetic successful read.

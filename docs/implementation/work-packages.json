@@ -1741,5 +1741,12 @@
     "physicalExpiryAcceptance": false,
     "readyForCutover": false,
     "updatedAt": "2026-11-10T08:35:55.157Z"
+  },
+  "developmentVersion": "0.1.0-beta.8",
+  "developmentVerification": {
+    "implementationStatus": "in_progress",
+    "verificationStatus": "not_run",
+    "evidence": "docs/verification/beta8-release.md",
+    "scope": "Public release and isolated checks only; production is untouched."
   }
 }

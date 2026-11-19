@@ -246,7 +246,9 @@ export class SourceConnections {
 						if (!this.port.readBackend) {
 							throw Error('source_backend_unavailable');
 						}
-						data = backendReadDocument(await deadline(this.port.readBackend(c.backend), 5000));
+						// The maintained backend allows 15s for its shared-session REST read, plus message delivery.
+						// Refresh runs in the background; this bounded wait never suspends independent functions.
+						data = backendReadDocument(await deadline(this.port.readBackend(c.backend), 20000));
 					} else if (c.kind === 'state-map') {
 						const document: Record<string, Record<string, unknown>> = {
 							values: {},
