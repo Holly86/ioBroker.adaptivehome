@@ -765,16 +765,17 @@
         "docs/verification/beta7-release.md",
         "docs/verification/readiness-refresh-20261116.md",
         "docs/verification/private-house-binding-20261117.md",
-        "docs/verification/reduced-shadow-installation-20261117.md"
+        "docs/verification/reduced-shadow-installation-20261117.md",
+        "docs/verification/beta8-private-shadow.md"
       ],
       "openChecks": [
         "Commission constant fallback profiles and obtain target/profile/member/timezone-bound physical expiry, shared deadline, App priority, failure, window and cloud-traffic evidence.",
-        "Deploy the reduced source-only instance and isolated file reader in a separately requested maintenance execution, with a fresh verified backup and current-state check; repeat live shadow observation. Full handoff roles remain disabled until separate acceptance.",
+        "Existing source-only installation remains unchanged; separately authorize maintenance for prepared read-only corrections and the published package after fresh backup/current-state checks. Restore independent read evidence and repeat live observation; full handoff roles remain disabled.",
         "Physical feedback, complete exclusive writer handoff preserving newer human wishes and original deadlines, and rollback acceptance."
       ],
       "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
-      "updatedAt": "2026-11-18T23:18:38.995454+01:00",
-      "correctionSummary": "Corrected private file reader and expanded source-only configuration prepared and isolated-tested; current backend source pins reviewed. No production configuration, service restart or actuator changes.",
+      "updatedAt": "2026-11-19T08:10:41.671881+00:00",
+      "correctionSummary": "Published Beta 8 passed fresh private read-only/pure-module replay and unchanged-boundary checks. Prepared private source/reader/backend corrections remain uninstalled; source transport, physical and long-term acceptance remain open.",
       "privateBindingVerification": {
         "implementationStatus": "implemented",
         "verificationStatus": "passed",
@@ -817,6 +818,18 @@
         "journalFileSyncsBefore": 156,
         "journalFileSyncsAfter": 8,
         "productionAccessDuringLowIOWork": 0
+      },
+      "privateBeta8PilotVerification": {
+        "implementationStatus": "implemented",
+        "verificationStatus": "partial",
+        "evidence": "docs/verification/beta8-private-shadow.md",
+        "readOnlyObservationCompleted": true,
+        "productionActuatorWrites": 0,
+        "productionConfigurationWrites": 0,
+        "productionRestarts": 0,
+        "new24HourAcceptance": false,
+        "physicalAcceptance": false,
+        "readyForCutover": false
       }
     },
     {
@@ -1652,6 +1665,42 @@
         "Physical native expiry, App priority, exclusive writer handoff and rollback acceptance."
       ],
       "updatedAt": "2026-11-19T07:48:30.880694+00:00"
+    },
+    {
+      "id": "beta8-private-pilot-2026-11-19",
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
+      "verificationScope": "Fresh bounded private read-only observation and local replay; source/hardware acceptance remains partial.",
+      "evidence": "docs/verification/beta8-private-shadow.md",
+      "releaseVersion": "0.1.0-beta.8",
+      "releaseArtifactSha256": "b791be9c019331c9440317f1e1ae3823ffcabecaf6c5cb40cf884ffc26209805",
+      "softwareSourceCommit": "7f81e0b0fec3e2b9437b89ef2e71073171080268",
+      "checks": {
+        "freshPublishedDownloadVerified": true,
+        "unmodifiedProductModules": true,
+        "boundedReadObservationCompleted": true,
+        "metadataAuditPassed": true,
+        "sourceTimestampsPreserved": true,
+        "firstEvaluationComparedWithPublishedBeta7": true,
+        "preparedConfigurationOnlyReplayedLocally": true,
+        "passiveBackendRequestsSent": 0,
+        "checkedProductionBoundariesUnchanged": true,
+        "new24HourAcceptance": false,
+        "physicalExpiryAcceptance": false,
+        "writerHandoffPerformed": false
+      },
+      "productionActuatorWrites": 0,
+      "productionConfigurationWrites": 0,
+      "productionRestarts": 0,
+      "SQLMessages": 0,
+      "publicPackageOrPrivateHelpersInstalled": false,
+      "readyForCutover": false,
+      "remainingGates": [
+        "Existing private read transport has no fresh observed reply; prepared helper activation requires a separate maintenance execution.",
+        "Optional device/source availability, physical event evidence and explicit identity/backend acceptance remain installation-specific.",
+        "Fresh long-term observation, physical native expiry/App priority, exclusive writer handoff and rollback acceptance remain outstanding."
+      ],
+      "updatedAt": "2026-11-19T08:10:41.671881+00:00"
     }
   ],
   "releaseHistory": [
@@ -1847,7 +1896,7 @@
     },
     "verificationScope": "Public package and isolated synthetic controller checks; no production installation or live pilot in this task.",
     "productionControlChanges": false,
-    "privateReadOnlyPilotPerformedSeparately": false,
+    "privateReadOnlyPilotPerformedSeparately": true,
     "actuatorWrites": 0,
     "configurationWrites": 0,
     "productionRestarts": 0,
@@ -1857,6 +1906,8 @@
     "new24HourAcceptance": false,
     "writerHandoffPerformed": false,
     "readyForCutover": false,
-    "updatedAt": "2026-11-19T07:48:30.880694+00:00"
+    "updatedAt": "2026-11-19T07:48:30.880694+00:00",
+    "privatePilotEvidence": "docs/verification/beta8-private-shadow.md",
+    "privatePilotUpdatedAt": "2026-11-19T08:10:41.671881+00:00"
   }
 }
