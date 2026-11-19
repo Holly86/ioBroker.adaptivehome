@@ -767,7 +767,8 @@
         "docs/verification/private-house-binding-20261117.md",
         "docs/verification/reduced-shadow-installation-20261117.md",
         "docs/verification/beta8-private-shadow.md",
-        "docs/verification/beta8-readonly-installation.md"
+        "docs/verification/beta8-readonly-installation.md",
+        "docs/verification/beta8-longterm-readonly.md"
       ],
       "openChecks": [
         "Commission constant fallback profiles and obtain target/profile/member/timezone-bound physical expiry, shared deadline, App priority, failure, window and cloud-traffic evidence.",
@@ -775,7 +776,7 @@
         "Physical feedback, complete exclusive writer handoff preserving newer human wishes and original deadlines, and rollback acceptance."
       ],
       "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
-      "updatedAt": "2026-11-19T09:24:01.886214+00:00",
+      "updatedAt": "2026-11-19T09:58:31.949096+00:00",
       "correctionSummary": "Published Beta 8 and corrected private read-only backend installed with polling-aware existing source windows, verified backup/rollback and successful bounded real reads. An installer process-proof issue was corrected after a verified backout. House rules and actuators unchanged; long-term and physical acceptance remain open.",
       "privateBindingVerification": {
         "implementationStatus": "implemented",
@@ -845,6 +846,15 @@
         "houseRulesChanged": false,
         "controllerOrWriterServiceRestarts": 0,
         "new24HourAcceptance": false,
+        "physicalAcceptance": false,
+        "readyForCutover": false
+      },
+      "privateLongTermBeta8Verification": {
+        "status": "in_progress",
+        "verificationStatus": "partial",
+        "evidence": "docs/verification/beta8-longterm-readonly.md",
+        "observationRunning": true,
+        "full24HourAcceptance": false,
         "physicalAcceptance": false,
         "readyForCutover": false
       }
@@ -1769,6 +1779,25 @@
         "Fresh long-term observation, physical native expiry/App priority and actual exclusive writer handoff/rollback acceptance remain outstanding."
       ],
       "updatedAt": "2026-11-19T09:24:01.886214+00:00"
+    },
+    {
+      "id": "beta8-longterm-readonly-2026-11-19",
+      "status": "in_progress",
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
+      "evidence": "docs/verification/beta8-longterm-readonly.md",
+      "version": "0.1.0-beta.8",
+      "artifactSha256": "b791be9c019331c9440317f1e1ae3823ffcabecaf6c5cb40cf884ffc26209805",
+      "scope": "New real 24-hour installed source-only observation; final window/coverage assessment pending.",
+      "monitoringPreparedAndChecked": true,
+      "observationRunning": true,
+      "full24HourAcceptance": false,
+      "observerActuatorCommands": 0,
+      "observerHouseRuleChanges": 0,
+      "observerExistingServiceRestarts": 0,
+      "observerAdditionalHeatingBackendRequests": 0,
+      "readyForCutover": false,
+      "updatedAt": "2026-11-19T09:58:31.949096+00:00"
     }
   ],
   "releaseHistory": [
