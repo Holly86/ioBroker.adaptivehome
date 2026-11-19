@@ -1,5 +1,8 @@
 # Beta 8 private read-only/shadow repeat
 
+This is the pre-installation record. The later explicitly authorized source-only
+deployment is documented in the [installation follow-up](beta8-readonly-installation.md).
+
 The published Beta 8 archive was downloaded again and matched its checksum and
 GitHub asset digest. Its unmodified source projection, normalization, discovery
 and pure policy modules processed fresh private observations on the development

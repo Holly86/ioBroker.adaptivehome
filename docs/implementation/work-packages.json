@@ -766,16 +766,17 @@
         "docs/verification/readiness-refresh-20261116.md",
         "docs/verification/private-house-binding-20261117.md",
         "docs/verification/reduced-shadow-installation-20261117.md",
-        "docs/verification/beta8-private-shadow.md"
+        "docs/verification/beta8-private-shadow.md",
+        "docs/verification/beta8-readonly-installation.md"
       ],
       "openChecks": [
         "Commission constant fallback profiles and obtain target/profile/member/timezone-bound physical expiry, shared deadline, App priority, failure, window and cloud-traffic evidence.",
-        "Existing source-only installation remains unchanged; separately authorize maintenance for prepared read-only corrections and the published package after fresh backup/current-state checks. Restore independent read evidence and repeat live observation; full handoff roles remain disabled.",
+        "Preserve source-only operation; resolve remaining optional source/device evidence, separately prepare any outstanding context-reader/source expansion, and complete fresh long-term observation. No actor ownership transfer is accepted.",
         "Physical feedback, complete exclusive writer handoff preserving newer human wishes and original deadlines, and rollback acceptance."
       ],
       "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
-      "updatedAt": "2026-11-19T08:10:41.671881+00:00",
-      "correctionSummary": "Published Beta 8 passed fresh private read-only/pure-module replay and unchanged-boundary checks. Prepared private source/reader/backend corrections remain uninstalled; source transport, physical and long-term acceptance remain open.",
+      "updatedAt": "2026-11-19T09:24:01.886214+00:00",
+      "correctionSummary": "Published Beta 8 and corrected private read-only backend installed with polling-aware existing source windows, verified backup/rollback and successful bounded real reads. An installer process-proof issue was corrected after a verified backout. House rules and actuators unchanged; long-term and physical acceptance remain open.",
       "privateBindingVerification": {
         "implementationStatus": "implemented",
         "verificationStatus": "passed",
@@ -827,6 +828,22 @@
         "productionActuatorWrites": 0,
         "productionConfigurationWrites": 0,
         "productionRestarts": 0,
+        "new24HourAcceptance": false,
+        "physicalAcceptance": false,
+        "readyForCutover": false,
+        "followUpEvidence": "docs/verification/beta8-readonly-installation.md"
+      },
+      "privateReadOnlyInstallationVerification": {
+        "implementationStatus": "implemented",
+        "verificationStatus": "passed",
+        "evidence": "docs/verification/beta8-readonly-installation.md",
+        "installedVersion": "0.1.0-beta.8",
+        "readOnlyBackendInstalled": true,
+        "sourceOnly": true,
+        "boundedReadVerificationPassed": true,
+        "actuatorCommands": 0,
+        "houseRulesChanged": false,
+        "controllerOrWriterServiceRestarts": 0,
         "new24HourAcceptance": false,
         "physicalAcceptance": false,
         "readyForCutover": false
@@ -1701,6 +1718,57 @@
         "Fresh long-term observation, physical native expiry/App priority, exclusive writer handoff and rollback acceptance remain outstanding."
       ],
       "updatedAt": "2026-11-19T08:10:41.671881+00:00"
+    },
+    {
+      "id": "beta8-readonly-installation-2026-11-19",
+      "implementationStatus": "implemented",
+      "verificationStatus": "passed",
+      "verificationScope": "Authorized source-only installation, bounded startup/read observation and scoped offhost rollback checks; physical/long-term acceptance remains separate.",
+      "evidence": "docs/verification/beta8-readonly-installation.md",
+      "releaseVersion": "0.1.0-beta.8",
+      "artifactSha256": "b791be9c019331c9440317f1e1ae3823ffcabecaf6c5cb40cf884ffc26209805",
+      "softwareSourceCommit": "7f81e0b0fec3e2b9437b89ef2e71073171080268",
+      "checks": {
+        "freshOfficialOnlineBackup": true,
+        "offhostDatabaseRestore": true,
+        "scopedFileAndMetadataRollback": true,
+        "actualScopedAdminUploadTest": true,
+        "newerIndependentOperatorDataPreserved": true,
+        "interruptedPublicationBoundariesTested": true,
+        "actualTargetProcessProofUsed": true,
+        "firstInstallerAttemptBackedOut": true,
+        "installedProductMatchesRelease": true,
+        "sourceOnlyConfigurationVerified": true,
+        "readOnlyBackendRegistered": true,
+        "readOnlyCapabilitiesConfirmed": true,
+        "configuredFullProfilesRead": true,
+        "existingReadRepliesPassed": true,
+        "metadataAuditPassed": true,
+        "noSourceConnectionErrorsInBoundedWindow": true,
+        "ninaPollingAwareWindowsApplied": true,
+        "unrelatedDependenciesAndInstanceSettingsUnchanged": true,
+        "housePoliciesAndActiveFlowsUnchanged": true,
+        "manufacturerFilesAndCredentialsUnchanged": true,
+        "privateContextReaderUnchanged": true
+      },
+      "productAndPrivateReadHostInstalled": true,
+      "explicitTargetedRestartsAuthorized": true,
+      "targetedProductBackendRestartsPerformed": true,
+      "controllerOrContainerRestarts": 0,
+      "existingWriterServiceRestarts": 0,
+      "actuatorCommands": 0,
+      "nativeProfileMutations": 0,
+      "SQLExporterEnabled": false,
+      "new24HourAcceptance": false,
+      "physicalExpiryAcceptance": false,
+      "writerHandoffPerformed": false,
+      "readyForCutover": false,
+      "remainingGates": [
+        "Unavailable physical events, disconnected/deactivated devices and old optional source branches remain explicit.",
+        "Prepared context-reader correction and additional source proposals remain separate from this scoped deployment.",
+        "Fresh long-term observation, physical native expiry/App priority and actual exclusive writer handoff/rollback acceptance remain outstanding."
+      ],
+      "updatedAt": "2026-11-19T09:24:01.886214+00:00"
     }
   ],
   "releaseHistory": [
@@ -1908,6 +1976,8 @@
     "readyForCutover": false,
     "updatedAt": "2026-11-19T07:48:30.880694+00:00",
     "privatePilotEvidence": "docs/verification/beta8-private-shadow.md",
-    "privatePilotUpdatedAt": "2026-11-19T08:10:41.671881+00:00"
+    "privatePilotUpdatedAt": "2026-11-19T08:10:41.671881+00:00",
+    "privateReadOnlyInstallationEvidence": "docs/verification/beta8-readonly-installation.md",
+    "privateReadOnlyInstallationUpdatedAt": "2026-11-19T09:24:01.886214+00:00"
   }
 }
