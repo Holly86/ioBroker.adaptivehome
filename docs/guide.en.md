@@ -1,5 +1,9 @@
 # User guide
 
+Development after Beta 8 adds **[guided setup with forms](setup.en.md)** for everyday
+configuration, existing manufacturer adapters, disabled function templates, SQL
+logging and advanced JSON editing. This does not change the existing Beta-8 release.
+
 ## Setup
 
 Install the built release following the README. Enable the Adaptive Home Admin tab and keep Admin

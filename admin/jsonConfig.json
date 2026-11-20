@@ -2,6 +2,13 @@
   "i18n": true,
   "type": "panel",
   "items": {
+    "setupNotice": {
+      "type": "staticText",
+      "text": {
+        "de": "Grundkonfiguration ohne JSON: Adaptive-Home-Instanz starten und im Admin-Reiter Adaptive Home die Geführte Einrichtung öffnen. Dort Räume, vorhandene Herstelleradapter, Geräte, Funktionen und optionale SQL-Protokollierung mit Formularen auswählen. Die folgenden Einstellungen sind optionale Expertenanbindungen.",
+        "en": "Basic setup without JSON: start the Adaptive Home instance and open Guided setup in its Admin tab. Forms select areas, existing manufacturer adapters, devices, functions and optional SQL logging. The settings below are optional expert connections."
+      }
+    },
     "sourceFiles": {
       "type": "jsonEditor", "xs": 12, "newLine": true, "allowEmpty": true, "validateJson": true,
       "label": {"de": "Optionale lesbare Quelldateien: Name und Pfad", "en": "Optional readable source files: name and path"}

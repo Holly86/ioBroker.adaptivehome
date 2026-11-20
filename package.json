@@ -49,6 +49,7 @@
     "LICENSE",
     "examples/**/*.json",
     "docs/guide.*.md",
+    "docs/setup.*.md",
     "docs/operations.md",
     "docs/compatibility.md",
     "docs/integration-sdk.md",

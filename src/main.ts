@@ -15,6 +15,7 @@ import { SourceConnections } from './connections/sources';
 import { getSourceJSON, readSourceFile, resolveSourceEndpoint } from './connections/io';
 import { NativeConnections } from './connections/runtime';
 import { SqlLogging } from './diagnostics/sql-logging';
+import { setupCatalog, discoveryBackends, setupNames } from './admin/setup';
 class Adaptivehome extends utils.Adapter {
 	private registry: IntegrationRegistry = builtInRegistry();
 	private runtime!: HomeRuntime;
@@ -435,39 +436,51 @@ class Adaptivehome extends utils.Adapter {
 				case 'getConfiguration':
 					result = this.configuration.record;
 					break;
+				case 'setupCatalog': {
+					const view = await this.getObjectViewAsync('system', 'instance', {
+						startkey: 'system.adapter.',
+						endkey: 'system.adapter.\u9999',
+					});
+					result = setupCatalog(view.rows, this.registry);
+					break;
+				}
 				case 'discover': {
 					const objects: Record<string, StateMetadata> = {};
 					const context: DiscoveryContext = { resources: {} };
-					for (const profile of this.registry.list()) {
-						for (const backend of profile.backends) {
-							for (const type of ['channel', 'device'] as const) {
-								const parents = await this.getObjectViewAsync('system', type, {
-									startkey: `${backend}.`,
-									endkey: `${backend}.\u9999`,
-								});
-								for (const row of parents.rows.slice(0, 10000)) {
-									const native = row.value?.native;
-									context.resources[row.id] = {
-										role: row.value?.common?.role,
-										type: typeof native?.type === 'string' ? native.type : undefined,
-										id: ['string', 'number'].includes(typeof native?.id)
-											? String(native.id)
-											: undefined,
-									};
-								}
-							}
-							const view = await this.getObjectViewAsync('system', 'state', {
+					for (const backend of discoveryBackends(this.registry, data?.instance)) {
+						for (const type of ['channel', 'device'] as const) {
+							const parents = await this.getObjectViewAsync('system', type, {
 								startkey: `${backend}.`,
 								endkey: `${backend}.\u9999`,
 							});
-							for (const row of view.rows.slice(0, 10000)) {
-								if (row.value?.common) {
-									objects[row.id] = row.value.common as StateMetadata;
-								}
+							for (const row of parents.rows.slice(0, 10000)) {
+								const native = row.value?.native;
+								context.resources[row.id] = {
+									name: row.value?.common?.name,
+									role: row.value?.common?.role,
+									type: typeof native?.type === 'string' ? native.type : undefined,
+									id: ['string', 'number'].includes(typeof native?.id)
+										? String(native.id)
+										: undefined,
+								};
+							}
+						}
+						const view = await this.getObjectViewAsync('system', 'state', {
+							startkey: `${backend}.`,
+							endkey: `${backend}.\u9999`,
+						});
+						for (const row of view.rows.slice(0, 10000)) {
+							if (row.value?.common) {
+								objects[row.id] = row.value.common as StateMetadata;
 							}
 						}
 					}
-					result = addTypeHints(discoverProfiles(objects, this.registry, context), objects);
+					result = setupNames(
+						addTypeHints(discoverProfiles(objects, this.registry, context), objects),
+						objects,
+						context,
+						data?.language,
+					);
 					break;
 				}
 				case 'previewConfiguration':

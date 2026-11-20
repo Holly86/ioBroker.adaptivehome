@@ -53,7 +53,15 @@ function defineBrowserTests({ suite }) {
 					telemetry: false,
 				},
 			});
-			for (const file of ['tab_m.html', 'tab.html', 'adaptivehome.js', 'adaptivehome.css', 'adaptivehome.svg']) {
+			for (const file of [
+				'tab_m.html',
+				'tab.html',
+				'setup.js',
+				'help.html',
+				'adaptivehome.js',
+				'adaptivehome.css',
+				'adaptivehome.svg',
+			]) {
 				await harness.objects.writeFileAsync(
 					'adaptivehome.admin',
 					file,
@@ -106,7 +114,10 @@ function defineBrowserTests({ suite }) {
 				});
 				page.on('pageerror', error => errors.push(error.message));
 				await page.goto('http://127.0.0.1:18081/adapter/adaptivehome/tab_m.html');
+				await page.getByRole('button', { name: /Guided setup|Geführte Einrichtung/, exact: true }).waitFor();
+				await require('./guided-browser.cjs').guidedBrowser(page, harness, root);
 				await page.locator('#language').selectOption('en');
+				await page.getByRole('button', { name: 'Overview', exact: true }).click();
 				await page.getByRole('heading', { name: 'Overview', exact: true }).waitFor({ timeout: 20000 });
 				for (let index = 0; index < all.length; index++) {
 					const config = all[index],

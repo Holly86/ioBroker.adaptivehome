@@ -140,11 +140,12 @@
         "docs/verification/timed-lease-handoff.md",
         "docs/verification/beta6-release.md",
         "docs/verification/manual-commissioning-coordinator.md",
-        "docs/verification/beta7-release.md"
+        "docs/verification/beta7-release.md",
+        "docs/verification/guided-setup.md"
       ],
       "openChecks": [],
       "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
-      "updatedAt": "2026-11-10T08:35:55.157Z",
+      "updatedAt": "2026-11-20T08:37:57.360874+00:00",
       "correctionSummary": "Published Beta 7: independent source receipts, read-only shared-session profile inspection, native timed lease, bounded manual commissioning and executable durable handoff/rollback; exact published package, real SQL/SQLite, platform CI and private read-only shadow passed. Physical commissioning remains open."
     },
     {
@@ -183,12 +184,20 @@
         "docs/verification/AP-05.md",
         "docs/verification/source-connections.md",
         "docs/verification/beta5-release.md",
-        "docs/verification/readiness-connections.md"
+        "docs/verification/readiness-connections.md",
+        "docs/verification/guided-setup.md"
       ],
       "openChecks": [],
       "commit": "6cc2a82e2dfc066a53ae28cac35aeb2e2891b2d9",
-      "updatedAt": "2026-11-09T16:21:53.322Z",
-      "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff."
+      "updatedAt": "2026-11-20T08:37:57.360874+00:00",
+      "correctionSummary": "Published Beta 5: seven cache-only data profiles and bounded SQL telemetry; exact artifact, real SQLite persistence, source CI and private read-only/shadow checks passed. No production control changes or handoff.",
+      "guidedSetupVerification": {
+        "implementationStatus": "implemented",
+        "verificationStatus": "passed",
+        "evidence": "docs/verification/guided-setup.md",
+        "publishedPackage": false,
+        "productionDeployment": false
+      }
     },
     {
       "id": "AP-06",
@@ -693,11 +702,12 @@
         "docs/verification/timed-lease-handoff.md",
         "docs/verification/beta6-release.md",
         "docs/verification/manual-commissioning-coordinator.md",
-        "docs/verification/beta7-release.md"
+        "docs/verification/beta7-release.md",
+        "docs/verification/guided-setup.md"
       ],
       "openChecks": [],
       "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
-      "updatedAt": "2026-11-18T23:18:38.995454+01:00",
+      "updatedAt": "2026-11-20T08:37:57.360874+00:00",
       "correctionSummary": "191 anonymous checks, 61 package checks and isolated controller correction scenarios passed; initial recovery timeout remains documented as not reproduced. No new long-duration or physical acceptance."
     },
     {
@@ -879,13 +889,14 @@
         "docs/verification/beta4-release.md",
         "docs/verification/beta5-release.md",
         "docs/verification/beta6-release.md",
-        "docs/verification/beta7-release.md"
+        "docs/verification/beta7-release.md",
+        "docs/verification/guided-setup.md"
       ],
       "openChecks": [
         "Software release accepted. Physical/source/native-backend acceptance and expressly scoped production handoff remain pending; no takeover authorized or performed."
       ],
       "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
-      "updatedAt": "2026-11-10T08:35:55.157Z",
+      "updatedAt": "2026-11-20T08:37:57.360874+00:00",
       "correctionSummary": "Published Beta 7: independent source receipts, read-only shared-session profile inspection, native timed lease, bounded manual commissioning and executable durable handoff/rollback; exact published package, real SQL/SQLite, platform CI and private read-only shadow passed. Physical commissioning remains open."
     }
   ],
@@ -1798,6 +1809,43 @@
       "observerAdditionalHeatingBackendRequests": 0,
       "readyForCutover": false,
       "updatedAt": "2026-11-19T09:58:31.949096+00:00"
+    },
+    {
+      "id": "guided-admin-setup-2026-11-20",
+      "packages": [
+        "AP-03",
+        "AP-05",
+        "AP-24",
+        "AP-27"
+      ],
+      "status": "verified",
+      "implementationStatus": "implemented",
+      "verificationStatus": "passed",
+      "evidence": "docs/verification/guided-setup.md",
+      "summary": "Guided form-based manufacturer bridge setup, optional device labels, disabled everyday templates, SQL selection and a validated conflict-aware JSON draft editor; German/English guides and offline help. Development after Beta 8, not a new release or production deployment.",
+      "checks": {
+        "unitContractTests": 195,
+        "packageChecks": 71,
+        "isolatedControllerChecks": 17,
+        "focusedAdminBrowserChecks": 1,
+        "languages": [
+          "de",
+          "en"
+        ],
+        "widths": [
+          1280,
+          390
+        ],
+        "newFunctionsDisabled": true,
+        "rawJsonConflictProtection": true,
+        "offlineHelp": true,
+        "publicContentReview": true
+      },
+      "publicReleaseCreated": false,
+      "productionChanges": false,
+      "physicalAcceptance": false,
+      "readyForCutover": false,
+      "updatedAt": "2026-11-20T08:37:57.360874+00:00"
     }
   ],
   "releaseHistory": [

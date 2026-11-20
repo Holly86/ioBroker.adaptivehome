@@ -13,6 +13,7 @@ export interface StateValue {
 }
 export interface StateMetadata {
 	type: string;
+	name?: string | Record<string, string>;
 	unit?: string;
 	read?: boolean;
 	write?: boolean;
@@ -23,6 +24,7 @@ export interface StateMetadata {
 }
 /** Optional, non-secret parent metadata for resource-aware discovery (API v1 additive). */
 export interface ResourceMetadata {
+	name?: string | Record<string, string>;
 	role?: string;
 	type?: string;
 	id?: string;

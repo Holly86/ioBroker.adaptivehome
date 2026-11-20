@@ -10,6 +10,13 @@ Jede Beobachtung trägt entityId, capability, value, unit, measuredAt, receivedA
 
 Eine DeviceBinding enthält stabile Geräteidentität, integrationId, Gerätefamilie, Anbindungsversion, Rollen, zulässige Datenpunkte, Fähigkeiten mit read/write/confirm, Umrechnung, zulässige Werte, bekannte Grenzen und Prüfstatus. Derselbe physische Ausgang erhält keinen zweiten unkoordinierten Schreibpfad. Eine neue Anbindung wird erst nach Prüfung ihrer Identität aktiv.
 
+Der Entwicklungsstand nach Beta 8 ergänzt abwärtskompatibel das optionale Feld
+`name` (1–128 Zeichen) als Anzeigenamen. Identität und Referenzen verwenden weiterhin
+`id`/`physicalId`; ein Name erteilt keine Schreibfreigabe. Ältere Konfigurationen
+ohne Namen bleiben gültig. Für einen Rückweg auf ein älteres streng prüfendes Paket
+ist dessen passende Konfiguration erforderlich. Die vorhandene Integrations-API v1
+bleibt bestehen; Quell- und Elternmetadaten dürfen optionale übersetzte Namen liefern.
+
 ## Konfiguration
 
 Eine ConfigurationRevision umfasst schemaVersion, revision, parentRevision, createdAt, actor, Herkunft, Räume/Anlagen, Funktionsinstanzen, Quellen, Betriebsgrenzen und Lernfreigaben. Entwurf, validierte Aktivierung und tatsächlich angewandte Revision sind unterscheidbar. Import ist atomar oder wird vollständig verworfen. Export enthält standardmäßig weder Tokens noch Empfängeridentitäten oder persönliche Beobachtungen.

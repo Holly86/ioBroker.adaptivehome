@@ -66,6 +66,7 @@ export const mappingSchema = z.strictObject({
 export type CapabilityMapping = z.infer<typeof mappingSchema>;
 export const bindingSchema = z.strictObject({
 	id,
+	name: z.string().min(1).max(128).optional(),
 	physicalId: z.string().min(1).max(256),
 	integrationId: id,
 	family: z.string().max(64),

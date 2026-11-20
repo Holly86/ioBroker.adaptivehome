@@ -1,5 +1,10 @@
 # Bedienungsanleitung
 
+Der Entwicklungsstand nach Beta 8 ergänzt eine **[geführte Einrichtung mit Formularen](setup.de.md)**.
+Dort sind die Grundkonfiguration, Herstellerauswahl, deaktivierte Funktionsvorlagen,
+SQL-Protokollierung und der erweiterte JSON-Editor Schritt für Schritt dokumentiert.
+Die bestehende Beta-8-Veröffentlichung wird dadurch nicht rückwirkend geändert.
+
 ## Einrichtung
 
 Installiere das gebaute Release-Paket nach README, lege eine Instanz an und öffne den Admin-Reiter

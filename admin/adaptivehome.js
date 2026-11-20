@@ -6,6 +6,26 @@
 		language: ['Language', 'Sprache'],
 		overview: ['Overview', 'Übersicht'],
 		setup: ['Devices & areas', 'Geräte & Bereiche'],
+		guided: ['Guided setup', 'Geführte Einrichtung'],
+		expert: ['Advanced configuration (JSON)', 'Erweiterte Konfiguration (JSON)'],
+		expertHint: [
+			'Edit the whole draft here. Validate and transfer JSON to the forms before activating it. Device IDs and recipients are private installation data.',
+			'Hier den gesamten Entwurf bearbeiten. JSON vor der Aktivierung prüfen und in die Formulare übernehmen. Gerätekennungen und Empfänger sind private Installationsdaten.',
+		],
+		expertApply: ['Validate JSON and use as draft', 'JSON prüfen und als Entwurf übernehmen'],
+		expertReset: ['Replace JSON with current form draft', 'JSON durch aktuellen Formularentwurf ersetzen'],
+		expertPending: [
+			'First transfer or discard your JSON edits.',
+			'JSON-Änderungen zuerst übernehmen oder verwerfen.',
+		],
+		expertConflict: [
+			'The form draft changed since this JSON was opened. Save your JSON separately, then reload it from the current draft.',
+			'Der Formularentwurf wurde seit dem Öffnen dieses JSON geändert. JSON separat sichern und danach aus dem aktuellen Entwurf neu laden.',
+		],
+		expertSyntax: [
+			'Invalid JSON syntax. The existing draft is preserved.',
+			'Ungültige JSON-Schreibweise. Der bisherige Entwurf bleibt erhalten.',
+		],
 		functions: ['Functions', 'Funktionen'],
 		learning: ['Learning', 'Lernen'],
 		learningEvidence: ['Learning evidence', 'Lernnachweise'],
@@ -385,7 +405,10 @@
 		config,
 		revision = 0,
 		live = {},
-		counter = 0;
+		counter = 0,
+		expertText,
+		expertBase,
+		expertDirty = false;
 	const $ = id => document.getElementById(id),
 		t = key => translations[key]?.[lang === 'de' ? 1 : 0] || key;
 	const node = (tag, text) => {
@@ -521,7 +544,7 @@
 		...(config?.bindings || []).flatMap(b =>
 			b.capabilities
 				.filter(c => !writable || c.writeId)
-				.map(c => ({ value: `${b.id}:${c.capability}`, label: `${b.id} · ${c.capability}` })),
+				.map(c => ({ value: `${b.id}:${c.capability}`, label: `${b.name || b.id} · ${c.capability}` })),
 		),
 	];
 	const refValue = v => (v ? `${v.entityId}:${v.capability}` : '');
@@ -607,6 +630,7 @@
 		},
 		binding: {
 			id: 'text',
+			name: 'text?',
 			physicalId: 'text',
 			integrationId: 'text',
 			family: 'text',
@@ -852,7 +876,7 @@
 		document.querySelectorAll('[data-t]').forEach(n => (n.textContent = t(n.dataset.t)));
 		$('language').value = lang;
 		$('navigation').replaceChildren();
-		for (const key of ['overview', 'setup', 'functions', 'learning', 'history', 'settings']) {
+		for (const key of ['overview', 'guided', 'setup', 'functions', 'learning', 'history', 'settings']) {
 			const b = button($('navigation'), key, () => {
 				page = key;
 				render();
@@ -866,12 +890,34 @@
 		}
 		({
 			overview: overview,
+			guided: guided,
 			setup: setup,
 			functions: functions,
 			learning: learning,
 			history: history,
 			settings: settings,
 		})[page]();
+	}
+	function guided() {
+		const current = config,
+			instance = $('instance').value;
+		window.AdaptiveHomeSetup.draw({
+			config,
+			lang,
+			root: section('guided'),
+			node,
+			field,
+			button,
+			grid,
+			request,
+			redraw: render,
+			replaceDraft: draft => {
+				config = draft;
+				render();
+			},
+			message,
+			isCurrent: () => config === current && $('instance').value === instance,
+		});
 	}
 	function overview() {
 		const root = section('overview');
@@ -1506,6 +1552,59 @@
 	}
 	function settings() {
 		const root = section('settings');
+		const expert = node('details');
+		expert.append(node('summary', t('expert')), node('p', t('expertHint')));
+		const label = node('label'),
+			area = node('textarea');
+		area.id = 'expert-json';
+		area.rows = 18;
+		area.spellcheck = false;
+		area.maxLength = 2000000;
+		if (expertText === undefined || !expertDirty) {
+			expertBase = JSON.stringify(config);
+			expertText = JSON.stringify(config, null, 2);
+		}
+		area.value = expertText;
+		area.addEventListener('input', () => {
+			expertText = area.value;
+			expertDirty = true;
+		});
+		label.append(node('span', t('expert')), area);
+		expert.append(label);
+		button(expert, 'expertApply', async () => {
+			if (expertBase !== JSON.stringify(config)) {
+				throw Error(t('expertConflict'));
+			}
+			let value;
+			const submitted = area.value;
+			try {
+				value = JSON.parse(submitted);
+			} catch {
+				throw Error(t('expertSyntax'));
+			}
+			const current = config,
+				instance = $('instance').value;
+			const validated = await request('previewConfiguration', value);
+			if (
+				config !== current ||
+				$('instance').value !== instance ||
+				expertBase !== JSON.stringify(config) ||
+				expertText !== submitted
+			) {
+				throw Error(t('expertConflict'));
+			}
+			config = validated;
+			expertText = undefined;
+			expertDirty = false;
+			render();
+			message(t('valid'));
+		});
+		button(expert, 'expertReset', () => {
+			expertText = undefined;
+			expertDirty = false;
+			render();
+		});
+		root.append(expert);
 		config.scenes ??= [];
 		repeat(
 			root,
@@ -1550,6 +1649,8 @@
 					throw new Error('File too large');
 				}
 				config = await request('previewConfiguration', JSON.parse(await file.files[0].text()));
+				expertText = undefined;
+				expertDirty = false;
 				render();
 				message(t('valid'));
 			}),
@@ -1876,7 +1977,12 @@
 	async function load() {
 		const record = await request('getConfiguration');
 		config = record.active;
+		expertText = undefined;
+		expertDirty = false;
 		revision = config.revision;
+		if (!config.groups.length && !config.bindings.length && !config.functions.length) {
+			page = 'guided';
+		}
 		render();
 		await refresh();
 		message(t('ready'));
@@ -1889,13 +1995,20 @@
 	$('instance').addEventListener('change', () => run(load));
 	$('preview').addEventListener('click', () =>
 		run(async () => {
+			if (expertDirty) {
+				throw Error(t('expertPending'));
+			}
 			config = await request('previewConfiguration', config);
+			expertText = undefined;
 			render();
 			message(t('valid'));
 		}),
 	);
 	$('save').addEventListener('click', () =>
 		run(async () => {
+			if (expertDirty) {
+				throw Error(t('expertPending'));
+			}
 			await request('applyConfiguration', { configuration: config, expectedRevision: revision });
 			await load();
 			message(t('saved'));
