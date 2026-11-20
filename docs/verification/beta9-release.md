@@ -66,3 +66,10 @@ No physical expiry, App priority or exclusive writer handoff has been accepted b
 software checks. Production control takeover and a new 24-hour stability acceptance remain
 separate gates. GitHub prerelease, npm publication and ioBroker catalogue acceptance are
 reported separately.
+
+The subsequent private installation and bounded live observation are recorded separately in
+[Beta 9 read-only installation verification](beta9-readonly-installation.md). They passed within
+their limited scope; overall optional-source compatibility and physical control acceptance remain open.
+
+The later test-only harness corrections also passed all seven
+[cross-platform jobs](https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/44796989661).

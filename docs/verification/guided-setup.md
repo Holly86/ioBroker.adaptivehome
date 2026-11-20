@@ -1,5 +1,9 @@
 # Guided Admin setup after Beta 8
 
+This document records the earlier development checks. The interface is now included in the
+[published Beta 9](beta9-release.md), with separate [read-only installation evidence](beta9-readonly-installation.md).
+The historical statements below about deployment scope describe that earlier setup task.
+
 The development version adds an everyday setup path alongside the existing detailed
 forms. Rooms/installations, time zones, concrete installed adapter instances,
 discovered devices, compatible sensor/output selections, motion holds in minutes,
