@@ -43,6 +43,9 @@ Private device IDs, recipients and credentials remain outside public examples.
 - The browser saved the newly prepared function disabled and verified that the
   synthetic output state remained acknowledged. No physical device was involved.
 - Package inventory includes the new Admin helper/help and both detailed guides.
+- All seven [CI jobs for the corrected source revision](https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/44705307893)
+  passed, covering Node 22/24 on Linux, Windows and macOS plus the standalone
+  package/type/lint and explicit Admin draft-contract job.
 
 The first broader browser run exposed a test-navigation assumption after the new
 guided flow: the pre-existing test expected Overview while the helper had left the

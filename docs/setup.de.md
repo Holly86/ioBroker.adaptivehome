@@ -141,6 +141,11 @@ Bei einer Änderung in einem anderen Adminfenster verhindert die Revisionsprüfu
 ein unbemerktes Überschreiben. Eigenen Entwurf privat sichern, neu laden und Änderungen
 abgleichen. Eine erfolgreiche Konfigurationsprüfung ist keine Hardwareabnahme.
 
+Auch ein Instanzwechsel lädt einen anderen aktiven Stand. Ungespeicherte Arbeit
+vorher als private Kopie des vollständigen JSON-Entwurfs sichern. Der normale
+Exportknopf exportiert die aktive Serverkonfiguration ohne Nachrichtenempfänger,
+nicht einen noch ungespeicherten Formularentwurf.
+
 **Beobachten ist ein Lernmodus, kein globaler Schreibstopp.** Klassische Regeln
 können dabei weiter schalten. Für einen reinen Lesepilot keine aktiven Steuerfunktionen,
 Szenen oder externen Bedienfreigaben einrichten. Eine Geräteübergabe braucht einen

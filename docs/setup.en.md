@@ -96,6 +96,10 @@ Concurrent changes are rejected by revision checks. Save the private draft, relo
 and reconcile it with the current configuration. A valid configuration is not
 physical device acceptance.
 
+Switching instances also loads a different active configuration. Save unsaved work
+as a private copy of the complete JSON draft first. The normal export button exports
+the active server configuration without recipients, not unsaved form edits.
+
 **Observe is a learning mode, not a global write stop.** Classic rules may continue
 to control devices. A strictly read-only pilot needs no enabled control functions,
 scenes or external control grants. Real handoff additionally requires exclusive

@@ -786,8 +786,8 @@
         "Physical feedback, complete exclusive writer handoff preserving newer human wishes and original deadlines, and rollback acceptance."
       ],
       "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
-      "updatedAt": "2026-11-19T09:58:31.949096+00:00",
-      "correctionSummary": "Published Beta 8 and corrected private read-only backend installed with polling-aware existing source windows, verified backup/rollback and successful bounded real reads. An installer process-proof issue was corrected after a verified backout. House rules and actuators unchanged; long-term and physical acceptance remain open.",
+      "updatedAt": "2026-11-20T10:03:51.893815+00:00",
+      "correctionSummary": "Published Beta 8 remains unchanged. Actual 24-hour source-only diagnosis completed without collection gaps/errors; rate limiting, post-maintenance read-host integrity mismatch and intermittent private context evidence prevent unchanged-stand stability acceptance. Physical handoff and rollback acceptance remain open; the observer issued no actuator command, house-rule change or existing-service restart.",
       "privateBindingVerification": {
         "implementationStatus": "implemented",
         "verificationStatus": "passed",
@@ -860,13 +860,19 @@
         "readyForCutover": false
       },
       "privateLongTermBeta8Verification": {
-        "status": "in_progress",
+        "status": "implemented",
         "verificationStatus": "partial",
         "evidence": "docs/verification/beta8-longterm-readonly.md",
-        "observationRunning": true,
+        "observationRunning": false,
         "full24HourAcceptance": false,
         "physicalAcceptance": false,
-        "readyForCutover": false
+        "readyForCutover": false,
+        "actual24HourObservationCompleted": true,
+        "parallelMaintenanceObserved": true,
+        "sourceIssuesRemain": true,
+        "temporaryObserverExited": true,
+        "publishedProductFilesUnchanged": true,
+        "updatedAt": "2026-11-20T10:03:51.893815+00:00"
       }
     },
     {
@@ -1793,22 +1799,36 @@
     },
     {
       "id": "beta8-longterm-readonly-2026-11-19",
-      "status": "in_progress",
+      "status": "implemented",
       "implementationStatus": "implemented",
       "verificationStatus": "partial",
       "evidence": "docs/verification/beta8-longterm-readonly.md",
       "version": "0.1.0-beta.8",
       "artifactSha256": "b791be9c019331c9440317f1e1ae3823ffcabecaf6c5cb40cf884ffc26209805",
-      "scope": "New real 24-hour installed source-only observation; final window/coverage assessment pending.",
+      "scope": "Actual 24-hour diagnostic observation completed without collection gaps/errors; backend maintenance and source/worker findings prevent unchanged-stand stability acceptance.",
       "monitoringPreparedAndChecked": true,
-      "observationRunning": true,
+      "observationRunning": false,
       "full24HourAcceptance": false,
       "observerActuatorCommands": 0,
       "observerHouseRuleChanges": 0,
       "observerExistingServiceRestarts": 0,
       "observerAdditionalHeatingBackendRequests": 0,
       "readyForCutover": false,
-      "updatedAt": "2026-11-19T09:58:31.949096+00:00"
+      "updatedAt": "2026-11-20T10:03:51.893815+00:00",
+      "actual24HourObservationCompleted": true,
+      "collectionVerified": true,
+      "parallelMaintenanceObserved": true,
+      "temporaryObserverExited": true,
+      "publishedProductFilesUnchanged": true,
+      "remainingIssues": [
+        "heating_rate_limited_before_backend_maintenance",
+        "post_maintenance_read_host_integrity_mismatch",
+        "intermittent_private_context_read_evidence",
+        "optional_historical_or_unavailable_sources",
+        "existing_private_worker_lifecycle_and_health_findings"
+      ],
+      "newUnchanged24HourWindowRequired": true,
+      "physicalAcceptance": false
     },
     {
       "id": "guided-admin-setup-2026-11-20",
@@ -1839,7 +1859,9 @@
         "newFunctionsDisabled": true,
         "rawJsonConflictProtection": true,
         "offlineHelp": true,
-        "publicContentReview": true
+        "publicContentReview": true,
+        "platformCIJobs": 7,
+        "platformCI": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/44705307893"
       },
       "publicReleaseCreated": false,
       "productionChanges": false,
