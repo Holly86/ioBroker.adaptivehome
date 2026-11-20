@@ -1824,8 +1824,8 @@
       "evidence": "docs/verification/guided-setup.md",
       "summary": "Guided form-based manufacturer bridge setup, optional device labels, disabled everyday templates, SQL selection and a validated conflict-aware JSON draft editor; German/English guides and offline help. Development after Beta 8, not a new release or production deployment.",
       "checks": {
-        "unitContractTests": 195,
-        "packageChecks": 71,
+        "unitContractTests": 205,
+        "packageChecks": 61,
         "isolatedControllerChecks": 17,
         "focusedAdminBrowserChecks": 1,
         "languages": [

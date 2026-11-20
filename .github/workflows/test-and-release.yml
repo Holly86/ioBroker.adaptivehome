@@ -33,6 +33,8 @@ jobs:
           # install-command: 'npm install'
           type-checking: true
           lint: true
+      - name: Guided Admin draft contracts
+        run: npm run test:admin
 
   # Runs adapter tests on all supported node versions and OSes
   adapter-tests:

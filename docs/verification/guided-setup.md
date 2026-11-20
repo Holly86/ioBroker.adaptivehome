@@ -33,7 +33,7 @@ Private device IDs, recipients and credentials remain outside public examples.
 ## Verification
 
 - Build, TypeScript check and repository lint passed.
-- 195 unit/contract checks and 71 package checks passed, including new safe metadata,
+- 205 unit/contract checks and 61 standalone package checks passed, including new safe metadata,
   scoped discovery, label, read-only import, ownership/alias and four-template checks.
 - 17 isolated js-controller checks passed, including the actual Admin browser flow
   and the three existing reference configurations.
@@ -48,6 +48,12 @@ The first broader browser run exposed a test-navigation assumption after the new
 guided flow: the pre-existing test expected Overview while the helper had left the
 page at Import & channels. Explicit test navigation corrected it; the subsequent
 full and focused runs passed. Raw synthetic browser evidence remains ignored.
+
+The initial CI package job also exposed an order dependency in the new test wiring:
+it runs package checks before compiling runtime files. Draft contracts now run in a
+separate Admin test command with an explicit build step, also invoked by CI;
+standalone package checks require no build directory. The 205 contract checks consist
+of 195 TypeScript checks and ten Admin draft checks.
 
 These are development and isolated software checks. The published Beta-8 artifact,
 production adapter, manufacturer adapters, existing house rules and actuators were
