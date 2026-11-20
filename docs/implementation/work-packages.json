@@ -924,7 +924,12 @@
         "observerAdditionalHeatingBackendRequests": 0,
         "physicalAcceptance": false,
         "readyForCutover": false,
-        "updatedAt": "2026-11-20T19:43:47.112333+00:00"
+        "updatedAt": "2026-11-20T23:27:23.695685+00:00",
+        "existingLightingWorkerRestartObserved": true,
+        "existingLightingWorkerRestartAt": "2026-11-21T00:21:15+01:00",
+        "integrationHealthTimeoutObserved": true,
+        "unchangedServiceStabilityAcceptancePossible": false,
+        "restartCauseProven": false
       }
     },
     {
@@ -2031,7 +2036,12 @@
       "observerAdditionalHeatingBackendRequests": 0,
       "physicalAcceptance": false,
       "readyForCutover": false,
-      "updatedAt": "2026-11-20T19:43:47.112333+00:00"
+      "updatedAt": "2026-11-20T23:27:23.695685+00:00",
+      "existingLightingWorkerRestartObserved": true,
+      "existingLightingWorkerRestartAt": "2026-11-21T00:21:15+01:00",
+      "integrationHealthTimeoutObserved": true,
+      "unchangedServiceStabilityAcceptancePossible": false,
+      "restartCauseProven": false
     }
   ],
   "releaseHistory": [

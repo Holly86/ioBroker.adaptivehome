@@ -27,3 +27,20 @@ ordinary changes, concurrent maintenance and gaps in observation.
 No repairs, quota resets, configuration changes or existing-service restarts
 will be performed during this observation. Physical expiry, App priority and
 exclusive actuator handoff remain separate acceptance gates.
+
+## Intermediate stability finding
+
+An existing lighting worker was observed restarting at 2026-11-21 00:21 CET.
+Its container restart count increased once. An integration service temporarily
+failed five-second health checks during elevated host load and subsequently
+recovered without an observer restart action. The lighting worker contains a
+30-second self-exit watchdog, consistent with a load-related timeout; its exact
+exit cause is not proven because the older Docker lifecycle events had already
+expired from the retained ring. No observer restart/kill/configuration command
+was issued. Independent maintenance provenance is being clarified.
+
+The full diagnostic observation continues to its original end time. This window
+can no longer establish unchanged-service stability. Neither the restart nor
+an intermediate source recovery will be hidden by resetting the observation.
+Core read-transport/context failures have not been observed so far; this remains
+an intermediate finding, not a completed 24-hour acceptance.
