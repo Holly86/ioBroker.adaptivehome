@@ -5,7 +5,7 @@ const { emptyConfiguration, validateConfiguration } = require('../build/config/c
 const { seed, preconfigure, operator, until, delay } = require('./controller-suite.cjs');
 function defineHmipHostScenario(
 	{ suite },
-	{ apiReadDelayMs = 0, replyDelayMs = 0, recoveryTimeoutMs = 25000, label = '' } = {},
+	{ apiReadDelayMs = 0, replyDelayMs = 25, recoveryTimeoutMs = 25000, label = '' } = {},
 ) {
 	assert.ok(Number.isInteger(apiReadDelayMs) && apiReadDelayMs >= 0 && apiReadDelayMs <= 15000);
 	assert.ok(Number.isInteger(replyDelayMs) && replyDelayMs >= 0 && replyDelayMs <= 4500);
@@ -37,6 +37,8 @@ function defineHmipHostScenario(
 			const host = registerHmipBackendHost(
 				Object.assign(events, {
 					sendTo: async (to, command, result, callback) => {
+						// Model queued transport between the two independent Node clocks.
+						// Strict future-receipt rejection is covered by deterministic clock tests.
 						if (replyDelayMs) {
 							await wait(replyDelayMs);
 						}

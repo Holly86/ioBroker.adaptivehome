@@ -2082,7 +2082,7 @@
   "beta9Verification": {
     "version": "0.1.0-beta.9",
     "implementationStatus": "implemented",
-    "verificationStatus": "in_progress",
+    "verificationStatus": "passed",
     "evidence": "docs/verification/beta9-release.md",
     "checks": {
       "build": true,
@@ -2092,13 +2092,32 @@
       "packageChecks": 61,
       "cachedOriginalReceiptsVerified": true,
       "eligibleMillisecondReceiptVerified": true,
-      "stillFutureReceiptRejected": true
+      "stillFutureReceiptRejected": true,
+      "typecheck": true,
+      "controllerBrowserSoakTests": 19,
+      "installedRuntimeAdminFiles": 130,
+      "quietMs": 301946,
+      "alternateConfigurations": 3,
+      "actualSqlSQLiteVerified": true,
+      "guidedBrowserRealAdminVerified": true,
+      "publicContentReview": true,
+      "crossPlatformJobs": 7,
+      "additionalPublishedPackageControllerChecks": 7,
+      "publishedDownloadByteIdentical": true,
+      "githubAssetDigestMatches": true,
+      "earlierTagsAndAssetsUnchanged": true,
+      "knownFixtureLinksDetachedBeforeReset": true,
+      "syntheticReplyDeliveryMs": 25,
+      "historicalTimeoutCauseProven": false
     },
-    "githubReleasePublished": false,
+    "githubReleasePublished": true,
     "physicalExpiryAcceptance": false,
     "new24HourAcceptance": false,
     "writerHandoffPerformed": false,
     "readyForCutover": false,
-    "updatedAt": "2026-11-20T18:26:52.206200+00:00"
+    "updatedAt": "2026-11-20T18:53:16.435241+00:00",
+    "releaseUrl": "https://github.com/Holly86/ioBroker.adaptivehome/releases/tag/v0.1.0-beta.9",
+    "runtimeTagSource": "700a7123084373ccbdfcf1438811d7aff76a2653",
+    "sourceCi": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/44793617756"
   }
 }
