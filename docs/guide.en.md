@@ -1,6 +1,6 @@
 # User guide
 
-Development after Beta 8 adds **[guided setup with forms](setup.en.md)** for everyday
+Beta 9 adds **[guided setup with forms](setup.en.md)** for everyday
 configuration, existing manufacturer adapters, disabled function templates, SQL
 logging and advanced JSON editing. This does not change the existing Beta-8 release.
 

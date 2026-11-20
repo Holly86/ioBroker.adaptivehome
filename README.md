@@ -5,6 +5,11 @@ air quality, scheduled equipment and continuous minimum service. Start with one 
 learning up to an automatic observe → learn → plan → execute → check effect → rollback cycle.
 No language model, notification account, Node-RED or separate web app is required.
 
+**0.1.0-beta.9** adds guided setup for existing manufacturer adapters, disabled everyday
+function templates, SQL selection, validated advanced JSON and offline German/English
+help. Shared-session cache tests preserve original read receipts. Physical control
+acceptance remains separate.
+
 **0.1.0-beta.8** adds corrected source freshness, warning severity/history handling
 and aligned read deadlines. Its [isolated release checks](docs/verification/beta8-release.md)
 are separate from private long-term observation and physical actuator acceptance.
@@ -26,11 +31,11 @@ and [connection and native expiry requirements](docs/connections.md).
 [SDK](docs/integration-sdk.md) · [Verification](docs/verification/scenarios.md) ·
 [Releases](https://github.com/Holly86/ioBroker.adaptivehome/releases)
 
-Development after Beta 8 adds [guided setup in German](docs/setup.de.md) and
+Beta 9 adds [guided setup in German](docs/setup.de.md) and
 [English](docs/setup.en.md): select existing manufacturer adapters, import devices,
 prepare disabled everyday functions and configure optional SQL logging with forms.
 Advanced forms and a validated JSON draft editor remain available. The Admin also
-ships offline setup help. These changes are not yet part of the published Beta-8 package.
+ships offline setup help. Earlier published packages remain unchanged.
 
 ## Install the built beta
 
@@ -39,7 +44,7 @@ Tested locally: Node 24.22.1, controller 7.2.5, Admin 8.3.11 on Windows.
 Download the release's `.tgz` and `SHA256SUMS.txt`. Verify its checksum, then run in the ioBroker directory:
 
 ```sh
-npm install ./iobroker.adaptivehome-0.1.0-beta.8.tgz
+npm install ./iobroker.adaptivehome-0.1.0-beta.9.tgz
 iobroker upload adaptivehome
 iobroker add adaptivehome --enabled
 ```
@@ -119,6 +124,11 @@ Meter readings, power integration and estimates have distinct labels and coverag
 household energy-saving claim is made.
 
 ## Changelog
+
+### 0.1.0-beta.9
+
+* Guided manufacturer/source setup, disabled everyday templates, optional SQL forms, validated advanced JSON and offline German/English documentation.
+* Verify shared read-cache pacing without replacing original source receipts. Private backend/reader deployment and physical acceptance remain separate.
 
 ### 0.1.0-beta.8
 

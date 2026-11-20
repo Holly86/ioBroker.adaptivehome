@@ -1,7 +1,7 @@
 # Setup with forms
 
-This guide describes **development after Beta 8**, not the already published Beta-8
-package. Adaptive Home connects capabilities supplied by existing ioBroker adapters.
+This guide describes **setup from Beta 9 onward**. Earlier published packages remain
+unchanged. Adaptive Home connects capabilities supplied by existing ioBroker adapters.
 Those adapters retain authentication and device communication. Adaptive Home adds
 device selection, cross-manufacturer rules, limits and explanations; no second
 manufacturer account is created.

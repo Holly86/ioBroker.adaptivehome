@@ -1,6 +1,6 @@
 # Bedienungsanleitung
 
-Der Entwicklungsstand nach Beta 8 ergänzt eine **[geführte Einrichtung mit Formularen](setup.de.md)**.
+Beta 9 ergänzt eine **[geführte Einrichtung mit Formularen](setup.de.md)**.
 Dort sind die Grundkonfiguration, Herstellerauswahl, deaktivierte Funktionsvorlagen,
 SQL-Protokollierung und der erweiterte JSON-Editor Schritt für Schritt dokumentiert.
 Die bestehende Beta-8-Veröffentlichung wird dadurch nicht rückwirkend geändert.

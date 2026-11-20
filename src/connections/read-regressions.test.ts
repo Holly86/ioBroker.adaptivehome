@@ -10,6 +10,50 @@ import { backendReadDocument, ReadBackoff, ReadFailure, readFailure } from './re
 import { getSourceJSON } from './io';
 
 describe('Anonymous read/shadow regressions', () => {
+	it('waits once for a one-millisecond backend receipt without accepting a still-future or larger receipt', async () => {
+		const c = connectionSchema.parse({
+			id: 'receipt',
+			kind: 'backend-json',
+			backend: 'hmip.9',
+			enabled: true,
+			intervalMs: 1000,
+			maxAgeMs: 30000,
+			outputs: [{ key: 'value', type: 'number', path: ['value'], timestampPath: ['at'] }],
+		});
+		for (const [offset, advance, valid] of [
+			[1, true, true],
+			[1, false, false],
+			[1000, true, false],
+		] as const) {
+			let now = 1000;
+			const source = new SourceConnections(
+				'adaptivehome.9',
+				{
+					readState: async () => null,
+					readFile: async () => null,
+					getJSON: async () => {
+						throw Error('network_forbidden');
+					},
+					readBackend: async () => {
+						if (advance)
+							setTimeout(() => {
+								now = 1002;
+							}, 0);
+						return { fetchedAt: 1000 + offset, document: { at: 1000 + offset, value: 20 } };
+					},
+				},
+				() => now,
+			);
+			await source.refresh([c]);
+			const value = source.read('adaptivehome.9.connections.receipt.value');
+			assert.equal(value?.q === 0, valid);
+			if (valid) {
+				assert.equal(value?.val, 20);
+				assert.equal(value?.ts, 1001);
+				assert.equal(source.read('adaptivehome.9.connections.receipt.value.verifiedAt')?.val, 1001);
+			}
+		}
+	});
 	const mapping = (id: string) =>
 		mappingSchema.parse({
 			capability: 'context',

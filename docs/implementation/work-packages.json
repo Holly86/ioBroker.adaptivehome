@@ -2078,5 +2078,27 @@
     "privatePilotUpdatedAt": "2026-11-19T08:10:41.671881+00:00",
     "privateReadOnlyInstallationEvidence": "docs/verification/beta8-readonly-installation.md",
     "privateReadOnlyInstallationUpdatedAt": "2026-11-19T09:24:01.886214+00:00"
+  },
+  "beta9Verification": {
+    "version": "0.1.0-beta.9",
+    "implementationStatus": "implemented",
+    "verificationStatus": "in_progress",
+    "evidence": "docs/verification/beta9-release.md",
+    "checks": {
+      "build": true,
+      "lint": true,
+      "unitTypeScriptTests": 197,
+      "guidedAdminContractTests": 10,
+      "packageChecks": 61,
+      "cachedOriginalReceiptsVerified": true,
+      "eligibleMillisecondReceiptVerified": true,
+      "stillFutureReceiptRejected": true
+    },
+    "githubReleasePublished": false,
+    "physicalExpiryAcceptance": false,
+    "new24HourAcceptance": false,
+    "writerHandoffPerformed": false,
+    "readyForCutover": false,
+    "updatedAt": "2026-11-20T18:26:52.206200+00:00"
   }
 }

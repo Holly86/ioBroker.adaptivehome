@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "adaptivehome",
-    "version": "0.1.0-beta.8",
+    "version": "0.1.0-beta.9",
     "news": {
+      "0.1.0-beta.9": {
+        "en": "Guided manufacturer-adapter setup, disabled everyday templates, optional SQL forms, validated advanced JSON and offline help. Preserve cached receipt times and wait for eligible millisecond backend receipts.",
+        "de": "Geführte Herstelleradapter-Einrichtung, deaktivierte Alltagsvorlagen, optionale SQL-Formulare, geprüftes erweitertes JSON und Offline-Hilfe. Ursprüngliche Cache-Zeiten erhalten und Millisekunden-Abfragezeiten vor der Prüfung abwarten."
+      },
       "0.1.0-beta.8": {
         "en": "Correct derived source freshness, reduce history writes, support textual warnings and paced shared-session reads including slow responses. Physical commissioning remains separate.",
         "de": "Frische abgeleiteter Quellen korrigiert, Historienlast reduziert, Textwarnungen und begrenzte Lese-Wiederholungen mit langsamen Sitzungsantworten unterstützt. Physische Abnahme bleibt separat."

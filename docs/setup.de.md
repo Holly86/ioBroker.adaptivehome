@@ -1,7 +1,7 @@
 # Einrichtung ohne JSON
 
-Diese Anleitung beschreibt den **Entwicklungsstand nach Beta 8**. Sie ist keine
-Behauptung, dass diese Oberfläche bereits im veröffentlichten Beta-8-Paket steckt.
+Diese Anleitung beschreibt die **Einrichtung ab Beta 9**. Frühere veröffentlichte
+Pakete bleiben unverändert.
 
 Adaptive Home verbindet die Fähigkeiten vorhandener ioBroker-Adapter. Zum Beispiel
 kann ein Bewegungsmelder eines Herstellers eine Leuchte eines anderen Herstellers

@@ -293,6 +293,14 @@ export class SourceConnections {
 					if (signature !== this.signature) {
 						return;
 					}
+					// Separate Node processes can straddle the same millisecond at message delivery.
+					// Wait once for a one-millisecond receipt to become eligible; never rewrite its time.
+					if (c.kind === 'backend-json' && data.fetchedAt === this.now() + 1) {
+						await new Promise<void>(resolve => setTimeout(resolve, 1));
+						if (signature !== this.signature) {
+							return;
+						}
+					}
 					for (const output of c.outputs) {
 						this.project(c, output, data);
 					}
