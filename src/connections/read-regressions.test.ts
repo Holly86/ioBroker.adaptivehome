@@ -35,10 +35,11 @@ describe('Anonymous read/shadow regressions', () => {
 						throw Error('network_forbidden');
 					},
 					readBackend: async () => {
-						if (advance)
+						if (advance) {
 							setTimeout(() => {
 								now = 1002;
 							}, 0);
+						}
 						return { fetchedAt: 1000 + offset, document: { at: 1000 + offset, value: 20 } };
 					},
 				},
