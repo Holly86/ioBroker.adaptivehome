@@ -781,7 +781,8 @@
         "docs/verification/beta8-readonly-installation.md",
         "docs/verification/beta8-longterm-readonly.md",
         "docs/verification/beta9-release.md",
-        "docs/verification/beta9-readonly-installation.md"
+        "docs/verification/beta9-readonly-installation.md",
+        "docs/verification/beta9-longterm-readonly.md"
       ],
       "openChecks": [
         "Commission constant fallback profiles and obtain target/profile/member/timezone-bound physical expiry, shared deadline, App priority, failure, window and cloud-traffic evidence.",
@@ -904,6 +905,26 @@
         "projectionErrors": 0,
         "optionalSourceIssuesRemain": true,
         "temporaryObserverExited": true
+      },
+      "privateLongTermBeta9Verification": {
+        "status": "implemented",
+        "implementationStatus": "implemented",
+        "verificationStatus": "partial",
+        "evidence": "docs/verification/beta9-longterm-readonly.md",
+        "installedVersion": "0.1.0-beta.9",
+        "observationRunning": true,
+        "actualStartedAt": "2026-11-20T20:42:09+01:00",
+        "expectedEndAt": "2026-11-21T20:42:09+01:00",
+        "full24HourAcceptance": false,
+        "actual24HourObservationCompleted": false,
+        "sourceOnly": true,
+        "observerActuatorCommands": 0,
+        "observerHouseRuleChanges": 0,
+        "observerExistingServiceRestarts": 0,
+        "observerAdditionalHeatingBackendRequests": 0,
+        "physicalAcceptance": false,
+        "readyForCutover": false,
+        "updatedAt": "2026-11-20T19:43:47.112333+00:00"
       }
     },
     {
@@ -1990,6 +2011,27 @@
       "compatibilityStatus": "partial",
       "optionalSourceIssuesRemain": true,
       "updatedAt": "2026-11-20T19:05:02.699278+00:00"
+    },
+    {
+      "id": "beta9-longterm-readonly-2026-11-20",
+      "status": "implemented",
+      "implementationStatus": "implemented",
+      "verificationStatus": "partial",
+      "evidence": "docs/verification/beta9-longterm-readonly.md",
+      "installedVersion": "0.1.0-beta.9",
+      "observationRunning": true,
+      "actualStartedAt": "2026-11-20T20:42:09+01:00",
+      "expectedEndAt": "2026-11-21T20:42:09+01:00",
+      "full24HourAcceptance": false,
+      "actual24HourObservationCompleted": false,
+      "sourceOnly": true,
+      "observerActuatorCommands": 0,
+      "observerHouseRuleChanges": 0,
+      "observerExistingServiceRestarts": 0,
+      "observerAdditionalHeatingBackendRequests": 0,
+      "physicalAcceptance": false,
+      "readyForCutover": false,
+      "updatedAt": "2026-11-20T19:43:47.112333+00:00"
     }
   ],
   "releaseHistory": [
