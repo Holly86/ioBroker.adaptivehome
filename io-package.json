@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "adaptivehome",
-    "version": "0.1.0-beta.9",
+    "version": "0.1.0-beta.10",
     "news": {
+      "0.1.0-beta.10": {
+        "en": "Passive HmIP reads from existing manufacturer states without additional cloud requests; validate selected weather forecast receipts independently and preserve original freshness.",
+        "de": "Passive HmIP-Lesedaten aus vorhandenen Herstellerzuständen ohne zusätzliche Cloudabfragen; Wettervorhersagen anhand der einzelnen Bestätigungen prüfen und ursprüngliche Frische erhalten."
+      },
       "0.1.0-beta.9": {
         "en": "Guided manufacturer-adapter setup, disabled everyday templates, optional SQL forms, validated advanced JSON and offline help. Preserve cached receipt times and wait for eligible millisecond backend receipts.",
         "de": "Geführte Herstelleradapter-Einrichtung, deaktivierte Alltagsvorlagen, optionale SQL-Formulare, geprüftes erweitertes JSON und Offline-Hilfe. Ursprüngliche Cache-Zeiten erhalten und Millisekunden-Abfragezeiten vor der Prüfung abwarten."

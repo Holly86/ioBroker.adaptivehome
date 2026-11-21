@@ -1,7 +1,7 @@
 # Release procedure and external prerequisites
 
 Release source: https://github.com/Holly86/ioBroker.adaptivehome
-Release target: GitHub prerelease 0.1.0-beta.9, separate from npm and ioBroker latest/stable.
+Release target: GitHub prerelease 0.1.0-beta.10, separate from npm and ioBroker latest/stable.
 
 1. Run type/lint/unit/package/controller/browser/frozen-artifact checks. Inspect actual git diff,
    all new files, commit authors, package whitelist and support export. Run scripts/public-review.cjs.

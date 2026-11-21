@@ -5,6 +5,11 @@ air quality, scheduled equipment and continuous minimum service. Start with one 
 learning up to an automatic observe → learn → plan → execute → check effect → rollback cycle.
 No language model, notification account, Node-RED or separate web app is required.
 
+**0.1.0-beta.10** adds passive HmIP reads from existing manufacturer states without extra
+cloud requests, an SDK configuration helper and corrected forecast receipt evaluation.
+Original receipt times and expiry limits remain authoritative; missing data stay unknown.
+See [Beta 10 verification](docs/verification/beta10-release.md).
+
 **0.1.0-beta.9** adds guided setup for existing manufacturer adapters, disabled everyday
 function templates, SQL selection, validated advanced JSON and offline German/English
 help. Shared-session cache tests preserve original read receipts. Physical control
@@ -44,7 +49,7 @@ Tested locally: Node 24.22.1, controller 7.2.5, Admin 8.3.11 on Windows.
 Download the release's `.tgz` and `SHA256SUMS.txt`. Verify its checksum, then run in the ioBroker directory:
 
 ```sh
-npm install ./iobroker.adaptivehome-0.1.0-beta.9.tgz
+npm install ./iobroker.adaptivehome-0.1.0-beta.10.tgz
 iobroker upload adaptivehome
 iobroker add adaptivehome --enabled
 ```
@@ -124,6 +129,12 @@ Meter readings, power integration and estimates have distinct labels and coverag
 household energy-saving claim is made.
 
 ## Changelog
+
+### 0.1.0-beta.10
+
+* Passive HmIP SDK helper and importable state-map example use existing manufacturer states without additional cloud requests. Original receipt times, quality checks and complete aggregates remain required.
+* Correct selected forecast evidence during staged updates and window changes; reject silent value changes, future receipts and timestamp rollback.
+* Isolate passive and source-only controller regression fixtures. Physical acceptance remains separate.
 
 ### 0.1.0-beta.9
 

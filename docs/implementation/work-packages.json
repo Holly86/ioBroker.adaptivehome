@@ -2503,5 +2503,17 @@
     "sourceCi": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/44793617756",
     "testHarnessCi": "https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/44796989661",
     "privateReadOnlyInstallationEvidence": "docs/verification/beta9-readonly-installation.md"
+  },
+  "beta10Verification": {
+    "version": "0.1.0-beta.10",
+    "implementationStatus": "implemented",
+    "verificationStatus": "in_progress",
+    "evidence": "docs/verification/beta10-release.md",
+    "githubReleasePublished": false,
+    "physicalExpiryAcceptance": false,
+    "new24HourAcceptance": false,
+    "writerHandoffPerformed": false,
+    "readyForCutover": false,
+    "updatedAt": "2026-11-21T22:17:51.852Z"
   }
 }
