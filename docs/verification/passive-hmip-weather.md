@@ -36,6 +36,9 @@ rewrites are not laundered when the window subsequently selects them.
   installation: acknowledged HmIP fixture states became valid, expired, and recovered
   after unchanged confirmation, with zero backend requests or device commands.
   A separately owned earlier test fixture was preserved; its guard prevented reuse.
+  The new passive check and the existing source regression also passed together
+  in separate controller suites. Each suite owns its own adapter lifecycle; a
+  second startup must not wait on an instance left running by another check.
 
 The private source-only installation activated only the compatible passive source
 configuration. The older REST source was replaced; installed adapter/manufacturer

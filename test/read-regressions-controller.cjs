@@ -4,7 +4,7 @@ const { contextProfiles } = require('../build/integrations/context-profiles');
 const { seed, preconfigure, operator, until, delay } = require('./controller-suite.cjs');
 
 function defineReadRegressionTests({ suite }) {
-	suite('Source-only regression through actual controller', getHarness => {
+	suite('Passive HmIP through existing manufacturer states', getHarness => {
 		it('reads passive HmIP reports and their original evidence without backend messages or device commands', async function () {
 			this.timeout(30000);
 			const h = getHarness(),
@@ -97,6 +97,8 @@ function defineReadRegressionTests({ suite }) {
 				await h.states.unsubscribeMessage('system.adapter.hmip.9');
 			}
 		});
+	});
+	suite('Source-only regression through actual controller', getHarness => {
 		it('processes derived proof, textual warning severity and a missing state without actuator commands', async function () {
 			this.timeout(30000);
 			const h = getHarness(),

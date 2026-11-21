@@ -999,7 +999,8 @@
         "hardwareAcceptance": false,
         "full24HourAcceptance": false,
         "readyForCutover": false,
-        "updatedAt": "2026-11-21T21:28:31.022687+00:00"
+        "updatedAt": "2026-11-21T21:28:31.022687+00:00",
+        "isolatedControllerRegressionChecksPassed": 2
       }
     },
     {
@@ -2182,7 +2183,8 @@
       "hardwareAcceptance": false,
       "full24HourAcceptance": false,
       "readyForCutover": false,
-      "updatedAt": "2026-11-21T21:28:31.022687+00:00"
+      "updatedAt": "2026-11-21T21:28:31.022687+00:00",
+      "isolatedControllerRegressionChecksPassed": 2
     }
   ],
   "releaseHistory": [
