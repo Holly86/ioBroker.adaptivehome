@@ -49,3 +49,39 @@ wiederverwendet. Eine gepflegte Backend-Erweiterung muss die Nachrichten registr
 installierte Fremdadapter werden nicht verändert. Ein Wochenprofil allein belegt keinen
 absoluten einmaligen Ablauf. Ohne echten Geräte-/Servernachweis bleibt die Steuerung
 gesperrt. Details: [Quellenverbindungen](connections.md).
+
+## Passives HmIP-Lesen im Entwicklungsstand nach Beta 9
+
+`hmipPassiveConnection` erzeugt eine gewöhnliche `state-map`-Verbindung aus
+ausdrücklich ausgewählten Datenpunkten des vorhandenen HmIP-Adapters. Es gibt
+keine zusätzlichen REST-Aufrufe, Backend-Nachrichten, Anmeldungen oder einen
+Cloud-Ersatzweg. Der Herstelleradapter wird nicht verändert oder neu gestartet.
+Ein vollständiges anonymes Beispiel steht unter
+[examples/hmip-passive.json](../examples/hmip-passive.json).
+
+Pro Feld werden Instanz, Datenpunkt, Typ, Einheit, Grenzen und optionale
+Identitäts-/Erreichbarkeitsbedingungen angegeben. `stateIds` mit `aggregate`
+ermöglicht vollständige Maximalwert- oder Boolesche Zusammenfassungen. Alle
+beteiligten Werte müssen gültig sein. Prozentwerte werden nur mit belegter Einheit
+umgerechnet; Fristen bleiben konfigurierbar und sind keine Aktualisierungsgarantie.
+
+Der ursprüngliche bestätigte Empfangszeitpunkt (`ts`) bleibt der Frischenachweis,
+der Änderungszeitpunkt (`lc`) der Ereigniszeitpunkt. Ein lokaler Abruf und der
+Verbindungsstatus frischen nichts auf. Fehlende, unbestätigte oder alte Werte bleiben
+unbekannt; sie lösen keine Cloudabfrage aus. `activeProfile` ist nur die Profilkennung,
+kein vollständiger Wochenplan und keine Freigabe zur Aktorübernahme.
+
+Die bisherige REST-Leseverbindung muss deaktiviert oder ersetzt werden. Insbesondere
+ist `readOnlyHmipPort` zwar gegen Aktorbefehle geschützt, aber **nicht passiv**.
+Der erzeugte Quellenentwurf ist mit dem vorhandenen Beta-9-Schema nutzbar. Der neue
+SDK-Export und die Wetterkorrektur werden erst mit einem späteren Softwareupdate
+Bestandteil des laufenden Adapters; veröffentlichte Beta-9-Pakete bleiben unverändert.
+
+Die Wetterkorrektur im selben Entwicklungsstand prüft die ausgewählten Punkte
+und jeden zugehörigen Empfangsbeleg. Änderungen an ungenutzten Punkten blockieren
+die Auswahl nicht mehr. Bei `forecast.points.timestamps` belegt ein Zeitstempel den
+ganzen Punkt, zwei stehen in der Reihenfolge Minimum/Maximum, drei in der Reihenfolge
+Gültigkeitszeit/Minimum/Maximum. Eigene Konfigurationen müssen diese Reihenfolge
+einhalten. Die älteste ausgewählte Bestätigung bleibt erhalten; ein Zeitfensterwechsel
+erzeugt keinen neuen Messbeleg. Stille Änderungen, rückwärts laufende oder zukünftige
+Empfangszeiten werden nicht als gültig übernommen.

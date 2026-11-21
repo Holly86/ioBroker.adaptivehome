@@ -5,6 +5,98 @@ const { seed, preconfigure, operator, until, delay } = require('./controller-sui
 
 function defineReadRegressionTests({ suite }) {
 	suite('Source-only regression through actual controller', getHarness => {
+		it('reads passive HmIP reports and their original evidence without backend messages or device commands', async function () {
+			this.timeout(30000);
+			const h = getHarness(),
+				c = emptyConfiguration();
+			const { hmipPassiveConnection } = require('../build/integrations/sdk');
+			const input = 'hmip.9.groups.example-group.actualTemperature',
+				link = 'hmip.9.info.connection';
+			c.connections = [
+				hmipPassiveConnection({
+					id: 'passive',
+					backend: 'hmip.9',
+					enabled: true,
+					intervalMs: 1000,
+					maxAgeMs: 5000,
+					fields: [{ key: 'temperature', stateId: input, type: 'number', unit: '°C' }],
+				}),
+			];
+			c.bindings = [
+				{
+					id: 'sensor',
+					physicalId: 'anonymous-passive-sensor',
+					integrationId: 'generic',
+					family: 'Anonymous',
+					backendVersion: 'test',
+					capabilities: [
+						{
+							capability: 'temperatureSensor',
+							valueType: 'number',
+							unit: '°C',
+							readId: 'adaptivehome.0.connections.passive.temperature',
+							freshness: {
+								verifiedAtId: 'adaptivehome.0.connections.passive.temperature.verifiedAt',
+								maxAgeMs: 5000,
+							},
+						},
+					],
+				},
+			];
+			c.sources = [
+				{ id: 'temperature', kind: 'generic', ref: { entityId: 'sensor', capability: 'temperatureSensor' } },
+			];
+			const cfg = validateConfiguration(c);
+			await seed(h, cfg);
+			await preconfigure(h, cfg);
+			for (const [id, type] of [
+				[input, 'number'],
+				[link, 'boolean'],
+			]) {
+				await h.objects.setObjectAsync(id, {
+					type: 'state',
+					common: { name: 'Anonymous manufacturer input', type, read: true, write: false, role: 'state' },
+					native: {},
+				});
+			}
+			await h.states.setStateAsync(link, { val: true, ack: true });
+			let requests = 0,
+				commands = 0;
+			const listener = (id, value) => {
+				if (id === 'messagebox.system.adapter.hmip.9') {
+					requests++;
+				}
+				if (id.startsWith('hmip.9.') && value && !value.ack) {
+					commands++;
+				}
+			};
+			await h.states.subscribeMessage('system.adapter.hmip.9');
+			h.on('stateChange', listener);
+			const rpc = await operator(h);
+			try {
+				await h.startAdapterAndWait(true);
+				await h.states.setStateAsync(input, { val: 21, ack: true });
+				await until(
+					async () => (await rpc('status')).result.sources.temperature?.quality === 'valid',
+					'passive manufacturer observation',
+				);
+				await until(
+					async () => (await rpc('status')).result.sources.temperature?.quality !== 'valid',
+					'passive receipt expiration',
+				);
+				await h.states.setStateAsync(input, { val: 21, ack: true });
+				await until(
+					async () => (await rpc('status')).result.sources.temperature?.quality === 'valid',
+					'unchanged confirmed passive report',
+				);
+				assert.equal(requests, 0);
+				assert.equal(commands, 0);
+				assert.equal((await rpc('status')).result.commands.length, 0);
+			} finally {
+				h.removeListener('stateChange', listener);
+				await h.states.unsubscribeMessage('system.adapter.hmip.9');
+			}
+		});
 		it('processes derived proof, textual warning severity and a missing state without actuator commands', async function () {
 			this.timeout(30000);
 			const h = getHarness(),

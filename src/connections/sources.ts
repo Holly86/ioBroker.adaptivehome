@@ -30,29 +30,59 @@ export function sourceTimestamp(value: unknown): number {
 			? Date.parse(/(?:Z|[+-]\d\d:\d\d)$/.test(value) ? value : `${value}Z`)
 			: NaN;
 }
-function stateForecast(
-	output: SourceOutput,
-	document: unknown,
-	now: number,
-): { at: number; temperature: number; checkedAt: number }[] | undefined {
+interface ForecastRow {
+	slot: number;
+	at: number;
+	minimum: unknown;
+	maximum: unknown;
+	temperature: number;
+	times: number[];
+	checkedAt: number;
+}
+function stateForecast(output: SourceOutput, document: unknown, now: number, all = false): ForecastRow[] | undefined {
 	if (!output.forecast?.points) {
 		return undefined;
 	}
-	return output.forecast.points
-		.map(p => {
-			const at = select(document, p.at),
-				lo = select(document, p.minimum),
-				hi = select(document, p.maximum),
-				times = p.timestamps.map(path => sourceTimestamp(select(document, path)));
-			return {
-				at: typeof at === 'number' ? at : NaN,
-				temperature: typeof lo === 'number' && typeof hi === 'number' && lo <= hi ? (lo + hi) / 2 : NaN,
-				checkedAt: times.every(Number.isFinite) ? Math.min(...times) : NaN,
-			};
-		})
-		.filter(p => !Number.isFinite(p.at) || p.at > now)
-		.sort((a, b) => a.at - b.at)
-		.slice(0, output.forecast.samples);
+	const rows = output.forecast.points.map((p, slot) => {
+		const at = select(document, p.at),
+			lo = select(document, p.minimum),
+			hi = select(document, p.maximum),
+			times = p.timestamps.map(path => sourceTimestamp(select(document, path)));
+		return {
+			slot,
+			minimum: lo,
+			maximum: hi,
+			times,
+			at: typeof at === 'number' ? at : NaN,
+			temperature: typeof lo === 'number' && typeof hi === 'number' && lo <= hi ? (lo + hi) / 2 : NaN,
+			checkedAt: times.every(Number.isFinite) ? Math.min(...times) : NaN,
+		};
+	});
+	return all
+		? rows
+		: rows
+				.filter(p => !Number.isFinite(p.at) || p.at > now)
+				.sort((a, b) => a.at - b.at)
+				.slice(0, output.forecast.samples);
+}
+function forecastProgresses(rows: ForecastRow[], prior?: Map<number, ForecastRow>): boolean {
+	return rows.every(row => {
+		const old = prior?.get(row.slot);
+		if (!old) {
+			return true;
+		}
+		if (row.times.some((time, i) => time < old.times[i])) {
+			return false;
+		}
+		// One receipt covers the complete point; two cover min/max; three cover at/min/max.
+		const receipts = (part: number): number[] =>
+			row.times.length === 1 ? [0] : row.times.length === 2 ? (part === 0 ? [0, 1] : [part - 1]) : [part];
+		return [row.at, row.minimum, row.maximum].every(
+			(value, part) =>
+				value === [old.at, old.minimum, old.maximum][part] ||
+				receipts(part).every(index => row.times[index] > old.times[index]),
+		);
+	});
 }
 function decoded(output: SourceOutput, document: unknown, now: number): unknown {
 	let raw = output.paths ? output.paths.map(path => select(document, path)) : select(document, output.path);
@@ -169,6 +199,7 @@ export class SourceConnections {
 		}
 	>();
 	private sessions = new Map<string, string>();
+	private forecastEvidence = new Map<string, Map<number, ForecastRow>>();
 	private signature = '';
 	readonly errors: Record<string, string> = {};
 	readonly diagnostics: Record<string, ReadDiagnostic> = {};
@@ -195,6 +226,7 @@ export class SourceConnections {
 			delete this.diagnostics[key];
 		}
 		this.accepted.clear();
+		this.forecastEvidence.clear();
 		this.sessions.clear();
 		for (const c of connections) {
 			for (const o of c.outputs) {
@@ -335,7 +367,7 @@ export class SourceConnections {
 			now = this.now();
 		const forecastRows = o.forecast?.points ? stateForecast(o, data.document, now) : undefined;
 		const stamps = o.timestampPaths?.map(path => sourceTimestamp(select(data.document, path)));
-		const evidenceTimes = forecastRows?.map(p => p.checkedAt) ?? stamps ?? [];
+		const evidenceTimes = forecastRows?.flatMap(p => p.times) ?? stamps ?? [];
 		const checkedAt = forecastRows
 			? Math.min(...forecastRows.map(p => p.checkedAt))
 			: stamps
@@ -356,7 +388,8 @@ export class SourceConnections {
 			now - checkedAt > c.maxAgeMs ||
 			(eventAt !== undefined && (!Number.isFinite(eventAt) || eventAt > now || eventAt < 0)) ||
 			value === undefined ||
-			!o.requires.every(r => select(data.document, r.path) === r.equals)
+			!o.requires.every(r => select(data.document, r.path) === r.equals) ||
+			(forecastRows && !forecastProgresses(forecastRows, this.forecastEvidence.get(p)))
 		) {
 			this.invalidate(p);
 			return;
@@ -371,12 +404,7 @@ export class SourceConnections {
 								? select(data.document, o.path)
 								: o.transform === 'cases'
 									? o.cases?.map(c => c.requires.map(r => select(data.document, r.path)))
-									: o.forecast!.points!.map(point => [
-											select(data.document, point.at),
-											select(data.document, point.minimum),
-											select(data.document, point.maximum),
-											...point.timestamps.map(path => select(data.document, path)),
-										]),
+									: forecastRows!.map(row => [row.slot, row.at, row.minimum, row.maximum]),
 						),
 					)
 					.digest('hex')
@@ -398,12 +426,13 @@ export class SourceConnections {
 							),
 						)
 					: undefined;
-		const timedTransition = timed && !!previous && previous.basis === basis && previous.phase !== phase;
+		const timedTransition =
+			!!forecastRows || (timed && !!previous && previous.basis === basis && previous.phase !== phase);
 		if (
 			previous &&
 			(now < previous.evaluatedAt ||
 				checkedAt < previous.checkedAt ||
-				(timed && checkedAt === previous.checkedAt && basis !== previous.basis) ||
+				(timed && !forecastRows && checkedAt === previous.checkedAt && basis !== previous.basis) ||
 				(checkedAt === previous.checkedAt && value !== previous.value && !timedTransition) ||
 				(eventAt !== undefined && previous.eventAt !== undefined && eventAt < previous.eventAt))
 		) {
@@ -420,11 +449,32 @@ export class SourceConnections {
 			this.sessions.set(p, session);
 			if (previous !== undefined && previous !== session) {
 				this.accepted.delete(p);
+				this.forecastEvidence.delete(p);
 				this.invalidate(p);
 				return;
 			}
 		}
 		const changed = previous?.value !== value;
+		if (forecastRows) {
+			const evidence = this.forecastEvidence.get(p) ?? new Map<number, ForecastRow>();
+			// Remember trustworthy unused rows without letting their updates block the selected window.
+			// A silent rewrite cannot become trusted merely by moving into the window later.
+			for (const row of stateForecast(o, data.document, now, true)!) {
+				if (
+					Number.isFinite(row.at) &&
+					typeof row.minimum === 'number' &&
+					Number.isFinite(row.minimum) &&
+					typeof row.maximum === 'number' &&
+					Number.isFinite(row.maximum) &&
+					row.minimum <= row.maximum &&
+					row.times.every(time => Number.isFinite(time) && time >= 0 && time <= now) &&
+					forecastProgresses([row], evidence)
+				) {
+					evidence.set(row.slot, row);
+				}
+			}
+			this.forecastEvidence.set(p, evidence);
+		}
 		// A repeat read advances proof only. It cannot manufacture a new physical event.
 		const ts = eventAt ?? (changed ? (timed ? now : checkedAt) : previous.ts),
 			lc = changed ? ts : previous?.lc;

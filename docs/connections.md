@@ -200,6 +200,67 @@ receipt times or incomplete coverage fail closed. Twenty-four three-hour forecas
 span 69 hours between the first and last point; do not label that as independently proven
 continuous 72-hour measurement coverage. These selectors are editable in Admin.
 
+In the development correction after Beta 9, forecast history follows the selected
+points and their individual receipts. Updating unused points or receiving selected
+fields in separate batches no longer blocks an unchanged valid result. Each changed
+field still needs its own newer receipt, and no contributing receipt may regress.
+For each point, one `timestamps` selector covers the complete point, two selectors
+are ordered minimum/maximum, and three are ordered at/minimum/maximum. The oldest
+selected receipt remains `.verifiedAt`; reading, selecting a new window or refreshing
+an unrelated field never advances it. Known silent rewrites of unused points remain
+untrusted if those points enter the window later.
+Existing examples already use that order. Reorder custom contributing timestamp
+selectors before updating if they used a different order; do not omit receipts or
+extend freshness limits to bypass a rejected input.
+
+### Passive HmIP through existing ioBroker states
+
+The development SDK exports `hmipPassiveConnection` and `hmipPassiveSchema`.
+The factory compiles explicitly selected manufacturer states into a normal
+`state-map` connection. It has no REST, backend-message, authentication, file or
+fallback path. It requires no extension or modification of the manufacturer adapter.
+
+```js
+const { hmipPassiveConnection } = require('iobroker.adaptivehome/sdk');
+const connection = hmipPassiveConnection({
+  id: 'passiveHeating', backend: 'hmip.7', enabled: true,
+  intervalMs: 15000, maxAgeMs: 180000,
+  fields: [{
+    key: 'temperature', stateId: 'hmip.7.groups.example-group.actualTemperature',
+    type: 'number', unit: '°C', min: -20, max: 50,
+    guards: [{ stateId: 'hmip.7.groups.example-group.info.type', equals: 'HEATING' }]
+  }]
+});
+```
+
+All value/guard IDs must belong to the selected `hmip` instance; wildcards and
+prototype paths are rejected. Fields use the original acknowledged state's `ts`
+as receipt and `lc` as physical change time. `info.connection` is only a readiness
+guard, never a freshness witness. Repeated local reads, a heartbeat, a cooldown
+expiry or a new AdaptiveHome process cannot make an old measurement fresh.
+Missing, unacknowledged, bad-quality, future, expired or guard-rejected fields stay
+unknown independently, without requesting a cloud refresh.
+
+For a complete aggregate use `stateIds` instead of `stateId`, together with
+`aggregate: 'maximum'`, `'any'` or `'all'`. Every member must be usable; its oldest
+receipt is retained. Declare unit conversion explicitly, for example `scale: 0.01`
+only for verified percentage-valued valve inputs. Guards are literal equality checks.
+
+The source-only [example](../examples/hmip-passive.json) can be imported through
+the existing Admin configuration editor after selecting actual state IDs. It has
+no functions, writes or native control transport. The generated configuration uses
+the existing schema and is compatible with Beta 9's state-map reader; the new SDK
+factory and weather correction themselves require a later built update.
+
+**Read-only is not the same as passive.** The earlier `backend-json`,
+`HmipSessionSource` and `readOnlyHmipPort` can perform REST reads. Remove or disable
+that old read connection when adopting passive states; there is no automatic
+fallback to it. The manufacturer's own normal traffic is outside this connection.
+An `activeProfile` selector identifies an active profile; it does not provide a
+complete weekly schedule, fresh membership audit or native expiry evidence.
+Those control gates remain separate. Receipt ages may still become stale when
+the manufacturer emits no new report; choose justified per-source age limits.
+
 ### Maintained backend registration
 
 The SDK now exports `createHmipBackendHost` and `registerHmipBackendHost`:

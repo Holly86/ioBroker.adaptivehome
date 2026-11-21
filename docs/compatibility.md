@@ -31,6 +31,14 @@ Discovery corrections after read-only evaluation:
   A disabled backend or conflicting configured/cached model still prevents live readiness.
 - Unit conversions require an exact declared source unit; percent Homematic values are not scaled twice.
 
+The development correction after Beta 9 adds the SDK's `hmipPassiveConnection`:
+explicit existing manufacturer states, original per-field receipt/change times,
+readiness/identity guards and complete aggregates, with no additional REST or backend
+request. Anonymous unit and real isolated-controller checks cover receipt expiry,
+unchanged confirmation and zero backend/device commands. This does not certify a
+complete native heating profile, device membership or physical expiry. See
+[the passive connection contract](connections.md#passive-hmip-through-existing-iobroker-states).
+
 These are anonymized contract/controller checks, not physical model certification. Existing installations
 may require newer Admin/backend versions, fresh reports and explicit physical identity review. Discovery
 does not upgrade software, refresh a device, confirm identities or activate any configuration.

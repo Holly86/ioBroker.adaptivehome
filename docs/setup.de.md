@@ -81,6 +81,21 @@ Abfrage abhängig; der Entdeckungsstandard beträgt 20 Minuten, Wetter standardm
 zwei Stunden, PV zehn Minuten, die übrigen Kontextprofile fünf Minuten.
 Diese Höchstalter sind keine Aktualisierungsgarantie.
 
+### HmIP ohne zusätzliche Cloudabfragen lesen
+
+Für normale Gerätewerte die vorhandene HmIP-Instanz auswählen und **Nur Daten lesen**
+verwenden. Das liest vorhandene ioBroker-Datenpunkte und legt kein zweites Konto an.
+Alte Werte werden dadurch nicht automatisch frisch. Auch eine grüne
+Verbindungsanzeige beweist noch keinen aktuellen Messwert.
+
+Für zusammengeführte Gruppen-/Gerätedaten gibt es im Entwicklungsstand nach Beta 9
+einen passiven Quellenentwurf: [anonymes Beispiel](../examples/hmip-passive.json).
+Diese spezielle Verbindung wird im erweiterten Konfigurationseditor angepasst;
+die [SDK-Anleitung](integration-sdk.de.md#passives-hmip-lesen-im-entwicklungsstand-nach-beta-9)
+erklärt Felder, Bedingungen und Fristen. Eine bisher eingerichtete zusätzliche
+REST-Leseverbindung muss dabei ausgeschaltet oder ersetzt werden. **Nur lesen**
+bei einer REST-Schnittstelle bedeutet noch nicht **ohne Cloudabfragen**.
+
 ## 3. Alltagsfunktionen vorbereiten
 
 Zuerst Sensoren als Lesequellen und den gewünschten Ausgang als steuerbares Gerät

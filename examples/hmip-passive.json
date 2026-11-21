@@ -1,0 +1,212 @@
+{
+	"schemaVersion": 1,
+	"revision": 0,
+	"parentRevision": null,
+	"createdAt": 0,
+	"actor": "synthetic-example",
+	"origin": "operator",
+	"timezone": "UTC",
+	"groups": [],
+	"bindings": [
+		{
+			"id": "temperature",
+			"physicalId": "synthetic-passive-temperature",
+			"integrationId": "generic",
+			"family": "Anonymous existing HmIP states",
+			"backendVersion": "4.1.0",
+			"model": "unverified",
+			"confirmed": false,
+			"capabilities": [
+				{
+					"capability": "temperatureSensor",
+					"readId": "adaptivehome.0.connections.passiveHeating.temperature",
+					"valueType": "number",
+					"unit": "°C",
+					"codec": "identity",
+					"scale": 1,
+					"offset": 0,
+					"maxAgeMs": 300000,
+					"tolerance": 0,
+					"confirmation": "backend",
+					"requireAck": false,
+					"freshness": {
+						"verifiedAtId": "adaptivehome.0.connections.passiveHeating.temperature.verifiedAt",
+						"maxAgeMs": 180000
+					}
+				}
+			],
+			"verification": "implemented",
+			"memberPhysicalIds": [],
+			"detectedTypes": []
+		},
+		{
+			"id": "window",
+			"physicalId": "synthetic-passive-window",
+			"integrationId": "generic",
+			"family": "Anonymous existing HmIP states",
+			"backendVersion": "4.1.0",
+			"model": "unverified",
+			"confirmed": false,
+			"capabilities": [
+				{
+					"capability": "windowContact",
+					"readId": "adaptivehome.0.connections.passiveHeating.window",
+					"valueType": "boolean",
+					"unit": "",
+					"codec": "identity",
+					"scale": 1,
+					"offset": 0,
+					"maxAgeMs": 300000,
+					"tolerance": 0,
+					"confirmation": "backend",
+					"requireAck": false,
+					"freshness": {
+						"verifiedAtId": "adaptivehome.0.connections.passiveHeating.window.verifiedAt",
+						"maxAgeMs": 180000
+					}
+				}
+			],
+			"verification": "implemented",
+			"memberPhysicalIds": [],
+			"detectedTypes": []
+		}
+	],
+	"connections": [
+		{
+			"id": "passiveHeating",
+			"enabled": true,
+			"intervalMs": 15000,
+			"maxAgeMs": 180000,
+			"outputs": [
+				{
+					"key": "temperature",
+					"type": "number",
+					"unit": "°C",
+					"path": ["values", "input1"],
+					"timestampPath": ["timestamps", "input1"],
+					"eventTimestampPath": ["changedAt", "input1"],
+					"requires": [
+						{
+							"path": ["valid", "input1"],
+							"equals": true
+						},
+						{
+							"path": ["valid", "input0"],
+							"equals": true
+						},
+						{
+							"path": ["values", "input0"],
+							"equals": true
+						},
+						{
+							"path": ["valid", "input2"],
+							"equals": true
+						},
+						{
+							"path": ["values", "input2"],
+							"equals": "HEATING"
+						}
+					],
+					"scale": 1,
+					"offset": 0,
+					"min": -20,
+					"max": 50,
+					"transform": "scalar"
+				},
+				{
+					"key": "window",
+					"type": "boolean",
+					"unit": "",
+					"path": ["values", "input3"],
+					"timestampPath": ["timestamps", "input3"],
+					"eventTimestampPath": ["changedAt", "input3"],
+					"requires": [
+						{
+							"path": ["valid", "input3"],
+							"equals": true
+						},
+						{
+							"path": ["valid", "input0"],
+							"equals": true
+						},
+						{
+							"path": ["values", "input0"],
+							"equals": true
+						},
+						{
+							"path": ["valid", "input2"],
+							"equals": true
+						},
+						{
+							"path": ["values", "input2"],
+							"equals": "HEATING"
+						}
+					],
+					"map": {
+						"OPEN": true,
+						"CLOSED": false
+					},
+					"scale": 1,
+					"offset": 0,
+					"transform": "scalar"
+				}
+			],
+			"kind": "state-map",
+			"inputs": [
+				{
+					"key": "input0",
+					"stateId": "hmip.7.info.connection"
+				},
+				{
+					"key": "input1",
+					"stateId": "hmip.7.groups.example-group.actualTemperature"
+				},
+				{
+					"key": "input2",
+					"stateId": "hmip.7.groups.example-group.info.type"
+				},
+				{
+					"key": "input3",
+					"stateId": "hmip.7.groups.example-group.windowState"
+				}
+			]
+		}
+	],
+	"nativeTransports": [],
+	"logging": {
+		"enabled": false,
+		"adapter": "sql.0",
+		"observations": true,
+		"events": true,
+		"maxQueued": 1000,
+		"batchSize": 25,
+		"flushIntervalMs": 5000
+	},
+	"functions": [],
+	"scenes": [],
+	"sources": [
+		{
+			"id": "temperature",
+			"enabled": true,
+			"kind": "generic",
+			"ref": {
+				"entityId": "temperature",
+				"capability": "temperatureSensor"
+			},
+			"absenceConfirmMs": 300000,
+			"presenceConfirmations": 1
+		},
+		{
+			"id": "window",
+			"enabled": true,
+			"kind": "generic",
+			"ref": {
+				"entityId": "window",
+				"capability": "windowContact"
+			},
+			"absenceConfirmMs": 300000,
+			"presenceConfirmations": 1
+		}
+	],
+	"notificationRoutes": []
+}

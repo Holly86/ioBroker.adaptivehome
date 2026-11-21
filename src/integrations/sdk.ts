@@ -83,6 +83,8 @@ export function runIntegrationContract(
 }
 export { HmipNativeEndpoint, hmipProfile } from '../connections/heating-backend';
 export { HmipSessionSource } from '../connections/hmip-session';
+export { hmipPassiveConnection, hmipPassiveSchema } from '../connections/hmip-passive';
+export type { HmipPassiveConfig } from '../connections/hmip-passive';
 export type {
 	HeatingBackendPort,
 	HeatingTransportJournal,
