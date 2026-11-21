@@ -1000,7 +1000,11 @@
         "full24HourAcceptance": false,
         "readyForCutover": false,
         "updatedAt": "2026-11-21T21:28:31.022687+00:00",
-        "isolatedControllerRegressionChecksPassed": 2
+        "isolatedControllerRegressionChecksPassed": 2,
+        "ciPassed": true,
+        "ciJobsPassed": 7,
+        "ciRunId": 44952766840,
+        "testedSourceCommit": "0bc8c74286dc2228db69e301e0baf06c9e64e54a"
       }
     },
     {
@@ -2184,7 +2188,11 @@
       "full24HourAcceptance": false,
       "readyForCutover": false,
       "updatedAt": "2026-11-21T21:28:31.022687+00:00",
-      "isolatedControllerRegressionChecksPassed": 2
+      "isolatedControllerRegressionChecksPassed": 2,
+      "ciPassed": true,
+      "ciJobsPassed": 7,
+      "ciRunId": 44952766840,
+      "testedSourceCommit": "0bc8c74286dc2228db69e301e0baf06c9e64e54a"
     }
   ],
   "releaseHistory": [

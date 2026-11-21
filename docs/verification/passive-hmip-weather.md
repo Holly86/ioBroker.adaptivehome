@@ -39,6 +39,8 @@ rewrites are not laundered when the window subsequently selects them.
   The new passive check and the existing source regression also passed together
   in separate controller suites. Each suite owns its own adapter lifecycle; a
   second startup must not wait on an instance left running by another check.
+- All seven [CI jobs for the tested source commit](https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/44952766840)
+  passed: check/lint and the Node 22/24 adapter matrix on Linux, macOS and Windows.
 
 The private source-only installation activated only the compatible passive source
 configuration. The older REST source was replaced; installed adapter/manufacturer

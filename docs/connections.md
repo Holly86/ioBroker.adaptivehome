@@ -245,6 +245,8 @@ For a complete aggregate use `stateIds` instead of `stateId`, together with
 `aggregate: 'maximum'`, `'any'` or `'all'`. Every member must be usable; its oldest
 receipt is retained. Declare unit conversion explicitly, for example `scale: 0.01`
 only for verified percentage-valued valve inputs. Guards are literal equality checks.
+One connection permits up to 128 outputs, 512 unique input IDs, 64 members per
+aggregate and six guards per field; exceeding those bounds is a configuration error.
 
 The source-only [example](../examples/hmip-passive.json) can be imported through
 the existing Admin configuration editor after selecting actual state IDs. It has
