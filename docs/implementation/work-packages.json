@@ -2297,7 +2297,11 @@
       "newReleasePublished": false,
       "publishedBeta10Unchanged": true,
       "readyForCutover": false,
-      "updatedAt": "2026-11-22T23:14:50.470Z"
+      "updatedAt": "2026-11-22T23:27:10.524Z",
+      "ciPassed": true,
+      "ciJobsPassed": 7,
+      "ciRunId": 45082437189,
+      "testedSourceCommit": "6c1bbf2c533f43e716d405f765dc2572b05be3b9"
     }
   ],
   "releaseHistory": [

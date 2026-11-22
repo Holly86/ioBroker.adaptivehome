@@ -72,6 +72,11 @@ Build/typecheck, 217 TypeScript checks, 14 Admin contracts, four compiled-entry
 lifecycle contracts and 59 package checks passed. Public-content review keeps raw
 installation logs, identifiers and snapshots out of the product files.
 
+All seven [source CI jobs](https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/45082437189)
+passed for commit `6c1bbf2c533f43e716d405f765dc2572b05be3b9`: Node 22/24 on Linux,
+Windows and macOS, plus build/type/lint and Admin contracts. These checks do not
+install the correction in an existing household instance.
+
 The correction is not installed in the household system by this task. Read-only
 before/after snapshots matched all 24 adapter/controller process identities, installed
 module files, instance configuration, root package metadata, manufacturer pins and
