@@ -31,9 +31,9 @@ production deployment and physical control acceptance are separate.
 
 Six isolated private installer checks cover UI-only replacement, exact rollback, three
 interruption phases, configuration conflict protection and rejection of backend payloads.
-The installed runtime and released Beta 10 archive/tag are not silently replaced by a
-new release. A scoped private Admin correction, if deployed, has its own file/metadata
-backup and evidence; no actor or house-rule change is part of this UI correction.
+The published Beta 10 archive and tag remain immutable. The scoped private installation
+uses the unchanged Beta 10 backend plus this documented Admin correction. It has its own
+file/metadata backup; no new beta, npm or catalogue release was published in this task.
 
 The live check exposed an additional editor issue: background status refreshes could show
 a generic adapter-unavailable/restart message while configuration and catalogue requests
@@ -43,3 +43,23 @@ read preserves the draft and reports a status-specific message. Learning input f
 not redrawn by periodic polling. The browser regression observes a complete real polling
 interval and confirms zero status requests during setup. No timeout or source freshness
 limit was relaxed.
+
+Private deployment completed with the active revision and native settings unchanged.
+Only AdaptiveHome restarted once when the configuration entry type changed. The later
+client-only status correction required no restart. Other adapter settings/processes,
+seven container identities/start times and protected house files matched. Manufacturer
+hook files and additional-read counters were unchanged; no actor command or house-rule
+change was issued. The actual in-app browser verified the direct instance forms, ready
+editor, manufacturer dropdown, technical fields/save controls and masked credentials.
+The page was left open without activating a configuration.
+
+Both [initial source CI](https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/45067254421)
+and [status-correction CI](https://github.com/Holly86/ioBroker.adaptivehome/actions/runs/45069607494)
+passed seven Node 22/24 jobs on Windows, macOS and Linux. The installed UI source is
+49f17e89f9ea5f51d9e594f5d760a8e6df8c85e8. Private raw records and screenshots remain ignored.
+
+The controller reported a forced termination of the old AdaptiveHome process during
+the authorised restart. The successor became ready and retained the configuration.
+The reason for the old process not stopping gracefully is not established by this UI
+verification and remains a separate reliability check. This is not a new 24-hour
+acceptance, physical actuator acceptance or production control handoff.
