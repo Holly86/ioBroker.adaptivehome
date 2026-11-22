@@ -40,8 +40,10 @@ export default [
 	{files:['src/**/*.test.ts'],rules:{'@typescript-eslint/require-await':'off','@typescript-eslint/explicit-function-return-type':'off','@typescript-eslint/no-use-before-define':'off'}},
 	{files:['admin/adaptivehome.js'],languageOptions:{globals:{...globals.browser,io:'readonly'}}},
 	{files:['admin/setup.js'],languageOptions:{globals:{...globals.browser,module:'readonly'}}},
+	{files:['admin/settings.js'],languageOptions:{globals:{...globals.browser,module:'readonly'}}},
 	{files:['scripts/**/*.cjs','examples/**/*.cjs','test/**/*.cjs'],languageOptions:{globals:globals.node}},
 	{files:['test/**/*.cjs'],languageOptions:{globals:globals.mocha}},
 	{files:['test/browser-controller.cjs'],languageOptions:{globals:globals.browser}},
 	{files:['test/guided-browser.cjs'],languageOptions:{globals:globals.browser}},
+	{files:['test/instance-browser.cjs'],languageOptions:{globals:globals.browser}},
 ];

@@ -13,12 +13,27 @@ Entscheidungen. Es wird kein zweites Herstellerkonto eingerichtet.
 
 1. Geräte zunächst im jeweiligen Herstelleradapter einrichten. Dort müssen passende
    Datenpunkte und Gerätemeldungen vorhanden sein.
-2. Adaptive Home starten und im ioBroker-Admin den Reiter **Adaptive Home** öffnen.
-   Oben die gewünschte Adaptive-Home-Instanz und Sprache auswählen.
-3. **Geführte Einrichtung** öffnen. Eine leere Installation zeigt diese Seite zuerst.
-   Die normale Instanz-Konfigurationsseite verweist auf diesen Reiter; ihre JSON-Felder
-   sind für optionale Spezialanbindungen, nicht für die tägliche Grundeinrichtung.
+2. Adaptive Home starten. Unter **Instanzen → adaptivehome → Einstellungen** öffnet
+   die Admin-Korrektur nach Beta 10 direkt **Einrichtung** mit Eingabefeldern und
+   Auswahllisten. Diese Seite ist fest an die geöffnete Instanz gebunden.
+3. Die **Geführte Einrichtung** ist dort bereits geöffnet. Alternativ bleibt der
+   separate Admin-Reiter **Adaptive Home** verfügbar; dort Instanz und Sprache auswählen.
+   Die unveränderten veröffentlichten Pakete Beta 9/10 bieten die Formulare nur in diesem Reiter.
 4. Die fünf Abschnitte unten durchgehen. Dafür ist kein JSON nötig.
+
+**Zwei Arten von Einstellungen:** Räume, Geräte, Regeln, Lernfreigaben und SQL gehören
+zum Einrichtungsentwurf. **Entwurf prüfen** kontrolliert ihn; **Änderungen aktivieren**
+übernimmt ihn revisionsgeschützt. **Neu laden** verwirft ungespeicherte Änderungen.
+Der Wechsel zu **Technische Anbindungen** erhält den Entwurf. Dessen optionale
+Quelldateien, SDK-Profile, Gateway- und Modellzugänge werden nur bei Bedarf bearbeitet.
+Diese technischen Einstellungen können beim Speichern einen Adapterneustart auslösen.
+Bei einem offenen Einrichtungsentwurf wird das technische Speichern deshalb blockiert.
+Unveränderte technische Werte und vorhandene Geheimnisse werden nicht neu geschrieben.
+
+Erweiterte Laufzeitkonfiguration bleibt unter **Import & Kanäle → Erweiterte
+Konfiguration (JSON)** zugänglich. Die Formulare und der JSON-Editor bearbeiten
+denselben Entwurf. Ein syntaktisch fehlerhafter oder veralteter JSON-Entwurf ersetzt
+keine neueren Formulareingaben. Das Öffnen der Oberfläche aktiviert nichts.
 
 ## 1. Räume und Anlagen
 

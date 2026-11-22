@@ -39,6 +39,7 @@ and [connection and native expiry requirements](docs/connections.md).
 Beta 9 adds [guided setup in German](docs/setup.de.md) and
 [English](docs/setup.en.md): select existing manufacturer adapters, import devices,
 prepare disabled everyday functions and configure optional SQL logging with forms.
+The Admin correction after Beta 10 opens these same forms directly in instance settings, with a separate Technical connections section and instance-pinned editing. Earlier published archives remain unchanged.
 Advanced forms and a validated JSON draft editor remain available. The Admin also
 ships offline setup help. Earlier published packages remain unchanged.
 

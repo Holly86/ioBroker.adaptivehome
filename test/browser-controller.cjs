@@ -53,7 +53,16 @@ function defineBrowserTests({ suite }) {
 					telemetry: false,
 				},
 			});
+			const systemConfig = await harness.objects.getObjectAsync('system.config');
+			systemConfig.common.licenseConfirmed = true;
+			systemConfig.common.tipsDisabled = true;
+			systemConfig.common.language = 'de';
+			await harness.objects.setObjectAsync('system.config', systemConfig);
 			for (const file of [
+				'index_m.html',
+				'settings.js',
+				'settings.css',
+				'words.js',
 				'tab_m.html',
 				'tab.html',
 				'setup.js',
@@ -113,6 +122,7 @@ function defineBrowserTests({ suite }) {
 					}
 				});
 				page.on('pageerror', error => errors.push(error.message));
+				await require('./instance-browser.cjs').instanceBrowser(page, harness, root);
 				await page.goto('http://127.0.0.1:18081/adapter/adaptivehome/tab_m.html');
 				await page.getByRole('button', { name: /Guided setup|Geführte Einrichtung/, exact: true }).waitFor();
 				await require('./guided-browser.cjs').guidedBrowser(page, harness, root);

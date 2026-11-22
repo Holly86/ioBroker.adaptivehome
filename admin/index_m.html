@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Adaptive Home · Settings</title>
+  <link rel="stylesheet" href="../../lib/css/materialize.css">
+  <link rel="stylesheet" href="../../css/adapter.css">
+  <link rel="stylesheet" href="settings.css">
+  <script src="../../lib/js/jquery-3.2.1.min.js"></script>
+  <script src="../../socket.io/socket.io.js"></script>
+  <script src="../../js/translate.js"></script>
+  <script src="../../lib/js/materialize.js"></script>
+  <script src="words.js"></script>
+  <script src="settings.js"></script>
+  <script src="../../js/adapter-settings.js"></script>
+</head>
+<body class="adapter-container settings-guided">
+  <header class="settings-heading">
+    <img src="adaptivehome.svg" alt="">
+    <div><h1 data-settings-text="title">Set up Adaptive Home</h1><p data-settings-text="intro">Rooms, devices and everyday settings with forms.</p></div>
+  </header>
+  <nav class="settings-tabs" aria-label="Settings">
+    <button id="show-setup" type="button" aria-controls="setup-panel" aria-pressed="true" data-settings-text="setup">Setup</button>
+    <button id="show-technical" type="button" aria-controls="technical-panel" aria-pressed="false" data-settings-text="technical">Technical connections</button>
+    <a href="help.html" target="_blank" rel="noopener" data-settings-text="help">Help</a>
+  </nav>
+  <div id="setup-panel" class="settings-panel">
+    <p class="settings-note" data-settings-text="draftHint">Validate your draft and explicitly activate it inside the form.</p>
+    <iframe id="setup-frame" title="Adaptive Home setup" aria-label="Adaptive Home setup"></iframe>
+  </div>
+  <div id="technical-panel" class="settings-panel" hidden>
+    <h2 data-settings-text="technical">Technical connections</h2>
+    <p data-settings-text="technicalHint">Optional special connections. Manufacturer accounts stay in their existing adapters. Saving technical changes may restart this instance.</p>
+    <p id="native-message" role="status" aria-live="polite"></p>
+    <div id="technical-fields" class="technical-fields"></div>
+  </div>
+</body>
+</html>

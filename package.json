@@ -72,7 +72,7 @@
     "build:ts": "build-adapter ts",
     "watch:ts": "build-adapter ts --watch",
     "test:ts": "mocha --config test/mocharc.custom.json src/**/*.test.ts",
-    "test:admin": "npm run build && mocha test/setup.test.cjs --exit",
+    "test:admin": "npm run build && mocha test/*.test.cjs --exit",
     "test:package": "mocha test/package --exit",
     "test:integration": "mocha test/integration --exit",
     "test": "npm run test:ts && npm run test:admin && npm run test:package",

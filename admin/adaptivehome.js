@@ -400,9 +400,20 @@
 			'Eine erforderliche Funktion ist nicht bestätigt',
 		],
 	};
-	let lang = navigator.language.startsWith('de') ? 'de' : 'en',
-		page = 'overview',
+	const entry = new URLSearchParams(window.location.search),
+		embedded = entry.get('embedded') === '1',
+		requestedInstance = /^\d{1,8}$/.test(entry.get('instance') || '')
+			? `adaptivehome.${Number(entry.get('instance'))}`
+			: undefined;
+	let lang = ['de', 'en'].includes(entry.get('lang'))
+			? entry.get('lang')
+			: navigator.language.startsWith('de')
+				? 'de'
+				: 'en',
+		page = embedded ? 'guided' : 'overview',
 		config,
+		savedDraft,
+		lastAnnouncedDirty,
 		revision = 0,
 		live = {},
 		counter = 0,
@@ -419,6 +430,17 @@
 		return n;
 	};
 	const uid = prefix => `${prefix}_${Date.now().toString(36)}_${++counter}`;
+	if (/dark|blue|NW|HA/i.test(entry.get('theme') || '')) {
+		document.documentElement.dataset.theme = 'dark';
+	}
+	function announceDraft() {
+		const dirty = !!config && (expertDirty || JSON.stringify(config) !== savedDraft);
+		if (embedded && dirty !== lastAnnouncedDirty) {
+			window.parent.postMessage({ type: 'adaptivehome-draft', dirty }, window.location.origin);
+			lastAnnouncedDirty = dirty;
+		}
+		return dirty;
+	}
 	const socket =
 		typeof io === 'function'
 			? io()
@@ -872,6 +894,9 @@
 		parent.append(details);
 	}
 	function render() {
+		for (const id of ['preview', 'save', 'rollback']) {
+			$(id).disabled = !config;
+		}
 		document.documentElement.lang = lang;
 		document.querySelectorAll('[data-t]').forEach(n => (n.textContent = t(n.dataset.t)));
 		$('language').value = lang;
@@ -897,6 +922,7 @@
 			history: history,
 			settings: settings,
 		})[page]();
+		announceDraft();
 	}
 	function guided() {
 		const current = config,
@@ -1977,6 +2003,7 @@
 	async function load() {
 		const record = await request('getConfiguration');
 		config = record.active;
+		savedDraft = JSON.stringify(config);
 		expertText = undefined;
 		expertDirty = false;
 		revision = config.revision;
@@ -2021,6 +2048,14 @@
 			await load();
 		}),
 	);
+	document.addEventListener('change', () => queueMicrotask(announceDraft));
+	document.addEventListener('input', () => queueMicrotask(announceDraft));
+	window.addEventListener('beforeunload', event => {
+		if (announceDraft()) {
+			event.preventDefault();
+			event.returnValue = '';
+		}
+	});
 	if (socket) {
 		socket.on('connect', () =>
 			socket.emit(
@@ -2034,9 +2069,19 @@
 					}
 					$('instance').replaceChildren();
 					for (const row of result?.rows || []) {
+						if (embedded && row.id !== `system.adapter.${requestedInstance}`) {
+							continue;
+						}
 						const option = node('option', row.id.replace('system.adapter.', ''));
 						option.value = row.id.replace('system.adapter.', '');
 						$('instance').append(option);
+					}
+					if (requestedInstance) {
+						$('instance').value = requestedInstance;
+					}
+					$('instance').disabled = embedded;
+					if (!$('instance').value || (embedded && !requestedInstance)) {
+						return message(t('unavailable'), true);
 					}
 					run(load);
 				},

@@ -8,10 +8,22 @@ manufacturer account is created.
 
 ## Getting started
 
-Configure the devices in their manufacturer adapters first. Start Adaptive Home,
-open its Admin tab, choose the instance and language, then select **Guided setup**.
-A fresh, empty configuration opens there automatically. The ordinary instance
-settings contain optional advanced connections, not the everyday setup workflow.
+Configure the devices in their manufacturer adapters first. Start Adaptive Home and
+open **Instances → adaptivehome → Settings**. The Admin correction after Beta 10 opens
+the guided forms directly in **Setup**, pinned to the selected instance. The separate
+Admin tab remains available with its instance and language selector. The unchanged
+published Beta 9/10 packages offer the guided forms only in that separate tab.
+
+Rooms, devices, everyday functions, learning permissions and SQL belong to the runtime
+draft. **Validate draft** checks it; **Activate changes** saves it with a revision check.
+**Reload** discards unsaved edits. Switching to **Technical connections** preserves the
+draft. Optional source files, SDK profiles, gateways and model credentials belong there;
+saving technical changes may restart the adapter. An outstanding runtime draft blocks
+technical saving. Untouched native values, including secrets, are not rewritten.
+
+**Import & channels → Advanced configuration (JSON)** remains available for specialist
+settings and edits the same runtime draft. Invalid or stale JSON cannot overwrite newer
+form edits. Opening the page does not activate a configuration or a device.
 
 ### 1. Rooms and installations
 

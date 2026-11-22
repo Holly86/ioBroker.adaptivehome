@@ -185,7 +185,8 @@
         "docs/verification/source-connections.md",
         "docs/verification/beta5-release.md",
         "docs/verification/readiness-connections.md",
-        "docs/verification/guided-setup.md"
+        "docs/verification/guided-setup.md",
+        "docs/verification/instance-settings-ui.md"
       ],
       "openChecks": [],
       "commit": "6cc2a82e2dfc066a53ae28cac35aeb2e2891b2d9",
@@ -197,6 +198,17 @@
         "evidence": "docs/verification/guided-setup.md",
         "publishedPackage": false,
         "productionDeployment": false
+      },
+      "instanceSettingsCorrection": {
+        "implementationStatus": "implemented",
+        "verificationStatus": "in_progress",
+        "evidence": "docs/verification/instance-settings-ui.md",
+        "nativeDefaultsPreserved": true,
+        "instancePinned": true,
+        "technicalSaveBlockedWithRuntimeDraft": true,
+        "privateUiInstalled": false,
+        "physicalControlChanged": false,
+        "updatedAt": "2026-11-22T20:33:26.566Z"
       }
     },
     {

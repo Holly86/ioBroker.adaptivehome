@@ -106,7 +106,7 @@
     "type": "logic",
     "compact": true,
     "adminUI": {
-      "config": "json",
+      "config": "materialize",
       "tab": "materialize"
     },
     "adminTab": {
