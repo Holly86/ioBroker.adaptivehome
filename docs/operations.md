@@ -43,3 +43,13 @@ recipients or free-text errors. Review any additional material manually before s
 Metered energy, numerical power integration and model estimates are separate categories. Missing
 coverage/gaps remain visible. No environmental causality or household savings has been demonstrated.
 Native thermostat programs, expiry and safety hardware must be checked on the exact model separately.
+
+The post-Beta-10 shutdown correction stops new work before releasing the controller
+callback. The disconnected indicator has a 200 ms budget; the controller releases
+subscriptions when closing its clients. There is no mass data-point unsubscribe or
+device reset during unload. New package metadata reserves 3 seconds for the entire
+host shutdown, including the controller's own teardown. Existing instance metadata
+may retain its earlier timeout; the corrected path is also tested with the legacy
+1-second host budget. A shutdown warning indicates incomplete cleanup, not a new
+device command or a reason to retry manufacturer requests. See the
+[shutdown verification](verification/shutdown-correction.md) for scope and limits.

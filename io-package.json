@@ -1,6 +1,7 @@
 {
   "common": {
     "name": "adaptivehome",
+    "stopTimeout": 3000,
     "version": "0.1.0-beta.10",
     "news": {
       "0.1.0-beta.10": {

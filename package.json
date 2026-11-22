@@ -59,6 +59,7 @@
     "scripts/validate-integration.cjs",
     "examples/telegram-gateway.cjs",
     "docs/verification/scenarios.md",
+    "docs/verification/shutdown-correction.md",
     "docs/integration-sdk.de.md",
     "docs/pilot.md",
     "docs/policy-parity.md",

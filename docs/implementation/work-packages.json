@@ -109,11 +109,12 @@
       "requiredForBeta": true,
       "hardwareChecksMayBePending": false,
       "evidence": [
-        "docs/verification/AP-02.md"
+        "docs/verification/AP-02.md",
+        "docs/verification/shutdown-correction.md"
       ],
       "openChecks": [],
       "commit": "8c704c1d9f72ce1e64b9eebb34d75a3e8979fc8a",
-      "updatedAt": "2026-11-08T16:05:32.712Z"
+      "updatedAt": "2026-11-22T23:14:50.468Z"
     },
     {
       "id": "AP-03",
@@ -745,12 +746,13 @@
         "docs/verification/beta6-release.md",
         "docs/verification/manual-commissioning-coordinator.md",
         "docs/verification/beta7-release.md",
-        "docs/verification/guided-setup.md"
+        "docs/verification/guided-setup.md",
+        "docs/verification/shutdown-correction.md"
       ],
       "openChecks": [],
       "commit": "9399e491967c8780ca1bb64c9e82ad8d8f10fbee",
-      "updatedAt": "2026-11-20T08:37:57.360874+00:00",
-      "correctionSummary": "191 anonymous checks, 61 package checks and isolated controller correction scenarios passed; initial recovery timeout remains documented as not reproduced. No new long-duration or physical acceptance."
+      "updatedAt": "2026-11-22T23:14:50.469Z",
+      "correctionSummary": "217 TypeScript checks, 14 Admin and four compiled-entry contracts, 59 package checks and isolated shutdown/restart regressions passed. Hard-stop deadline defect reproduced and corrected; historical per-call latency and physical acceptance remain separate."
     },
     {
       "id": "AP-25",
@@ -2261,6 +2263,41 @@
       "ciJobsPassed": 7,
       "ciRunId": 44952766840,
       "testedSourceCommit": "0bc8c74286dc2228db69e301e0baf06c9e64e54a"
+    },
+    {
+      "id": "bounded-shutdown-2026-11-23",
+      "status": "verified",
+      "implementationStatus": "implemented",
+      "verificationStatus": "passed",
+      "evidence": "docs/verification/shutdown-correction.md",
+      "checks": {
+        "build": true,
+        "typecheck": true,
+        "unitTypeScriptTests": 217,
+        "adminContractTests": 14,
+        "compiledEntryLifecycleTests": 4,
+        "packageChecks": 59,
+        "controllerShutdownCases": 3,
+        "existingRestartRegression": 1,
+        "oldBackendHardStopReproduced": true,
+        "legacyHostBudgetMs": 1000,
+        "unloadStateWriteBudgetMs": 200,
+        "declaredHostBudgetMs": 3000,
+        "unsubscriptionBurstRemoved": true,
+        "publicContentReview": true,
+        "lint": true
+      },
+      "historicalSigkillConfirmed": true,
+      "historicalIndividualDbLatenciesKnown": false,
+      "liveCodeUpdated": false,
+      "existingServiceRestarts": 0,
+      "additionalCloudRequests": 0,
+      "actorCommands": 0,
+      "houseRuleChanges": 0,
+      "newReleasePublished": false,
+      "publishedBeta10Unchanged": true,
+      "readyForCutover": false,
+      "updatedAt": "2026-11-22T23:14:50.470Z"
     }
   ],
   "releaseHistory": [

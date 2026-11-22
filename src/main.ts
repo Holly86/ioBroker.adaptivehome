@@ -10,6 +10,7 @@ import type { ControlClient } from './runtime/control';
 import { clientSchema, MUTATIONS, OperationGuard, verifyControl } from './runtime/control';
 import { OptionalProvider, providerSchema } from './learning/provider';
 import { deadline } from './runtime/clock';
+import { unloadAdapter } from './runtime/shutdown';
 import { addTypeHints } from './integrations/type-hints';
 import { SourceConnections } from './connections/sources';
 import { getSourceJSON, readSourceFile, resolveSourceEndpoint } from './connections/io';
@@ -23,18 +24,22 @@ class Adaptivehome extends utils.Adapter {
 	private guard = new OperationGuard(records => this.persistJournal('operations', records));
 	private provider = new OptionalProvider(budgets => this.persistJournal('providerBudgets', budgets));
 	private timer?: ReturnType<typeof setInterval>;
+	private stopping = false;
 	private subscribedIds = new Set<string>();
 	private configurationTasks: Promise<unknown> = Promise.resolve();
 	private sourceConnections = new SourceConnections(this.namespace, {
 		readState: async id => (await this.getForeignStateAsync(id)) as StateValue | null,
 		readFile: key => readSourceFile(key, this.config.sourceFiles ?? {}),
-		readBackend: backend =>
-			new Promise(resolve =>
+		readBackend: backend => {
+			this.requireRunning();
+			return new Promise(resolve =>
 				this.sendTo(backend, 'adaptivehomeRead', { protocol: 'adaptivehome.read.v1' }, result =>
 					resolve(result),
 				),
-			),
+			);
+		},
 		getJSON: async key => {
+			this.requireRunning();
 			const endpoints = JSON.parse(this.config.sourceEndpoints || '{}');
 			if (!Object.hasOwn(endpoints, key)) {
 				throw Error('source_endpoint_not_declared');
@@ -48,11 +53,15 @@ class Adaptivehome extends utils.Adapter {
 				value => this.decrypt(value),
 				key => readSourceFile(key, this.config.sourceFiles ?? {}),
 			);
+			this.requireRunning();
 			return getSourceJSON(resolved);
 		},
 	});
 	private nativeConnections = new NativeConnections(this.namespace, {
-		send: (backend, command, payload) => new Promise(resolve => this.sendTo(backend, command, payload, resolve)),
+		send: (backend, command, payload) => {
+			this.requireRunning();
+			return new Promise(resolve => this.sendTo(backend, command, payload, resolve));
+		},
 	});
 	private connectionRound = false;
 	private sqlLogging = new SqlLogging(this.namespace, {
@@ -71,7 +80,10 @@ class Adaptivehome extends utils.Adapter {
 				native: {},
 			});
 		},
-		send: (adapter, command, rows) => new Promise(resolve => this.sendTo(adapter, command, rows, resolve)),
+		send: (adapter, command, rows) => {
+			this.requireRunning();
+			return new Promise(resolve => this.sendTo(adapter, command, rows, resolve));
+		},
 	});
 	private configuration = new ConfigurationStore(
 		{
@@ -89,32 +101,36 @@ class Adaptivehome extends utils.Adapter {
 		super({ ...options, name: 'adaptivehome' });
 		this.on('ready', () => void this.ready());
 		this.on('stateChange', (id, state) => {
-			if (state && this.runtime) {
+			if (state && this.runtime && !this.stopping) {
 				void this.runtime
 					.feedback(id, state as StateValue)
 					.catch(() => this.log.warn('Feedback could not be persisted'));
 			}
 		});
-		this.on('objectChange', () => this.runtime?.executor.invalidateAudit());
+		this.on('objectChange', () => {
+			if (!this.stopping) {
+				this.runtime?.executor.invalidateAudit();
+			}
+		});
 		this.on('message', obj => void this.message(obj));
 		this.on('unload', callback => {
-			if (this.timer) {
-				clearInterval(this.timer);
-			}
-			this.runtime?.close();
-			void deadline(
-				Promise.all([
-					this.setStateAsync('info.connection', false, true),
-					...[...this.subscribedIds].flatMap(id => [
-						this.unsubscribeForeignStatesAsync(id),
-						this.unsubscribeForeignObjectsAsync(id),
-					]),
-				]),
-				1000,
-			)
-				.catch(() => undefined)
-				.finally(callback);
+			this.stopping = true;
+			void unloadAdapter(
+				() => {
+					if (this.timer) {
+						clearInterval(this.timer);
+					}
+					this.runtime?.close();
+				},
+				() => this.setStateAsync('info.connection', false, true),
+				() => this.log.warn('Shutdown cleanup incomplete; continuing controller teardown'),
+			).finally(callback);
 		});
+	}
+	private requireRunning(): void {
+		if (this.stopping) {
+			throw Error('adapter_stopping');
+		}
 	}
 	private async ready(): Promise<void> {
 		for (const definition of Array.isArray(this.config.integrationProfiles)
@@ -146,6 +162,9 @@ class Adaptivehome extends utils.Adapter {
 			native: {},
 		});
 		await this.configuration.load();
+		if (this.stopping) {
+			return;
+		}
 		this.runtime = new HomeRuntime(() => this.configuration.record.active, {
 			authorizeBinding: binding => this.registry.validate(binding),
 			read: async id =>
@@ -163,6 +182,7 @@ class Adaptivehome extends utils.Adapter {
 				return obj?.type === 'state' ? (obj.common as StateMetadata) : null;
 			},
 			write: async (id, value) => {
+				this.requireRunning();
 				if (this.nativeConnections.handles(id)) {
 					await this.nativeConnections.write(id, value);
 					return;
@@ -173,6 +193,7 @@ class Adaptivehome extends utils.Adapter {
 				await this.setForeignStateAsync(id, value, false);
 			},
 			writeNative: async (id, program, dispatchDeadline) => {
+				this.requireRunning();
 				if (Date.now() >= dispatchDeadline) {
 					throw Error('command_expired');
 				}
@@ -185,8 +206,10 @@ class Adaptivehome extends utils.Adapter {
 				}
 				await this.setForeignStateAsync(id, JSON.stringify(program), false);
 			},
-			send: (adapter, command, payload) =>
-				new Promise(resolve => this.sendTo(adapter, command, payload, resolve)),
+			send: (adapter, command, payload) => {
+				this.requireRunning();
+				return new Promise(resolve => this.sendTo(adapter, command, payload, resolve));
+			},
 			persist: (key, value) => this.persistJournal(key, value),
 		});
 		const journal = await this.getStateAsync('journal.execution');
@@ -243,6 +266,10 @@ class Adaptivehome extends utils.Adapter {
 				this.log.warn('Provider budget unavailable; optional model calls are blocked');
 			}
 		}
+		if (this.stopping) {
+			this.runtime.close();
+			return;
+		}
 		await this.subscriptions();
 		const sqlJournal = await this.getStateAsync('journal.sqlLogging');
 		if (typeof sqlJournal?.val === 'string') {
@@ -260,7 +287,14 @@ class Adaptivehome extends utils.Adapter {
 			common: { name: 'Runtime ready', type: 'boolean', role: 'indicator.connected', read: true, write: false },
 			native: {},
 		});
+		if (this.stopping) {
+			this.runtime.close();
+			return;
+		}
 		await this.setStateAsync('info.connection', true, true);
+		if (this.stopping) {
+			return;
+		}
 		this.timer = setInterval(
 			() =>
 				void this.connectedTick().catch(() =>
@@ -270,7 +304,7 @@ class Adaptivehome extends utils.Adapter {
 		);
 	}
 	private async connectedTick(): Promise<void> {
-		if (this.connectionRound) {
+		if (this.connectionRound || this.stopping) {
 			return;
 		}
 		this.connectionRound = true;
@@ -281,11 +315,13 @@ class Adaptivehome extends utils.Adapter {
 				this.sourceConnections.refresh(c.connections),
 				this.nativeConnections.refresh(c.nativeTransports),
 			]).catch(() => undefined);
-			if (c !== this.configuration.record.active) {
+			if (c !== this.configuration.record.active || this.stopping) {
 				return;
 			}
 			await this.runtime.tick();
-			void this.sqlLogging.flush(c.logging).catch(() => undefined);
+			if (!this.stopping) {
+				void this.sqlLogging.flush(c.logging).catch(() => undefined);
+			}
 		} finally {
 			this.connectionRound = false;
 		}
@@ -299,6 +335,9 @@ class Adaptivehome extends utils.Adapter {
 		await this.setStateAsync(`journal.${key}`, JSON.stringify(value), true);
 	}
 	private async subscriptions(): Promise<void> {
+		if (this.stopping) {
+			return;
+		}
 		this.sourceConnections.configure(this.configuration.record.active.connections);
 		this.nativeConnections.configure(this.configuration.record.active.nativeTransports);
 		this.runtime.configure();
@@ -320,12 +359,18 @@ class Adaptivehome extends utils.Adapter {
 			}
 		}
 		for (const id of this.subscribedIds) {
+			if (this.stopping) {
+				return;
+			}
 			if (!next.has(id)) {
 				await this.unsubscribeForeignStatesAsync(id);
 				await this.unsubscribeForeignObjectsAsync(id);
 			}
 		}
 		for (const id of next) {
+			if (this.stopping) {
+				return;
+			}
 			if (!this.subscribedIds.has(id)) {
 				await this.subscribeForeignStatesAsync(id);
 				await this.subscribeForeignObjectsAsync(id);
@@ -337,6 +382,7 @@ class Adaptivehome extends utils.Adapter {
 		const next = this.configurationTasks
 			.catch(() => undefined)
 			.then(async () => {
+				this.requireRunning();
 				const result = rollback
 					? await this.configuration.rollback(data.expectedRevision)
 					: await this.configuration.activate(data.configuration, data.expectedRevision);
@@ -348,7 +394,7 @@ class Adaptivehome extends utils.Adapter {
 		return next;
 	}
 	private async message(obj: ioBroker.Message): Promise<void> {
-		if (!obj.callback) {
+		if (!obj.callback || this.stopping) {
 			return;
 		}
 		let result: unknown;
@@ -385,6 +431,7 @@ class Adaptivehome extends utils.Adapter {
 				}
 				operationKey = reservation.key;
 			}
+			this.requireRunning();
 			switch (command) {
 				case 'handoff':
 				case 'commission': {

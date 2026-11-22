@@ -35,6 +35,7 @@ tests.integration(path.join(__dirname, '..'), { controllerVersion: '7.2.5', defi
     require('./hmip-host-controller.cjs').defineHmipHostTests(context);
     require('./read-regressions-controller.cjs').defineReadRegressionTests(context);
     require('./maintenance-controller.cjs').defineMaintenanceTests(context);
+    require('./shutdown-controller.cjs').defineShutdownTests(context);
 		require('./sql-controller.cjs').defineSqlTests(context);
     require('./browser-controller.cjs').defineBrowserTests(context);
 } });
