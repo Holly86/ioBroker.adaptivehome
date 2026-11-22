@@ -3,6 +3,25 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 async function instanceBrowser(page, harness, root) {
+	let statusRequests = 0;
+	const statusListener = socket =>
+		socket.on('framesent', ({ payload }) => {
+			let message;
+			try {
+				message = JSON.parse(String(payload));
+			} catch {
+				return;
+			}
+			if (
+				message[0] === 3 &&
+				message[2] === 'sendTo' &&
+				message[3]?.[0] === 'adaptivehome.0' &&
+				message[3]?.[1] === 'status'
+			) {
+				statusRequests++;
+			}
+		});
+	page.on('websocket', statusListener);
 	const evidence = path.join(root, '.local/evidence/AP-05/instance-settings');
 	fs.mkdirSync(evidence, { recursive: true });
 	const own = await harness.objects.getObjectAsync('system.adapter.adaptivehome.0');
@@ -82,6 +101,10 @@ async function instanceBrowser(page, harness, root) {
 		.frameLocator('#setup-frame')
 		.getByRole('button', { name: /Load installed adapters|Installierte Adapter laden/, exact: true })
 		.click();
+	// Exercise one real refresh interval: editing needs configuration/catalogue, not live-status polling.
+	await new Promise(resolve => setTimeout(resolve, 11000));
+	assert.equal(statusRequests, 0);
+	page.off('websocket', statusListener);
 	await page.screenshot({ path: path.join(evidence, 'actual-instance-route.png'), fullPage: true });
 	fs.writeFileSync(
 		path.join(evidence, 'result.json'),
@@ -92,6 +115,7 @@ async function instanceBrowser(page, harness, root) {
 				draftDoesNotActivate: true,
 				nativeTypesPreserved: true,
 				nativeSaveBlockedWithRuntimeDraft: true,
+				noStatusPollingDuringSetup: true,
 				missingInstanceDoesNotFallback: true,
 				widths: [1280, 390],
 				languages: ['de', 'en'],

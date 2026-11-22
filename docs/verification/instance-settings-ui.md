@@ -34,3 +34,12 @@ interruption phases, configuration conflict protection and rejection of backend 
 The installed runtime and released Beta 10 archive/tag are not silently replaced by a
 new release. A scoped private Admin correction, if deployed, has its own file/metadata
 backup and evidence; no actor or house-rule change is part of this UI correction.
+
+The live check exposed an additional editor issue: background status refreshes could show
+a generic adapter-unavailable/restart message while configuration and catalogue requests
+were working. Editing pages now request only their configuration/catalogue. Status polling
+is limited to views that need live data, with one in-flight UI request; a failed status
+read preserves the draft and reports a status-specific message. Learning input forms are
+not redrawn by periodic polling. The browser regression observes a complete real polling
+interval and confirms zero status requests during setup. No timeout or source freshness
+limit was relaxed.

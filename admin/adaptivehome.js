@@ -238,6 +238,10 @@
 			'Adapter unavailable. Start the instance and reload.',
 			'Adapter nicht erreichbar. Instanz starten und neu laden.',
 		],
+		statusUnavailable: [
+			'Live status could not be refreshed. Your configuration draft is preserved.',
+			'Der Live-Status konnte nicht aktualisiert werden. Dein Konfigurationsentwurf bleibt erhalten.',
+		],
 		conflict: [
 			'Configuration changed elsewhere. Reload before applying.',
 			'Die Konfiguration wurde anderweitig geändert. Bitte neu laden.',
@@ -414,6 +418,7 @@
 		config,
 		savedDraft,
 		lastAnnouncedDirty,
+		statusPending = false,
 		revision = 0,
 		live = {},
 		counter = 0,
@@ -905,6 +910,9 @@
 			const b = button($('navigation'), key, () => {
 				page = key;
 				render();
+				if (needsLiveStatus()) {
+					return refresh(true);
+				}
 			});
 			b.setAttribute('aria-current', String(page === key));
 		}
@@ -1994,10 +2002,32 @@
 				}),
 		);
 	}
-	async function refresh() {
-		live = await request('status');
-		if (page === 'overview' || page === 'history') {
-			render();
+	function needsLiveStatus() {
+		return ['overview', 'history', 'learning'].includes(page);
+	}
+	async function refresh(redrawLearning = false) {
+		if (statusPending) {
+			return true;
+		}
+		statusPending = true;
+		try {
+			live = await request('status');
+			if (needsLiveStatus()) {
+				if (page !== 'learning' || redrawLearning) {
+					render();
+				}
+				if ($('message').textContent === t('statusUnavailable')) {
+					message(t('ready'));
+				}
+			}
+			return true;
+		} catch {
+			if (needsLiveStatus()) {
+				message(t('statusUnavailable'), true);
+			}
+			return false;
+		} finally {
+			statusPending = false;
 		}
 	}
 	async function load() {
@@ -2011,7 +2041,9 @@
 			page = 'guided';
 		}
 		render();
-		await refresh();
+		if (needsLiveStatus() && !(await refresh(true))) {
+			return;
+		}
 		message(t('ready'));
 	}
 	$('language').addEventListener('change', () => {
@@ -2089,7 +2121,7 @@
 		);
 	}
 	setInterval(() => {
-		if (config && document.visibilityState === 'visible') {
+		if (config && needsLiveStatus() && document.visibilityState === 'visible') {
 			run(refresh);
 		}
 	}, 10000);
